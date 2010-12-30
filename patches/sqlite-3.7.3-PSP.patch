@@ -1,0 +1,859 @@
+diff -urN sqlite-3.7.3-orig/config.sub sqlite-3.7.3-psp/config.sub
+--- sqlite-3.7.3-orig/config.sub	2010-10-01 22:19:27.000000000 +0200
++++ sqlite-3.7.3-psp/config.sub	2010-12-28 13:24:15.000000000 +0100
+@@ -898,6 +898,10 @@
+ 	ps2)
+ 		basic_machine=i386-ibm
+ 		;;
++	psp)
++	    basic_machine=mipsallegrexel-psp
++	    os=-elf
++	    ;;
+ 	pw32)
+ 		basic_machine=i586-unknown
+ 		os=-pw32
+diff -urN sqlite-3.7.3-orig/Makefile.in sqlite-3.7.3-psp/Makefile.in
+--- sqlite-3.7.3-orig/Makefile.in	2010-10-07 16:48:41.000000000 +0200
++++ sqlite-3.7.3-psp/Makefile.in	2010-12-28 13:28:55.000000000 +0100
+@@ -175,13 +175,13 @@
+          main.lo malloc.lo mem0.lo mem1.lo mem2.lo mem3.lo mem5.lo \
+          memjournal.lo \
+          mutex.lo mutex_noop.lo mutex_os2.lo mutex_unix.lo mutex_w32.lo \
+-         notify.lo opcodes.lo os.lo os_os2.lo os_unix.lo os_win.lo \
++         notify.lo opcodes.lo os.lo os_os2.lo os_psp.lo os_unix.lo os_win.lo \
+          pager.lo parse.lo pcache.lo pcache1.lo pragma.lo prepare.lo printf.lo \
+          random.lo resolve.lo rowset.lo rtree.lo select.lo status.lo \
+          table.lo tokenize.lo trigger.lo \
+          update.lo util.lo vacuum.lo \
+          vdbe.lo vdbeapi.lo vdbeaux.lo vdbeblob.lo vdbemem.lo vdbetrace.lo \
+-         wal.lo walker.lo where.lo utf.o vtab.lo
++         wal.lo walker.lo where.lo utf.lo vtab.lo
+ 
+ # Object files for the amalgamation.
+ #
+@@ -242,6 +242,7 @@
+   $(TOP)/src/os.h \
+   $(TOP)/src/os_common.h \
+   $(TOP)/src/os_os2.c \
++  $(TOP)/src/os_psp.c \
+   $(TOP)/src/os_unix.c \
+   $(TOP)/src/os_win.c \
+   $(TOP)/src/pager.c \
+@@ -468,7 +469,7 @@
+ # This is the default Makefile target.  The objects listed here
+ # are what get build when you type just "make" with no arguments.
+ #
+-all:	sqlite3.h libsqlite3.la sqlite3$(TEXE) $(HAVE_TCL:1=libtclsqlite3.la)
++all:	sqlite3.h libsqlite3.la $(SQLITE_OS_PSP:0=sqlite3$(TEXE)) $(HAVE_TCL:1=libtclsqlite3.la)
+ 
+ Makefile: $(TOP)/Makefile.in
+ 	./config.status
+@@ -670,6 +671,9 @@
+ os_os2.lo:	$(TOP)/src/os_os2.c $(HDR)
+ 	$(LTCOMPILE) $(TEMP_STORE) -c $(TOP)/src/os_os2.c
+ 
++os_psp.lo:	$(TOP)/src/os_psp.c $(HDR)
++	$(LTCOMPILE) $(TEMP_STORE) -c $(TOP)/src/os_psp.c
++
+ pragma.lo:	$(TOP)/src/pragma.c $(HDR)
+ 	$(LTCOMPILE) $(TEMP_STORE) -c $(TOP)/src/pragma.c
+ 
+@@ -886,10 +890,12 @@
+ lib_install:	libsqlite3.la
+ 	$(INSTALL) -d $(DESTDIR)$(libdir)
+ 	$(LTINSTALL) libsqlite3.la $(DESTDIR)$(libdir)
+-	
+-install:	sqlite3$(BEXE) lib_install sqlite3.h sqlite3.pc ${HAVE_TCL:1=tcl_install}
++
++exe_install:    sqlite3$(BEXE)
+ 	$(INSTALL) -d $(DESTDIR)$(bindir)
+ 	$(LTINSTALL) sqlite3$(BEXE) $(DESTDIR)$(bindir)
++	
++install:        $(SQLITE_OS_PSP:0=exe_install) lib_install sqlite3.h sqlite3.pc ${HAVE_TCL:1=tcl_install}
+ 	$(INSTALL) -d $(DESTDIR)$(includedir)
+ 	$(INSTALL) -m 0644 sqlite3.h $(DESTDIR)$(includedir)
+ 	$(INSTALL) -m 0644 $(TOP)/src/sqlite3ext.h $(DESTDIR)$(includedir)
+diff -urN sqlite-3.7.3-orig/README.PSP sqlite-3.7.3-psp/README.PSP
+--- sqlite-3.7.3-orig/README.PSP	1970-01-01 01:00:00.000000000 +0100
++++ sqlite-3.7.3-psp/README.PSP	2010-12-28 13:26:32.000000000 +0100
+@@ -0,0 +1,35 @@
++SQLite 3.7.3 port for Sony PSP
++==============================
++    original port by
++    	Nicolas R. <nikolas.robin@gmail.com>
++    update for SQLite 3.7.3 by
++        Tempura San <tempura.san@gmail.com>
++
++Building
++--------
++
++PSPDEV environment variable must be set.
++
++$ LDFLAGS="-L$(psp-config --pspsdk-path)/lib" \
++  LIBS="-lc -lpspuser" \
++  CFLAGS="-DSQLITE_OS_OTHER=1 -DSQLITE_OS_PSP=1 -I$(psp-config --pspsdk-path)/include" \
++  ./configure --host=psp --disable-readline --disable-tcl --disable-threadsafe --disable-amalgamation \
++  --prefix=$(psp-config --psp-prefix)
++
++# NOTES ON DEBUGGING:
++#   * append --enable-debug for debugging code
++#   * enable tracing in os_common.h by setting sqlite3OSTrace = 1
++
++$ make
++$ make install
++
++Status
++------
++This release does not handle :
++ - multi-threading access to the database
++ - load of extension
++ - test cases
++
++Building applications
++---------------------
++Link your application with "-lsqlite3"
+diff -urN sqlite-3.7.3-orig/src/os_psp.c sqlite-3.7.3-psp/src/os_psp.c
+--- sqlite-3.7.3-orig/src/os_psp.c	1970-01-01 01:00:00.000000000 +0100
++++ sqlite-3.7.3-psp/src/os_psp.c	2010-12-28 13:23:04.000000000 +0100
+@@ -0,0 +1,689 @@
++/*
++** 2010 Nov 01
++**
++** The author disclaims copyright to this source code.  In place of
++** a legal notice, here is a blessing:
++**
++**    May you do good and not evil.
++**    May you find forgiveness for yourself and forgive others.
++**    May you share freely, never taking more than you give.
++**
++******************************************************************************
++**
++** This file contains code that is specific to the Playstation Portable (PSP).
++*/
++
++#include "sqliteInt.h"
++
++#if SQLITE_OS_PSP
++
++/*
++** Include code that is common to all os_*.c files
++*/
++#include "os_common.h"
++
++/*
++** Include PSP header files
++*/
++#include <pspiofilemgr.h>
++#include <psptypes.h>
++#include <psputils.h>
++
++/*
++** Include standard C headers.
++*/
++#include <unistd.h>
++#include <stdio.h>
++
++/* rwxrwxrwx */
++#define SQLITE_PSP_FILE_ATTR		0777
++
++/* Max len of absolute path */
++#define SQLITE_PSP_FULLPATH_SIZE	512
++
++/* debug helpers */
++#ifdef SQLITE_DEBUG
++static const char * getSqliteReturnCode (int rc){
++	switch(rc)
++	{
++		case SQLITE_OK:
++			return "SQLITE_OK";
++		case SQLITE_CANTOPEN:
++			return "SQLITE_CANTOPEN";
++		case SQLITE_NOMEM:
++			return "SQLITE_NOMEM";
++		case SQLITE_IOERR:
++			return "SQLITE_IOERR";
++		case SQLITE_IOERR_READ:
++			return "SQLITE_IOERR_READ";
++		case SQLITE_IOERR_SHORT_READ:
++			return "SQLITE_IOERR_SHORT_READ";
++		case SQLITE_IOERR_WRITE:
++			return "SQLITE_IOERR_WRITE";
++		case SQLITE_IOERR_DELETE:
++			return "SQLITE_IOERR_DELETE";
++		case SQLITE_IOERR_FSYNC:
++			return "SQLITE_IOERR_FSYNC";
++		case SQLITE_IOERR_TRUNCATE:
++			return "SQLITE_IOERR_TRUNCATE";
++		case SQLITE_IOERR_FSTAT:
++			return "SQLITE_IOERR_FSTAT";
++		default: return "UNKNOWN CODE";
++	}
++}
++
++static const char * getBooleanReturnCode (int rc){
++	return (rc > SQLITE_OK)?"TRUE":"FALSE";
++}
++#endif
++
++/*
++** The pspFile structure is subclass of sqlite3_file specific for the PSP
++** protability layer.
++*/
++typedef struct pspFile pspFile;
++struct pspFile {
++	const sqlite3_io_methods *pMethods;	/* Always the first entry */
++	SceUID fd;                  		/* PSP file descriptor */
++	char* zFilename;					/* Name of file to delete on close, NULL if not */
++	unsigned char delFlags;				/* Delete file on close */
++	unsigned char locktype;				/* Type of lock currently held on this file */
++
++	int openFlags;						/* Flags passed to sceIoOpen when
++										   opening the file (used in pspSync)*/
++};
++
++/*****************************************************************************
++** The next group of routines implement the I/O methods specified
++** by the sqlite3_io_methods object.
++******************************************************************************/
++
++/*
++** Close a file.
++*/
++static int pspClose( sqlite3_file *id ){
++	pspFile *pFile = (pspFile*)id;
++	int rc = SQLITE_OK;
++
++	if( pFile )
++	{
++		OSTRACE(("CLOSE fd=%d file=%s\n", pFile->fd, pFile->zFilename));
++		if( sceIoClose(pFile->fd) < 0 )
++		{
++			rc = SQLITE_IOERR;
++		}
++		else
++		{
++			if( pFile->delFlags )
++			{
++				OSTRACE(("CLOSE delete file\n"));
++				rc = sqlite3OsDelete(0, pFile->zFilename, 0);
++			}
++		}
++
++		OSTRACE(("CLOSE free memory\n"));
++		sqlite3_free(pFile->zFilename);
++	}
++
++	OSTRACE(("CLOSE rc=%s\n", getSqliteReturnCode(rc)));
++	return rc;
++}
++
++/*
++** Read data from a file into a buffer.  Return SQLITE_OK if all
++** bytes were read successfully and SQLITE_IOERR if anything goes
++** wrong.
++*/
++static int pspRead(
++	sqlite3_file *id,		/* File to read from */
++	void *pBuf,				/* Write content into this buffer */
++	int amt,				/* Number of bytes to read */
++	sqlite3_int64 offset	/* Begin reading at this offset */
++) {
++	int got;
++	pspFile * pFile = (pspFile*)id;
++	int rc = SQLITE_OK;
++
++	if( sceIoLseek(pFile->fd, offset, SEEK_SET) != offset)
++	{
++		return SQLITE_IOERR;
++	}
++
++	got = sceIoRead(pFile->fd, pBuf, amt);
++
++	if( got != amt )
++	{
++		if( got < 0 )
++		{
++			rc = SQLITE_IOERR_READ;
++		}
++		else
++		{
++			memset(&((char*)pBuf)[got], 0, amt - got);
++			rc = SQLITE_IOERR_SHORT_READ;
++		}
++	}
++	OSTRACE(("READ %s : %s\n", pFile->zFilename, getSqliteReturnCode(rc)));
++	return rc;
++}
++
++/*
++** Write data from a buffer into a file.  Return SQLITE_OK on success
++** or some other error code on failure.
++*/
++static int pspWrite(
++	sqlite3_file *id,		/* File to write into */
++	const void *pBuf,		/* The bytes to be written */
++	int amt,				/* Number of bytes to write */
++	sqlite3_int64 offset	/* Offset into the file to begin writing at */
++) {
++	int rc = SQLITE_OK;
++	pspFile * pFile = (pspFile*)id;
++
++	if( sceIoLseek(pFile->fd, offset, SEEK_SET) != offset)
++	{
++		return SQLITE_IOERR;
++	}
++
++	if( sceIoWrite(pFile->fd, pBuf, amt) != amt )
++	{
++		rc = SQLITE_IOERR_WRITE;
++	}
++	OSTRACE(("WRITE %s : %s\n", pFile->zFilename, getSqliteReturnCode(rc)));
++	return rc;
++}
++
++/*
++** Truncate an open file to a specified size
++*/
++static int pspTruncate( sqlite3_file *id, i64 nByte ){
++	int rc;
++	pspFile* pFile=(pspFile*)id;
++	rc = (truncate(pFile->zFilename, nByte) == 0) ? SQLITE_OK:SQLITE_IOERR_TRUNCATE;
++	OSTRACE(("TRUNCATE %s : %s\n", pFile->zFilename, getSqliteReturnCode(rc)));
++	return rc;
++}
++
++/*
++** Make sure all writes to a particular file are committed to disk.
++*/
++static int pspSync( sqlite3_file *id, int flags ){
++	/*
++	** sceIoSync() exist but is not documented enough.
++	** The file is closed, and then reopened to synchronise data on the device.
++	** The position in the file is saved (don't really matter because SQLITE
++	** seek the file before access to it, but I'm not sure).
++	*/
++  	int openFlags;
++  	int rc = SQLITE_OK;
++  	pspFile* pFile = (pspFile*)id;
++
++	/* If we compiled with the SQLITE_NO_SYNC flag, then syncing is a
++	** no-op
++	*/
++#ifdef SQLITE_NO_SYNC
++  	UNUSED_PARAMETER(openFlags);
++	UNUSED_PARAMETER(pFile);
++	return rc;
++#else
++  	if(pFile)
++  	{
++  		SceOff currentOffset = sceIoLseek(pFile->fd, 0, SEEK_CUR);
++  		if( sceIoClose(pFile->fd) < 0 )
++  		{
++  			rc = SQLITE_IOERR_FSYNC;
++  		}
++  		else
++  		{
++  			openFlags = (pFile->openFlags)&((~PSP_O_CREAT)&(~PSP_O_EXCL));
++  			pFile->fd = sceIoOpen(pFile->zFilename, openFlags, SQLITE_PSP_FILE_ATTR);
++  			if(pFile->fd)
++  			{
++  				sceIoLseek(pFile->fd, currentOffset, SEEK_SET);
++  			}
++  			else
++  			{
++  				rc = SQLITE_CANTOPEN;
++  			}
++  		}
++  	}
++  	else
++  	{
++  		rc = SQLITE_IOERR_FSYNC;
++  	}
++  	OSTRACE(("SYNC %s : %s\n", pFile->zFilename, getSqliteReturnCode(rc)));
++   	return rc;
++#endif
++}
++
++/*
++** Determine the current size of a file in bytes
++*/
++static int pspFileSize( sqlite3_file *id, sqlite3_int64 *pSize ){
++	pspFile * pFile = (pspFile*)id;
++	SceOff curPos = sceIoLseek(pFile->fd, 0, SEEK_CUR);
++	SceOff size   = sceIoLseek(pFile->fd, 0, SEEK_END);
++	sceIoLseek(pFile->fd, curPos, SEEK_SET);
++
++	*pSize = (sqlite3_int64) size;
++	OSTRACE(("SIZE %s : %d bytes\n",pFile->zFilename,*pSize));
++	return SQLITE_OK;
++}
++
++/*
++** Lock the file with the lock specified by parameter locktype - one
++** of the following:
++**
++**     (1) SHARED_LOCK
++**     (2) RESERVED_LOCK
++**     (3) PENDING_LOCK
++**     (4) EXCLUSIVE_LOCK
++**
++** Sometimes when requesting one lock state, additional lock states
++** are inserted in between.  The locking might fail on one of the later
++** transitions leaving the lock state different from what it started but
++** still short of its goal.  The following chart shows the allowed
++** transitions and the inserted intermediate states:
++**
++**    UNLOCKED -> SHARED
++**    SHARED -> RESERVED
++**    SHARED -> (PENDING) -> EXCLUSIVE
++**    RESERVED -> (PENDING) -> EXCLUSIVE
++**    PENDING -> EXCLUSIVE
++**
++*/
++static int pspLock( sqlite3_file *id, int locktype ){
++	((pspFile*)id)->locktype = locktype;
++	return SQLITE_OK;
++}
++
++/*
++** This routine checks if there is a RESERVED lock held on the specified
++** file by this or any other process. If such a lock is held, return
++** non-zero, otherwise zero.
++*/
++static int pspCheckReservedLock( sqlite3_file *id, int *pOut ){
++	*pOut = (((pspFile*)id)->locktype == RESERVED_LOCK);
++	return SQLITE_OK;
++}
++
++/*
++** Lower the locking level on file descriptor id to locktype.  locktype
++** must be either NO_LOCK or SHARED_LOCK.
++**
++** If the locking level of the file descriptor is already at or below
++** the requested locking level, this routine is a no-op.
++**
++** It is not possible for this routine to fail if the second argument
++** is NO_LOCK.  If the second argument is SHARED_LOCK then this routine
++** might return SQLITE_IOERR;
++*/
++static int pspUnlock( sqlite3_file *id, int locktype ){
++	pspFile* pFile = (pspFile*)id;
++	if(pFile->locktype != NO_LOCK)
++	{
++		pFile->locktype = locktype;
++	}
++	return SQLITE_OK;
++}
++
++/*
++** Control and query of the open file handle.
++*/
++static int pspFileControl(sqlite3_file *id, int op, void *pArg) {
++	switch( op ){
++		case SQLITE_FCNTL_LOCKSTATE: {
++			*(int*)pArg = ((pspFile*)id)->locktype;
++			OSTRACE(("FCNTL_LOCKSTATE %d lock=%d\n", ((pspFile*)id)->fd, ((pspFile*)id)->locktype));
++			return SQLITE_OK;
++		}
++	}
++	return SQLITE_ERROR;
++}
++
++/*
++** Return the sector size in bytes of the underlying block device for
++** the specified file. This is almost always 512 bytes, but may be
++** larger for some devices.
++**
++** SQLite code assumes this function cannot fail. It also assumes that
++** if two files are created in the same file-system directory (i.e.
++** a database and its journal file) that the sector size will be the
++** same for both.
++*/
++static int pspSectorSize(sqlite3_file *id){
++	return SQLITE_DEFAULT_SECTOR_SIZE;
++}
++
++/*
++** Return a vector of device characteristics.
++*/
++static int pspDeviceCharacteristics(sqlite3_file *id){
++	return 0;
++}
++
++/*
++** This vector defines all the methods that can operate on an
++** sqlite3_file for PSP.
++*/
++static const sqlite3_io_methods pspIoMethods = {
++	1,							/* iVersion */
++	pspClose,
++	pspRead,
++	pspWrite,
++	pspTruncate,
++	pspSync,
++	pspFileSize,
++	pspLock,
++	pspUnlock,
++	pspCheckReservedLock,
++	pspFileControl,
++	pspSectorSize,
++	pspDeviceCharacteristics
++};
++
++/***************************************************************************
++** Here ends the I/O methods that form the sqlite3_io_methods object.
++**
++** The next block of code implements the VFS methods.
++****************************************************************************/
++
++/*
++** Turn a relative pathname into a full pathname.  Write the full
++** pathname into zFull[].  zFull[] will be at least pVfs->mxPathname
++** bytes in size.
++*/
++static int pspFullPathname(
++	sqlite3_vfs *pVfs,          /* Pointer to vfs object */
++	const char *zRelative,      /* Possibly relative input path */
++	int nFull,                  /* Size of output buffer in bytes */
++	char *zFull                 /* Output buffer */
++) {
++	/*
++	** Don't need to convert cause the relative path is
++	** handle by the PSP's OS
++	*/
++	strncpy(zFull, zRelative, nFull);
++	return SQLITE_OK;
++}
++
++/*
++** Create a temporary file name in zBuf.  zBuf must be big enough to
++** hold at least SQLITE_TEMPNAME_SIZE characters.
++*/
++int getTempName( char *zBuf ){
++	static const char zDir[] = "ms0:/";
++	static const unsigned char zChars[] =
++		"abcdefghijklmnopqrstuvwxyz"
++		"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
++		"0123456789";
++	int i, j;
++	do {
++		sprintf(zBuf, "%s"SQLITE_TEMP_FILE_PREFIX, zDir);
++		j = strlen(zBuf);
++
++		for(i = 0; i < 15; i++, j++)
++		{
++			zBuf[j] = (char)zChars[ ((unsigned char)zBuf[j])%(sizeof(zChars) - 1) ];
++		}
++		zBuf[j] = 0;
++	} while( access(zBuf, F_OK) == 0 );
++
++	return SQLITE_OK;
++}
++
++/*
++** Open a file.
++*/
++static int pspOpen(
++	sqlite3_vfs *pVfs,	/* Not used on PSP */
++	const char *zName,	/* Name of the file */
++	sqlite3_file *id,	/* Write the SQLite file handle here */
++	int flags,			/* Open mode flags */
++	int *pOutFlags		/* Status return flags */
++) {
++	pspFile	*pFile = (pspFile*)id;
++	char	zTmpName[SQLITE_PSP_FULLPATH_SIZE];
++	int		openFlags = 0;
++	int		rc;
++
++	/* If the second argument to this function is NULL, generate a
++	** temporary file name to use
++	*/
++	if( !zName ){
++		rc = getTempName(zTmpName);
++		if( rc != SQLITE_OK ){
++			return rc;
++		}
++		zName = zTmpName;
++	}
++
++	memset( pFile, 0, sizeof(*pFile) );
++	OSTRACE(("OPEN want %d\n", flags));
++
++	if( flags & SQLITE_OPEN_READWRITE ) {
++		openFlags |= PSP_O_RDWR;
++		OSTRACE(("OPEN read/write\n"));
++	} else {
++		openFlags |= PSP_O_RDONLY;
++		OSTRACE(("OPEN read only\n"));
++	}
++
++	if( flags & SQLITE_OPEN_CREATE ) {
++		openFlags |= PSP_O_CREAT;
++		OSTRACE(("OPEN open new/create\n"));
++	} else {
++		openFlags |= PSP_O_WRONLY;
++		OSTRACE(("OPEN open existing\n"));
++	}
++
++	if( flags & SQLITE_OPEN_DELETEONCLOSE ) {
++		pFile->delFlags = 1;
++		OSTRACE(("OPEN delete on close\n"));
++	}
++	else {
++		pFile->delFlags = 0;
++		OSTRACE(("OPEN no delete keep\n"));
++	}
++
++	if( pOutFlags ) {
++		*pOutFlags = flags & SQLITE_OPEN_READWRITE ? SQLITE_OPEN_READWRITE : SQLITE_OPEN_READONLY;
++		OSTRACE(("OPEN pOutFlags=%d\n", *pOutFlags));
++	}
++
++	pFile->zFilename = (char *)sqlite3_malloc(SQLITE_PSP_FULLPATH_SIZE);
++	strncpy(pFile->zFilename, zName, SQLITE_PSP_FULLPATH_SIZE);
++
++	OSTRACE(("OPEN file=%s\n", pFile->zFilename));
++	pFile->fd = sceIoOpen(pFile->zFilename, openFlags, SQLITE_PSP_FILE_ATTR);
++	if( pFile->fd < 0 ) {
++		rc = SQLITE_CANTOPEN;
++		OSTRACE(("OPEN fail fd=%d\n", pFile->fd));
++	}
++	else {
++		rc = SQLITE_OK;
++		OSTRACE(("OPEN ok fd=%d\n", pFile->fd));
++	}
++
++	pFile->pMethods = &pspIoMethods;
++	return rc;
++}
++
++/*
++** Delete the named file.
++*/
++static int pspDelete(
++	sqlite3_vfs *pVfs,		/* Not used on PSP */
++	const char *zFilename,	/* Name of file to delete */
++	int syncDir				/* Not used on PSP */
++) {
++	int rc = ( (sceIoRemove(zFilename) >= 0) ? SQLITE_OK:SQLITE_IOERR_DELETE );
++	OSTRACE(("DELETE %s : %s\n", zFilename, getSqliteReturnCode(rc)));
++	return rc;
++}
++
++/*
++** Check the existance and status of a file.
++*/
++static int pspAccess(
++	sqlite3_vfs *pVfs,		/* Not used on PSP */
++	const char *zFilename,	/* Name of file to check */
++	int flags,				/* Type of test to make on this file */
++	int *pOut				/* Write results here */
++) {
++	int ex = ( access(zFilename, F_OK) == 0 );
++	int rd = ( access(zFilename, R_OK) == 0 );
++	int wr = ( access(zFilename, W_OK) == 0 );
++
++	int rc = 0;
++	switch( flags ) {
++		case SQLITE_ACCESS_EXISTS:
++			rc = ex;
++			OSTRACE(("ACCESS %s access of exists  rc=%d\n", zFilename, rc));
++			break;
++		case SQLITE_ACCESS_READ:
++			rc = ex && rd;
++			OSTRACE(("ACCESS %s access of read rc=%d\n", zFilename, rc));
++			break;
++		case SQLITE_ACCESS_READWRITE:
++			rc = ex && rd && wr;
++			OSTRACE(("ACCESS %s access of read/write  rc=%d\n", zFilename, rc));
++			break;
++		default:
++			assert( !"Invalid flags argument" );
++	}
++
++	*pOut = rc;
++	return SQLITE_OK;
++}
++
++#ifndef SQLITE_OMIT_LOAD_EXTENSION
++/*
++** Interfaces for opening a shared library, finding entry points
++** within the shared library, and closing the shared library.
++*/
++static void *pspDlOpen(sqlite3_vfs *pVfs, const char *zFilename) {
++	/* no-op */
++}
++static void pspDlError(sqlite3_vfs *pVfs, int nBuf, char *zBufOut){
++	/* no-op */
++}
++static void *pspDlSym(sqlite3_vfs *pVfs, void *pHandle, const char *zSymbol){
++	/* no-op */
++}
++static void pspDlClose(sqlite3_vfs *pVfs, void *pHandle){
++	/* no-op */
++}
++#else /* if SQLITE_OMIT_LOAD_EXTENSION is defined: */
++	#define pspDlOpen 0
++	#define pspDlError 0
++	#define pspDlSym 0
++	#define pspDlClose 0
++#endif
++
++/*
++** Write up to nBuf bytes of randomness into zBuf.
++*/
++static int pspRandomness(sqlite3_vfs *pVfs, int nBuf, char *zBuf ){
++	int n = 0, i;
++#if defined(SQLITE_TEST)
++	n = nBuf;
++	memset(zBuf, 0, nBuf);
++#else
++	SceKernelUtilsMt19937Context ctx;
++	sceKernelUtilsMt19937Init(&ctx, time(NULL));
++
++	for(;n < nBuf;) {
++		u32 rand_val = sceKernelUtilsMt19937UInt(&ctx);
++		for(i = 0; (n < nBuf) && (i < 4); n++, i++) {
++			zBuf[n] = (char)(rand_val >> i) & 0xFF;
++		}
++	}
++#endif
++
++  return n;
++}
++
++/*
++** Sleep for a little while.  Return the amount of time slept.
++** The argument is the number of microseconds we want to sleep.
++** The return value is the number of microseconds of sleep actually
++** requested from the underlying operating system, a number which
++** might be greater than or equal to the argument, but not less
++** than the argument.
++*/
++static int pspSleep( sqlite3_vfs *pVfs, int microsec ){
++	sceKernelDelayThread(microsec);
++	return microsec;
++}
++
++/*
++** The following variable, if set to a non-zero value, becomes the result
++** returned from sqlite3OsCurrentTime().  This is used for testing.
++*/
++#ifdef SQLITE_TEST
++int sqlite3_current_time = 0;
++#endif
++
++/*
++** Find the current time (in Universal Coordinated Time).  Write the
++** current time and date as a Julian Day number into *prNow and
++** return 0.  Return 1 if the time and date cannot be found.
++*/
++int pspCurrentTime( sqlite3_vfs *pVfs, double *prNow ) {
++	time_t time;
++	sceKernelLibcTime(&time);
++	*prNow = (time / 86400.0) + 2440587.5;
++
++#ifdef SQLITE_TEST
++	if( sqlite3_current_time ){
++		*prNow = sqlite3_current_time / 86400.0 + 2440587.5;
++	}
++#endif
++  return 0;
++}
++
++static int pspGetLastError(sqlite3_vfs *pVfs, int nBuf, char *zBuf){
++	return 0;
++}
++
++/*
++** Initialise and deinitialise the operating system interface.
++*/
++int sqlite3_os_init(void) {
++
++#ifdef SQLITE_DEBUG
++	pspDebugScreenInit();
++#endif
++
++	static sqlite3_vfs pspVfs = {
++		1,							/* iVersion */
++		sizeof(pspFile),			/* szOsFile */
++		SQLITE_PSP_FULLPATH_SIZE,	/* mxPathname */
++		0,							/* pNext */
++		"psp",						/* zName */
++		0,							/* pAppData */
++
++		pspOpen,					/* xOpen */
++		pspDelete,					/* xDelete */
++		pspAccess,					/* xAccess */
++		pspFullPathname,			/* xFullPathname */
++		pspDlOpen,					/* xDlOpen */
++		pspDlError,					/* xDlError */
++		pspDlSym,					/* xDlSym */
++		pspDlClose,					/* xDlClose */
++		pspRandomness,				/* xRandomness */
++		pspSleep,					/* xSleep */
++		pspCurrentTime,				/* xCurrentTime */
++		pspGetLastError,			/* xGetLastError */
++	};
++
++	sqlite3_vfs_register(&pspVfs, 1);
++	return SQLITE_OK;
++}
++
++int sqlite3_os_end(void) {
++	return SQLITE_OK;
++}
++
++#endif /* SQLITE_OS_PSP */
+diff -urN sqlite-3.7.3-orig/src/printf.c sqlite-3.7.3-psp/src/printf.c
+--- sqlite-3.7.3-orig/src/printf.c	2010-10-02 03:23:23.000000000 +0200
++++ sqlite-3.7.3-psp/src/printf.c	2010-12-28 13:23:18.000000000 +0100
+@@ -52,6 +52,10 @@
+ */
+ #include "sqliteInt.h"
+ 
++#ifdef SQLITE_OS_PSP
++#include <pspdebug.h>
++#endif
++
+ /*
+ ** Conversion types fall into various categories as defined by the
+ ** following enumeration.
+@@ -1000,8 +1004,13 @@
+   sqlite3VXPrintf(&acc, 0, zFormat, ap);
+   va_end(ap);
+   sqlite3StrAccumFinish(&acc);
++
++#ifdef SQLITE_OS_PSP
++  pspDebugScreenPrintf("%s", zBuf);
++#else
+   fprintf(stdout,"%s", zBuf);
+   fflush(stdout);
++#endif
+ }
+ #endif
+ 
+diff -urN sqlite-3.7.3-orig/src/sqliteInt.h sqlite-3.7.3-psp/src/sqliteInt.h
+--- sqlite-3.7.3-orig/src/sqliteInt.h	2010-10-07 16:48:42.000000000 +0200
++++ sqlite-3.7.3-psp/src/sqliteInt.h	2010-12-28 13:23:41.000000000 +0100
+@@ -429,12 +429,18 @@
+ #ifndef LONGDOUBLE_TYPE
+ # define LONGDOUBLE_TYPE long double
+ #endif
+-typedef sqlite_int64 i64;          /* 8-byte signed integer */
++
++#ifndef SQLITE_OS_PSP
+ typedef sqlite_uint64 u64;         /* 8-byte unsigned integer */
+ typedef UINT32_TYPE u32;           /* 4-byte unsigned integer */
+ typedef UINT16_TYPE u16;           /* 2-byte unsigned integer */
+-typedef INT16_TYPE i16;            /* 2-byte signed integer */
+ typedef UINT8_TYPE u8;             /* 1-byte unsigned integer */
++#else
++#include <psptypes.h>
++#endif
++
++typedef sqlite_int64 i64;          /* 8-byte signed integer */
++typedef INT16_TYPE i16;            /* 2-byte signed integer */
+ typedef INT8_TYPE i8;              /* 1-byte signed integer */
+ 
+ /*
