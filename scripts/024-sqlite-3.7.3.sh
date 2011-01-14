@@ -14,7 +14,9 @@ cat ../../patches/sqlite-3.7.3-PSP.patch | patch -p1 || { exit 1; }
 mkdir build-ppu && cd build-ppu || { exit 1; }
 
 ## Configure the build.
-LDFLAGS="-L$(psp-config --pspsdk-path)/lib -lc -lpspuser" ./configure --host=psp --prefix=$(psp-config --psp-prefix) || { exit 1; }
+LDFLAGS="-L$(psp-config --pspsdk-path)/lib -lc -lpspuser" \
+CFLAGS="-DSQLITE_OS_OTHER=1 -DSQLITE_OS_PSP=1 -I$(psp-config --pspsdk-path)/include" \
+../configure --host=psp --prefix=$(psp-config --psp-prefix) --disable-readline --disable-tcl --disable-threadsafe --disable-amalgamation || { exit 1; }
 
 ## Compile and install.
 make -j4 && make install || { exit 1; }
