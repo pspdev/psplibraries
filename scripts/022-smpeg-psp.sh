@@ -1,15 +1,15 @@
 #!/bin/sh
-# smpeg-psp.sh by Dan Peori (danpeori@oopo.net)
+# smpeg-psp.sh by Dan Peori (dan.peori@oopo.net)
 
- ## Download the latest source code.
- if test ! -d "smpeg-psp"; then
+## Download the latest source code.
+if test ! -d "smpeg-psp"; then
   svn checkout http://smpeg-psp.googlecode.com/svn/trunk smpeg-psp || { exit 1; }
- else
+else
   svn update smpeg-psp || { exit 1; }
- fi
+fi
 
- ## Enter the source directory.
- cd smpeg-psp || { exit 1; }
+## Enter the source directory.
+cd smpeg-psp || { exit 1; }
 
- ## Compile and install.
- make clean && make -j2 && make install && make clean || { exit 1; }
+## Compile and install.
+make -j 4 && make install || { exit 1; }

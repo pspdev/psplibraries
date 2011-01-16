@@ -1,5 +1,5 @@
 #!/bin/sh
-# sqlite-3.7.3.sh by Dan Peori (danpeori@oopo.net)
+# sqlite-3.7.3.sh by Dan Peori (dan.peori@oopo.net)
 
 ## Download the source code.
 wget --continue http://www.sqlite.org/sqlite-3.7.3.tar.gz || { exit 1; }

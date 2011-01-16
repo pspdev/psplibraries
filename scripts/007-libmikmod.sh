@@ -1,15 +1,16 @@
 #!/bin/sh
-# libmikmod.sh by Dan Peori (danpeori@oopo.net)
+# libmikmod.sh by Dan Peori (dan.peori@oopo.net)
 
- ## Download the latest source code.
- if test ! -d "libmikmod"; then
-  svn checkout svn://svn.ps2dev.org/psp/trunk/libmikmod || { exit 1; }
- else
-  svn update libmikmod || { exit 1; }
- fi
+exit;
 
- ## Enter the source directory.
- cd libmikmod || { exit 1; }
+## Download the source code.
+wget --continue --no-check-certificate https://github.com/pspdev/psp-ports/tarball/master -O psp-ports.tar.gz || { exit 1; }
 
- ## Compile and install.
- make -f Makefile.psp clean && make -f Makefile.psp -j2 && make -f Makefile.psp install && make -f Makefile.psp clean || { exit 1; }
+## Unpack the source code.
+rm -Rf psp-ports && mkdir psp-ports && tar --strip-components=1 --directory=psp-ports -xvzf psp-ports.tar.gz || { exit 1; }
+
+## Enter the source directory.
+cd psp-ports/libmikmod || { exit 1; }
+
+## Compile and install.
+make -f Makefile.psp -j 4 && make -f Makefile.psp install || { exit 1; }
