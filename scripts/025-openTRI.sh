@@ -11,4 +11,4 @@ rm -Rf openTRI && mkdir openTRI && tar --strip-components=1 --directory=openTRI 
 cd openTRI || { exit 1; }
 
 ## Compile and install.
-make -j 4 && make install CP=cp MKDIR=mkdir PNG=1 FT=1 || { exit 1; }
+make -j 4 && make install CP=cp MKDIR=mkdir DOXYGEN=doxygen PNG=1 FT=1 || { exit 1; }
