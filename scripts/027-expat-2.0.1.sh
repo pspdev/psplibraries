@@ -1,5 +1,5 @@
 #!/bin/sh
-# pixman-0.20.2.sh by take_cheeze (takechi101010@gmail.com)
+# expat-2.0.1.sh by take_cheeze (takechi101010@gmail.com)
 
 ## Download
 wget --continue "http://jaist.dl.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz"
