@@ -2,8 +2,7 @@
 # pthreads-emb-1.0.sh by take_cheeze (takechi101010@gmail.com)
 
 ## Download
-wget --continue http://jaist.dl.sourceforge.net/project/pthreads-emb/pthreads-emb/1.0/pthreads-emb-1.0.tar.gz
-
+wget --continue --no-check-certificate https://github.com/take-cheeze/pthreads-emb/tarball/master -O pthreads-emb-1.0.tar.gz
 
 ## Unpack
 rm -Rf pthreads-emb-1.0 && mkdir pthreads-emb-1.0 && tar --strip-components=1 --directory=pthreads-emb-1.0 -xvzf pthreads-emb-1.0.tar.gz || { exit 1; }
