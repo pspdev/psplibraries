@@ -2,7 +2,7 @@
 # squirrel-3.0.sh by take_cheeze (takechi101010@gmail.com)
 
 ## Download
-wget --continue http://squirrel.googlecode.com/files/squirrel_3_0_stable.tar.gz
+wget --continue http://squirrel.googlecode.com/files/squirrel_3_0_stable.tar.gz || { exit 1; }
 
 ## Unpack
 rm -Rf squirrel-3.0 && mkdir squirrel-3.0 && tar --strip-components=1 --directory=squirrel-3.0 -xvzf squirrel_3_0_stable.tar.gz || { exit 1; }
@@ -14,6 +14,6 @@ cd squirrel-3.0 || { exit 1; }
 cat ../../patches/squirrel-3.0.patch | patch -p1 || { exit 1; }
 
 ## Compile and Install
-AR="psp-ar" CC="psp-gcc" CXX="psp-g++" LIBS="-lc -lpspuser" make -j 4 sq32
-cp -v lib/*.a $(psp-config --psp-prefix)/lib
-cp -v include/*.h $(psp-config --psp-prefix)/include
+AR="psp-ar" CC="psp-gcc" CXX="psp-g++" LIBS="-lc -lpspuser" make -j 4 sq32 || { exit 1; }
+cp -v lib/*.a $(psp-config --psp-prefix)/lib || { exit 1; }
+cp -v include/*.h $(psp-config --psp-prefix)/include || { exit 1; }

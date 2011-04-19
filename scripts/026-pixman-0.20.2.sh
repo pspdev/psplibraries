@@ -14,7 +14,7 @@ cd pixman-0.20.2 || { exit 1; }
 cat ../../patches/pixman-0.20.2.patch | patch -p1 || { exit 1; }
 
 ## Configure
-LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" ./configure --host psp --prefix=$(psp-config --psp-prefix)
+LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" ./configure --host psp --prefix=$(psp-config --psp-prefix) || { exit 1; }
 
 ## Compile and Install
 make -j 4 && make install || { exit 1; }
