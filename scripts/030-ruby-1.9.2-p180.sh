@@ -11,7 +11,7 @@ rm -Rf ruby-1.9.2-p180 && mkdir ruby-1.9.2-p180 && tar --strip-components=1 --di
 cd ruby-1.9.2-p180 || { exit 1; }
 
 ## Patch
-cp ../../scripts/config.sub tool/config.sub
+cp ../../patches/config.sub tool/config.sub || { exit 1; }
 cat ../../patches/ruby-1.9.2-p180.patch | patch -p1 || { exit 1; }
 
 ## Configure

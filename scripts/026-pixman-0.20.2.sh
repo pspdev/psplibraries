@@ -11,7 +11,7 @@ rm -Rf pixman-0.20.2 && mkdir pixman-0.20.2 && tar --strip-components=1 --direct
 cd pixman-0.20.2 || { exit 1; }
 
 ## Patch
-cat ../../patches/pixman-0.20.2.patch | patch -p1 || { exit 1; }
+cp ../../patches/config.sub ./config.sub || { exit 1; }
 
 ## Configure
 LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" ./configure --host psp --prefix=$(psp-config --psp-prefix) || { exit 1; }
