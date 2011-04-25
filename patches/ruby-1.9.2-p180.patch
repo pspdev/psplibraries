@@ -1,7 +1,19 @@
+Index: ruby-1.9.2-p180/common.mk
+===================================================================
+--- ruby-1.9.2-p180/common.mk	2011-04-25 21:18:21.736750510 +0900
++++ ruby-1.9.2-p180/common.mk	2011-04-25 21:18:46.974125606 +0900
+@@ -83,6 +83,7 @@
+ 		vm_dump.$(OBJEXT) \
+ 		thread.$(OBJEXT) \
+ 		cont.$(OBJEXT) \
++                psp.$(OBJEXT) \
+ 		$(BUILTIN_ENCOBJS) \
+ 		$(BUILTIN_TRANSOBJS) \
+ 		$(MISSING)
 Index: ruby-1.9.2-p180/dir.c
 ===================================================================
---- ruby-1.9.2-p180/dir.c	2011-04-19 04:44:14.756461239 +0900
-+++ ruby-1.9.2-p180/dir.c	2011-04-19 04:44:22.166461240 +0900
+--- ruby-1.9.2-p180/dir.c	2011-04-25 20:53:23.578288517 +0900
++++ ruby-1.9.2-p180/dir.c	2011-04-25 20:58:36.698288605 +0900
 @@ -702,7 +702,9 @@
  static VALUE
  dir_set_pos(VALUE dir, VALUE pos)
@@ -12,10 +24,140 @@ Index: ruby-1.9.2-p180/dir.c
      return pos;
  }
  
+Index: ruby-1.9.2-p180/psp.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ ruby-1.9.2-p180/psp.c	2011-04-26 03:13:59.261543252 +0900
+@@ -0,0 +1,125 @@
++#ifdef PSP
++
++#include <dirent.h>
++#include <errno.h>
++#include <pwd.h>
++#include <signal.h>
++#include <stdarg.h>
++#include <sys/resource.h>
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <time.h>
++#include <unistd.h>
++#include <utime.h>
++
++#include <psptypes.h>
++
++
++/* sceIoChstat bitmasks */
++enum IOFileStatBitmask {
++  FIO_CST_MODE = 0x0001,
++  FIO_CST_ATTR = 0x0002,
++  FIO_CST_SIZE = 0x0004,
++  FIO_CST_CT   = 0x0008,
++  FIO_CST_AT   = 0x0010,
++  FIO_CST_MT   = 0x0020,
++  FIO_CST_PRVT = 0x0040,
++};
++
++int getrusage(int who, struct rusage *r_usage)
++{
++  return 0;
++}
++int dup(int flides)
++{
++  return 0;
++}
++int chmod(const char *path, mode_t mode)
++{
++  SceIoStat st;
++  st.st_mode = mode;
++  return sceIoChstat(path, &st, FIO_CST_MODE);
++}
++int ioctl(int fildes, unsigned long request, ...)
++{
++  return EBADF;
++  // return sceIoIoctl(flides, request, );
++}
++pid_t getppid(void)
++{
++  return getpid();
++}
++uid_t getuid(void)
++{
++  return getpid();
++}
++uid_t geteuid(void)
++{
++  return getpid();
++}
++gid_t getgid()
++{
++  return getpid();
++}
++gid_t getegid()
++{
++  return getpid();
++}
++int execv(const char *path, char *const argv[])
++{
++  return -1;
++}
++int execl(const char *path, const char *arg0, ... /*, (char *)0 */)
++{
++  return -1;
++}
++mode_t umask(mode_t cmask)
++{
++  return S_IWGRP | S_IWOTH;
++}
++void rewinddir(DIR *dirp)
++{
++}
++
++int chown(const char *path, uid_t owner, gid_t group)
++{
++  return -1;
++}
++// posix_signal()
++static ScePspDateTime toPspDateTime(time_t const t)
++{
++  ScePspDateTime psptime;
++  struct tm* systime = gmtime(&t);
++
++  psptime.year = systime->tm_year;
++  psptime.month = systime->tm_mon;
++  psptime.day = systime->tm_mday;
++  psptime.hour = systime->tm_hour;
++  psptime.minute = systime->tm_min;
++  psptime.second = systime->tm_sec;
++  psptime.microsecond = 0;
++
++  return psptime;
++}
++int utime(const char *path, const struct utimbuf *times)
++{
++  SceIoStat st;
++  st.st_atime = toPspDateTime(times->actime);
++  st.st_mtime = toPspDateTime(times->modtime);
++
++  return sceIoChstat(path, &st, FIO_CST_AT | FIO_CST_MT);
++}
++struct passwd *getpwnam(const char *login)
++{
++  return NULL;
++}
++void endpwent(void)
++{
++}
++typedef void (*sighandler_t)(int signum);
++sighandler_t posix_signal(int const signum, sighandler_t const handler)
++{
++  return NULL;
++}
++
++#endif
 Index: ruby-1.9.2-p180/template/Doxyfile.tmpl
 ===================================================================
---- ruby-1.9.2-p180/template/Doxyfile.tmpl	2011-04-19 20:16:18.163327998 +0900
-+++ ruby-1.9.2-p180/template/Doxyfile.tmpl	2011-04-19 20:19:12.829908021 +0900
+--- ruby-1.9.2-p180/template/Doxyfile.tmpl	2011-04-25 20:53:23.678288493 +0900
++++ ruby-1.9.2-p180/template/Doxyfile.tmpl	2011-04-25 20:59:02.138288490 +0900
 @@ -19,7 +19,7 @@
  # Project related configuration options
  #---------------------------------------------------------------------------
@@ -25,343 +167,3 @@ Index: ruby-1.9.2-p180/template/Doxyfile.tmpl
  STRIP_FROM_PATH        = <%=srcdir%>
  FILE_VERSION_FILTER    = "<%=miniruby%> <%=srcdir%>/tool/file2lastrev.rb -q"
  INPUT                  = <%=srcdir%> .
-Index: ruby-1.9.2-p180/tool/config.sub
-===================================================================
---- ruby-1.9.2-p180/tool/config.sub	2011-04-19 02:56:08.850336977 +0900
-+++ ruby-1.9.2-p180/tool/config.sub	2011-04-19 03:22:49.320336967 +0900
-@@ -1,10 +1,10 @@
- #! /bin/sh
- # Configuration validation subroutine script.
- #   Copyright (C) 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999,
--#   2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
--#   Free Software Foundation, Inc.
-+#   2000, 2001, 2002, 2003, 2004, 2005, 2006 Free Software Foundation,
-+#   Inc.
- 
--timestamp='2009-04-17'
-+timestamp='2007-01-18'
- 
- # This file is (in principle) common to ALL GNU software.
- # The presence of a machine in this file suggests that SOME GNU software
-@@ -72,8 +72,8 @@
- version="\
- GNU config.sub ($timestamp)
- 
--Copyright (C) 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001,
--2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software Foundation, Inc.
-+Copyright (C) 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005
-+Free Software Foundation, Inc.
- 
- This is free software; see the source for copying conditions.  There is NO
- warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
-@@ -122,7 +122,6 @@
- case $maybe_os in
-   nto-qnx* | linux-gnu* | linux-dietlibc | linux-newlib* | linux-uclibc* | \
-   uclinux-uclibc* | uclinux-gnu* | kfreebsd*-gnu* | knetbsd*-gnu* | netbsd*-gnu* | \
--  kopensolaris*-gnu* | \
-   storm-chaos* | os2-emx* | rtmk-nova*)
-     os=-$maybe_os
-     basic_machine=`echo $1 | sed 's/^\(.*\)-\([^-]*-[^-]*\)$/\1/'`
-@@ -245,21 +244,18 @@
- 	| arc | arm | arm[bl]e | arme[lb] | armv[2345] | armv[345][lb] | avr | avr32 \
- 	| bfin \
- 	| c4x | clipper \
--	| d10v | d30v | dlx | dsp16xx \
-+	| d10v | d30v | dlx | dsp16xx | dvp \
- 	| fido | fr30 | frv \
- 	| h8300 | h8500 | hppa | hppa1.[01] | hppa2.0 | hppa2.0[nw] | hppa64 \
- 	| i370 | i860 | i960 | ia64 \
- 	| ip2k | iq2000 \
--	| lm32 \
- 	| m32c | m32r | m32rle | m68000 | m68k | m88k \
--	| maxq | mb | microblaze | mcore | mep | metag \
-+	| maxq | mb | microblaze | mcore | mep \
- 	| mips | mipsbe | mipseb | mipsel | mipsle \
- 	| mips16 \
- 	| mips64 | mips64el \
--	| mips64octeon | mips64octeonel \
--	| mips64orion | mips64orionel \
--	| mips64r5900 | mips64r5900el \
- 	| mips64vr | mips64vrel \
-+	| mips64orion | mips64orionel \
- 	| mips64vr4100 | mips64vr4100el \
- 	| mips64vr4300 | mips64vr4300el \
- 	| mips64vr5000 | mips64vr5000el \
-@@ -272,7 +268,6 @@
- 	| mipsisa64sr71k | mipsisa64sr71kel \
- 	| mipstx39 | mipstx39el \
- 	| mn10200 | mn10300 \
--	| moxie \
- 	| mt \
- 	| msp430 \
- 	| nios | nios2 \
-@@ -282,7 +277,7 @@
- 	| powerpc | powerpc64 | powerpc64le | powerpcle | ppcbe \
- 	| pyramid \
- 	| score \
--	| sh | sh[1234] | sh[24]a | sh[24]aeb | sh[23]e | sh[34]eb | sheb | shbe | shle | sh[1234]le | sh3ele \
-+	| sh | sh[1234] | sh[24]a | sh[24]a*eb | sh[23]e | sh[34]eb | sheb | shbe | shle | sh[1234]le | sh3ele \
- 	| sh64 | sh64le \
- 	| sparc | sparc64 | sparc64b | sparc64v | sparc86x | sparclet | sparclite \
- 	| sparcv8 | sparcv9 | sparcv9b | sparcv9v \
-@@ -291,7 +286,7 @@
- 	| v850 | v850e \
- 	| we32k \
- 	| x86 | xc16x | xscale | xscalee[bl] | xstormy16 | xtensa \
--	| z8k | z80)
-+	| z8k)
- 		basic_machine=$basic_machine-unknown
- 		;;
- 	m6811 | m68hc11 | m6812 | m68hc12)
-@@ -334,17 +329,14 @@
- 	| hppa-* | hppa1.[01]-* | hppa2.0-* | hppa2.0[nw]-* | hppa64-* \
- 	| i*86-* | i860-* | i960-* | ia64-* \
- 	| ip2k-* | iq2000-* \
--	| lm32-* \
- 	| m32c-* | m32r-* | m32rle-* \
- 	| m68000-* | m680[012346]0-* | m68360-* | m683?2-* | m68k-* \
--	| m88110-* | m88k-* | maxq-* | mcore-* | metag-* \
-+	| m88110-* | m88k-* | maxq-* | mcore-* \
- 	| mips-* | mipsbe-* | mipseb-* | mipsel-* | mipsle-* \
- 	| mips16-* \
- 	| mips64-* | mips64el-* \
--	| mips64octeon-* | mips64octeonel-* \
--	| mips64orion-* | mips64orionel-* \
--	| mips64r5900-* | mips64r5900el-* \
- 	| mips64vr-* | mips64vrel-* \
-+	| mips64orion-* | mips64orionel-* \
- 	| mips64vr4100-* | mips64vr4100el-* \
- 	| mips64vr4300-* | mips64vr4300el-* \
- 	| mips64vr5000-* | mips64vr5000el-* \
-@@ -366,24 +358,20 @@
- 	| powerpc-* | powerpc64-* | powerpc64le-* | powerpcle-* | ppcbe-* \
- 	| pyramid-* \
- 	| romp-* | rs6000-* \
--	| sh-* | sh[1234]-* | sh[24]a-* | sh[24]aeb-* | sh[23]e-* | sh[34]eb-* | sheb-* | shbe-* \
-+	| sh-* | sh[1234]-* | sh[24]a-* | sh[24]a*eb-* | sh[23]e-* | sh[34]eb-* | sheb-* | shbe-* \
- 	| shle-* | sh[1234]le-* | sh3ele-* | sh64-* | sh64le-* \
- 	| sparc-* | sparc64-* | sparc64b-* | sparc64v-* | sparc86x-* | sparclet-* \
- 	| sparclite-* \
- 	| sparcv8-* | sparcv9-* | sparcv9b-* | sparcv9v-* | strongarm-* | sv1-* | sx?-* \
- 	| tahoe-* | thumb-* \
--	| tic30-* | tic4x-* | tic54x-* | tic55x-* | tic6x-* | tic80-* | tile-* \
-+	| tic30-* | tic4x-* | tic54x-* | tic55x-* | tic6x-* | tic80-* \
- 	| tron-* \
- 	| v850-* | v850e-* | vax-* \
- 	| we32k-* \
- 	| x86-* | x86_64-* | xc16x-* | xps100-* | xscale-* | xscalee[bl]-* \
--	| xstormy16-* | xtensa*-* \
-+	| xstormy16-* | xtensa-* \
- 	| ymp-* \
--	| z8k-* | z80-*)
--		;;
--	# Recognize the basic CPU types without company name, with glob match.
--	xtensa*)
--		basic_machine=$basic_machine-unknown
-+	| z8k-*)
- 		;;
- 	# Recognize the various machine names and aliases which stand
- 	# for a CPU type and a company and sometimes even an OS.
-@@ -447,10 +435,6 @@
- 		basic_machine=m68k-apollo
- 		os=-bsd
- 		;;
--	aros)
--		basic_machine=i386-pc
--		os=-aros
--		;;
- 	aux)
- 		basic_machine=m68k-apple
- 		os=-aux
-@@ -459,22 +443,10 @@
- 		basic_machine=ns32k-sequent
- 		os=-dynix
- 		;;
--	blackfin)
--		basic_machine=bfin-unknown
--		os=-linux
--		;;
--	blackfin-*)
--		basic_machine=bfin-`echo $basic_machine | sed 's/^[^-]*-//'`
--		os=-linux
--		;;
- 	c90)
- 		basic_machine=c90-cray
- 		os=-unicos
- 		;;
--        cegcc)
--		basic_machine=arm-unknown
--		os=-cegcc
--		;;
- 	convex-c1)
- 		basic_machine=c1-convex
- 		os=-bsd
-@@ -503,8 +475,8 @@
- 		basic_machine=craynv-cray
- 		os=-unicosmp
- 		;;
--	cr16)
--		basic_machine=cr16-unknown
-+	cr16c)
-+		basic_machine=cr16c-unknown
- 		os=-elf
- 		;;
- 	crds | unos)
-@@ -542,10 +514,6 @@
- 		basic_machine=m88k-motorola
- 		os=-sysv3
- 		;;
--	dicos)
--		basic_machine=i686-pc
--		os=-dicos
--		;;
- 	djgpp)
- 		basic_machine=i586-pc
- 		os=-msdosdjgpp
-@@ -700,14 +668,6 @@
- 		basic_machine=m68k-isi
- 		os=-sysv
- 		;;
--	m68knommu)
--		basic_machine=m68k-unknown
--		os=-linux
--		;;
--	m68knommu-*)
--		basic_machine=m68k-`echo $basic_machine | sed 's/^[^-]*-//'`
--		os=-linux
--		;;
- 	m88k-omron*)
- 		basic_machine=m88k-omron
- 		;;
-@@ -723,10 +683,6 @@
- 		basic_machine=i386-pc
- 		os=-mingw32
- 		;;
--	mingw32ce)
--		basic_machine=arm-unknown
--		os=-mingw32ce
--		;;
- 	miniframe)
- 		basic_machine=m68000-convergent
- 		;;
-@@ -734,6 +690,24 @@
- 		basic_machine=m68k-atari
- 		os=-mint
- 		;;
-+	mipsEE* | ee | ps2)
-+		basic_machine=mips64r5900el-scei
-+		case $os in
-+		    -linux*)
-+			;;
-+		    *)
-+			os=-elf
-+			;;
-+		esac
-+		;;
-+	iop)
-+		basic_machine=mipsel-scei
-+		os=-irx
-+		;;
-+	dvp)
-+		basic_machine=dvp-scei
-+		os=-elf
-+		;;
- 	mips3*-*)
- 		basic_machine=`echo $basic_machine | sed -e 's/mips3/mips64/'`
- 		;;
-@@ -853,14 +827,6 @@
- 		basic_machine=i860-intel
- 		os=-osf
- 		;;
--	parisc)
--		basic_machine=hppa-unknown
--		os=-linux
--		;;
--	parisc-*)
--		basic_machine=hppa-`echo $basic_machine | sed 's/^[^-]*-//'`
--		os=-linux
--		;;
- 	pbd)
- 		basic_machine=sparc-tti
- 		;;
-@@ -928,6 +894,10 @@
- 	ps2)
- 		basic_machine=i386-ibm
- 		;;
-+	psp)
-+		basic_machine=mipsallegrexel-psp
-+		os=-elf
-+		;;
- 	pw32)
- 		basic_machine=i586-unknown
- 		os=-pw32
-@@ -1069,10 +1039,6 @@
- 		basic_machine=tic6x-unknown
- 		os=-coff
- 		;;
--	tile*)
--		basic_machine=tile-unknown
--		os=-linux-gnu
--		;;
- 	tx39)
- 		basic_machine=mipstx39-unknown
- 		;;
-@@ -1148,10 +1114,6 @@
- 		basic_machine=z8k-unknown
- 		os=-sim
- 		;;
--	z80-*-coff)
--		basic_machine=z80-unknown
--		os=-sim
--		;;
- 	none)
- 		basic_machine=none-none
- 		os=-none
-@@ -1190,7 +1152,7 @@
- 	we32k)
- 		basic_machine=we32k-att
- 		;;
--	sh[1234] | sh[24]a | sh[24]aeb | sh[34]eb | sh[1234]le | sh[23]ele)
-+	sh[1234] | sh[24]a | sh[34]eb | sh[1234]le | sh[23]ele)
- 		basic_machine=sh-unknown
- 		;;
- 	sparc | sparcv8 | sparcv9 | sparcv9b | sparcv9v)
-@@ -1262,9 +1224,8 @@
- 	-gnu* | -bsd* | -mach* | -minix* | -genix* | -ultrix* | -irix* \
- 	      | -*vms* | -sco* | -esix* | -isc* | -aix* | -sunos | -sunos[34]*\
- 	      | -hpux* | -unos* | -osf* | -luna* | -dgux* | -solaris* | -sym* \
--	      | -kopensolaris* \
- 	      | -amigaos* | -amigados* | -msdos* | -newsos* | -unicos* | -aof* \
--	      | -aos* | -aros* \
-+	      | -aos* \
- 	      | -nindy* | -vxsim* | -vxworks* | -ebmon* | -hms* | -mvs* \
- 	      | -clix* | -riscos* | -uniplus* | -iris* | -rtu* | -xenix* \
- 	      | -hiux* | -386bsd* | -knetbsd* | -mirbsd* | -netbsd* \
-@@ -1273,7 +1234,7 @@
- 	      | -bosx* | -nextstep* | -cxux* | -aout* | -elf* | -oabi* \
- 	      | -ptx* | -coff* | -ecoff* | -winnt* | -domain* | -vsta* \
- 	      | -udi* | -eabi* | -lites* | -ieee* | -go32* | -aux* \
--	      | -chorusos* | -chorusrdb* | -cegcc* \
-+	      | -chorusos* | -chorusrdb* \
- 	      | -cygwin* | -pe* | -psos* | -moss* | -proelf* | -rtems* \
- 	      | -mingw32* | -linux-gnu* | -linux-newlib* | -linux-uclibc* \
- 	      | -uxpv* | -beos* | -mpeix* | -udk* \
-@@ -1283,7 +1244,7 @@
- 	      | -os2* | -vos* | -palmos* | -uclinux* | -nucleus* \
- 	      | -morphos* | -superux* | -rtmk* | -rtmk-nova* | -windiss* \
- 	      | -powermax* | -dnix* | -nx6 | -nx7 | -sei* | -dragonfly* \
--	      | -skyos* | -haiku* | -rdos* | -toppers* | -drops*)
-+	      | -skyos* | -haiku* | -rdos* | -toppers* | -drops* | -irx*)
- 	# Remember, each alternative MUST END IN *, to match a version number.
- 		;;
- 	-qnx*)
-@@ -1413,9 +1374,6 @@
- 	-zvmoe)
- 		os=-zvmoe
- 		;;
--	-dicos*)
--		os=-dicos
--		;;
- 	-none)
- 		;;
- 	*)
