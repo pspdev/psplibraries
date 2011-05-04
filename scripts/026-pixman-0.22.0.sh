@@ -1,14 +1,14 @@
 #!/bin/sh
-# pixman-0.20.2.sh by take_cheeze (takechi101010@gmail.com)
+# pixman-0.22.0.sh by take_cheeze (takechi101010@gmail.com)
 
 ## Download
-wget --continue http://cairographics.org/releases/pixman-0.20.2.tar.gz
+wget --continue http://cairographics.org/releases/pixman-0.22.0.tar.gz
 
 ## Unpack
-rm -Rf pixman-0.20.2 && mkdir pixman-0.20.2 && tar --strip-components=1 --directory=pixman-0.20.2 -xvzf pixman-0.20.2.tar.gz || { exit 1; }
+rm -Rf pixman-0.22.0 && mkdir pixman-0.22.0 && tar --strip-components=1 --directory=pixman-0.22.0 -xvzf pixman-0.22.0.tar.gz || { exit 1; }
 
 ## Enter
-cd pixman-0.20.2 || { exit 1; }
+cd pixman-0.22.0 || { exit 1; }
 
 ## Patch
 cp ../../patches/config.sub ./config.sub || { exit 1; }
