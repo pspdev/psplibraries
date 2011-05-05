@@ -1,0 +1,169 @@
+Index: ruby-1.9.2-p180/common.mk
+===================================================================
+--- ruby-1.9.2-p180/common.mk	2011-04-25 21:18:21.736750510 +0900
++++ ruby-1.9.2-p180/common.mk	2011-04-25 21:18:46.974125606 +0900
+@@ -83,6 +83,7 @@
+ 		vm_dump.$(OBJEXT) \
+ 		thread.$(OBJEXT) \
+ 		cont.$(OBJEXT) \
++                psp.$(OBJEXT) \
+ 		$(BUILTIN_ENCOBJS) \
+ 		$(BUILTIN_TRANSOBJS) \
+ 		$(MISSING)
+Index: ruby-1.9.2-p180/dir.c
+===================================================================
+--- ruby-1.9.2-p180/dir.c	2011-04-25 20:53:23.578288517 +0900
++++ ruby-1.9.2-p180/dir.c	2011-04-25 20:58:36.698288605 +0900
+@@ -702,7 +702,9 @@
+ static VALUE
+ dir_set_pos(VALUE dir, VALUE pos)
+ {
++#ifdef HAVE_SEEKDIR
+     dir_seek(dir, pos);
++#endif
+     return pos;
+ }
+ 
+Index: ruby-1.9.2-p180/psp.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ ruby-1.9.2-p180/psp.c	2011-04-26 03:13:59.261543252 +0900
+@@ -0,0 +1,125 @@
++#ifdef PSP
++
++#include <dirent.h>
++#include <errno.h>
++#include <pwd.h>
++#include <signal.h>
++#include <stdarg.h>
++#include <sys/resource.h>
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <time.h>
++#include <unistd.h>
++#include <utime.h>
++
++#include <psptypes.h>
++
++
++/* sceIoChstat bitmasks */
++enum IOFileStatBitmask {
++  FIO_CST_MODE = 0x0001,
++  FIO_CST_ATTR = 0x0002,
++  FIO_CST_SIZE = 0x0004,
++  FIO_CST_CT   = 0x0008,
++  FIO_CST_AT   = 0x0010,
++  FIO_CST_MT   = 0x0020,
++  FIO_CST_PRVT = 0x0040,
++};
++
++int getrusage(int who, struct rusage *r_usage)
++{
++  return 0;
++}
++int dup(int flides)
++{
++  return 0;
++}
++int chmod(const char *path, mode_t mode)
++{
++  SceIoStat st;
++  st.st_mode = mode;
++  return sceIoChstat(path, &st, FIO_CST_MODE);
++}
++int ioctl(int fildes, unsigned long request, ...)
++{
++  return EBADF;
++  // return sceIoIoctl(flides, request, );
++}
++pid_t getppid(void)
++{
++  return getpid();
++}
++uid_t getuid(void)
++{
++  return getpid();
++}
++uid_t geteuid(void)
++{
++  return getpid();
++}
++gid_t getgid()
++{
++  return getpid();
++}
++gid_t getegid()
++{
++  return getpid();
++}
++int execv(const char *path, char *const argv[])
++{
++  return -1;
++}
++int execl(const char *path, const char *arg0, ... /*, (char *)0 */)
++{
++  return -1;
++}
++mode_t umask(mode_t cmask)
++{
++  return S_IWGRP | S_IWOTH;
++}
++void rewinddir(DIR *dirp)
++{
++}
++
++int chown(const char *path, uid_t owner, gid_t group)
++{
++  return -1;
++}
++// posix_signal()
++static ScePspDateTime toPspDateTime(time_t const t)
++{
++  ScePspDateTime psptime;
++  struct tm* systime = gmtime(&t);
++
++  psptime.year = systime->tm_year;
++  psptime.month = systime->tm_mon;
++  psptime.day = systime->tm_mday;
++  psptime.hour = systime->tm_hour;
++  psptime.minute = systime->tm_min;
++  psptime.second = systime->tm_sec;
++  psptime.microsecond = 0;
++
++  return psptime;
++}
++int utime(const char *path, const struct utimbuf *times)
++{
++  SceIoStat st;
++  st.st_atime = toPspDateTime(times->actime);
++  st.st_mtime = toPspDateTime(times->modtime);
++
++  return sceIoChstat(path, &st, FIO_CST_AT | FIO_CST_MT);
++}
++struct passwd *getpwnam(const char *login)
++{
++  return NULL;
++}
++void endpwent(void)
++{
++}
++typedef void (*sighandler_t)(int signum);
++sighandler_t posix_signal(int const signum, sighandler_t const handler)
++{
++  return NULL;
++}
++
++#endif
+Index: ruby-1.9.2-p180/template/Doxyfile.tmpl
+===================================================================
+--- ruby-1.9.2-p180/template/Doxyfile.tmpl	2011-04-25 20:53:23.678288493 +0900
++++ ruby-1.9.2-p180/template/Doxyfile.tmpl	2011-04-25 20:59:02.138288490 +0900
+@@ -19,7 +19,7 @@
+ # Project related configuration options
+ #---------------------------------------------------------------------------
+ PROJECT_NAME           = Ruby
+-PROJECT_NUMBER         = <%=RUBY_VERSION%><%= RUBY_PATCHLEVEL < 0 ? 'dev' : "p#{RUBY_PATCHLEVEL}" %> (<%=RUBY_RELEASE_DATE%> revision <%=RUBY_REVISION%>)
++PROJECT_NUMBER         = <%=RUBY_VERSION%><%= RUBY_PATCHLEVEL < 0 ? 'dev' : "p#{RUBY_PATCHLEVEL}" %> (<%=RUBY_RELEASE_DATE%> revision 0)
+ STRIP_FROM_PATH        = <%=srcdir%>
+ FILE_VERSION_FILTER    = "<%=miniruby%> <%=srcdir%>/tool/file2lastrev.rb -q"
+ INPUT                  = <%=srcdir%> .
