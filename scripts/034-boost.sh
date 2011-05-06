@@ -8,7 +8,7 @@ DIRECTORY=boost-$VERSION
 wget --continue http://jaist.dl.sourceforge.net/project/boost/boost/$VERSION/boost_$(echo $VERSION | sed -e "s/\./_/g").tar.bz2 -O $DIRECTORY.tar.bz2
 
 ## Unpack
-# rm -Rf $DIRECTORY && mkdir $DIRECTORY && tar --strip-components=1 --directory=$DIRECTORY -xjf $DIRECTORY.tar.bz2 || { exit 1; }
+rm -Rf $DIRECTORY && mkdir $DIRECTORY && tar --strip-components=1 --directory=$DIRECTORY -xjf $DIRECTORY.tar.bz2 || { exit 1; }
 
 ## Enter
 cd $DIRECTORY || { exit 1; }
