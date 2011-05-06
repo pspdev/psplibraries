@@ -1,0 +1,36 @@
+SET(CMAKE_SYSTEM_NAME Generic)
+SET(CMAKE_SYSTEM_VERSION 1)
+SET(CMAKE_CROSSCOMPILING TRUE)
+
+# set compiler
+INCLUDE(CMakeForceCompiler)
+CMAKE_FORCE_C_COMPILER(psp-gcc GNU)
+CMAKE_FORCE_CXX_COMPILER(psp-g++ GNU)
+
+SET(BUILD_SHARED_LIBS FALSE)
+SET(CMAKE_EXECUTABLE_SUFFIX ".elf")
+
+# set find root path
+SET(CMAKE_FIND_ROOT_PATH "")
+FOREACH(i "--pspsdk-path" "--psp-prefix" "--pspdev-path")
+  EXECUTE_PROCESS(COMMAND "psp-config" ${i} OUTPUT_VARIABLE output)
+  STRING(REPLACE "\n" "" output ${output})
+
+  LIST(APPEND CMAKE_FIND_ROOT_PATH "${output}")
+  INCLUDE_DIRECTORIES(SYSTEM "${output}/include")
+  LINK_DIRECTORIES("${output}/lib")
+ENDFOREACH()
+
+SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+
+# set install path
+EXECUTE_PROCESS(COMMAND "psp-config" "--psp-prefix" OUTPUT_VARIABLE CMAKE_INSTALL_PREFIX)
+STRING(REPLACE "\n" "" CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+
+# reduce link error
+ADD_DEFINITIONS("-G0")
+
+# linker flags
+LINK_LIBRARIES("-lpthread-psp -lc -lpspuser -lpspsdk -flto")

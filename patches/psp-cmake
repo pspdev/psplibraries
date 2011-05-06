@@ -1,0 +1,9 @@
+#!/bin/sh
+
+MODULE_PATH=$(psp-config --psp-prefix)/share/cmake-2.8/Modules
+
+
+cmake \
+	-D CMAKE_MODULE_PATH=$MODULE_PATH \
+	-D CMAKE_TOOLCHAIN_FILE=$MODULE_PATH/Platform/PSP.cmake \
+	$@
