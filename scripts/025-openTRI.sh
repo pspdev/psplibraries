@@ -1,6 +1,8 @@
 #!/bin/sh
 # openTRI.sh by Sam Hegarty (samr.hegarty@gmail.com)
 
+exit; ### this seems to be broken
+
 ## Download the source code.
 wget --continue --no-check-certificate https://github.com/SamRH/openTRI/tarball/master -O openTRI.tar.gz || { exit 1; }
 

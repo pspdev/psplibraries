@@ -1,6 +1,8 @@
 #!/bin/sh
 # ruby-1.9.2-p180.sh by take_cheeze (takechi101010@gmail.com)
 
+exit; ### this seems to be broken
+
 ## Download
 wget --continue ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p180.tar.bz2 || { exit 1; }
 
