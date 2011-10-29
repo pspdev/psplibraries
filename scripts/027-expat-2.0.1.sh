@@ -5,7 +5,7 @@
 wget --continue "http://jaist.dl.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz" || { exit 1; }
 
 ## Unpack
-rm -Rf expat-2.0.1 && mkdir expat-2.0.1 && tar --strip-components=1 --directory=expat-2.0.1 -xvzf expat-2.0.1.tar.gz || { exit 1; }
+rm -Rf expat-2.0.1 && mkdir expat-2.0.1 && tar --strip-components=1 --directory=expat-2.0.1 -xzf expat-2.0.1.tar.gz || { exit 1; }
 
 ## Enter
 cd expat-2.0.1 || { exit 1; }

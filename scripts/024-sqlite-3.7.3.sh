@@ -5,7 +5,7 @@
 wget --continue http://www.sqlite.org/sqlite-3.7.3.tar.gz || { exit 1; }
 
 ## Unpack the source code.
-rm -Rf sqlite-3.7.3 && tar xfvz sqlite-3.7.3.tar.gz && cd sqlite-3.7.3 || { exit 1; }
+rm -Rf sqlite-3.7.3 && tar xfz sqlite-3.7.3.tar.gz && cd sqlite-3.7.3 || { exit 1; }
 
 ## Patch the source code.
 cat ../../patches/sqlite-3.7.3-PSP.patch | patch -p1 || { exit 1; }

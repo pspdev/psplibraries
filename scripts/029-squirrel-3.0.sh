@@ -5,7 +5,7 @@
 wget --continue http://squirrel.googlecode.com/files/squirrel_3_0_stable.tar.gz || { exit 1; }
 
 ## Unpack
-rm -Rf squirrel-3.0 && mkdir squirrel-3.0 && tar --strip-components=1 --directory=squirrel-3.0 -xvzf squirrel_3_0_stable.tar.gz || { exit 1; }
+rm -Rf squirrel-3.0 && mkdir squirrel-3.0 && tar --strip-components=1 --directory=squirrel-3.0 -xzf squirrel_3_0_stable.tar.gz || { exit 1; }
 
 ## Enter
 cd squirrel-3.0 || { exit 1; }

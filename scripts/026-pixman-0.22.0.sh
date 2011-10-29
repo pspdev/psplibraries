@@ -5,7 +5,7 @@
 wget --continue http://cairographics.org/releases/pixman-0.22.0.tar.gz
 
 ## Unpack
-rm -Rf pixman-0.22.0 && mkdir pixman-0.22.0 && tar --strip-components=1 --directory=pixman-0.22.0 -xvzf pixman-0.22.0.tar.gz || { exit 1; }
+rm -Rf pixman-0.22.0 && mkdir pixman-0.22.0 && tar --strip-components=1 --directory=pixman-0.22.0 -xzf pixman-0.22.0.tar.gz || { exit 1; }
 
 ## Enter
 cd pixman-0.22.0 || { exit 1; }
