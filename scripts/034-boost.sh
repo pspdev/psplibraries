@@ -1,7 +1,7 @@
 #!/bin/sh
 # boost.sh by take_cheeze (takechi101010@gmail.com)
 
-VERSION=1.46.1
+VERSION=1.47.0
 DIRECTORY=boost-$VERSION
 
 ## Download
@@ -33,6 +33,7 @@ echo "using gcc : 4.6.0 : $(psp-config --pspdev-path)/bin/psp-g++ ; " \
 	--without-iostreams \
 	--without-math \
 	--without-mpi \
+	--without-python \
 	--without-serialization \
 	--without-system \
 	--without-thread \
