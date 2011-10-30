@@ -1,9 +1,6 @@
 #!/bin/sh
 # freetype.sh by Dan Peori (dan.peori@oopo.net)
 
-unset CC
-unset CXX
-
 ## Download the source code.
 wget --continue --no-check-certificate https://github.com/pspdev/psp-ports/tarball/master -O psp-ports.tar.gz || { exit 1; }
 
