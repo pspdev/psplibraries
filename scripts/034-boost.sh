@@ -29,6 +29,7 @@ echo "using gcc : 4.5.3 : $(psp-config --pspdev-path)/bin/psp-g++ : cxxflags='-I
 ./bjam install \
 	--prefix=$(psp-config --psp-prefix) \
 	--without-mpi \
+	--without-system \
 	 \
 	toolset=gcc \
 	variant=release \
