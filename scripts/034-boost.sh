@@ -28,20 +28,12 @@ echo "using gcc : 4.6.0 : $(psp-config --pspdev-path)/bin/psp-g++ ; " \
 ## Compile and Install
 ./bjam install \
 	--prefix=$(psp-config --psp-prefix) \
-	--without-filesystem \
-	--without-graph_parallel \
-	--without-iostreams \
-	--without-math \
 	--without-mpi \
-	--without-python \
-	--without-serialization \
-	--without-system \
-	--without-thread \
-	--without-wave \
 	 \
 	toolset=gcc \
 	variant=release \
 	link=static \
 	threading=single \
 	runtime-link=static \
+	cxxflags="-I$(psp-config --pspsdk-path)/include" \
 || { exit 1; }
