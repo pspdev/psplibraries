@@ -34,5 +34,6 @@ echo "using gcc : 4.5.3 : ccache $(psp-config --pspdev-path)/bin/psp-g++ -std=c+
 	link=static \
 	threading=single \
 	runtime-link=static \
-	include="$(psp-config --pspsdk-path)/include" \
 || { exit 1; }
+
+#	include="$(psp-config --pspsdk-path)/include" \
