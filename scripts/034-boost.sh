@@ -14,8 +14,8 @@ rm -Rf $DIRECTORY && mkdir $DIRECTORY && tar --strip-components=1 --directory=$D
 cd $DIRECTORY || { exit 1; }
 
 ## Patch
-echo "using gcc : 4.6.0 : $(psp-config --pspdev-path)/bin/psp-g++ ; " \
-	> tools/build/v2/user-config.jam \
+echo "using gcc : 4.5.3 : $(psp-config --pspdev-path)/bin/psp-g++ : cxxflags='-I$(psp-config --pspsdk-path)/include;'" \
+	> tools/build/v2/user-config.jam  \
 || { exit 1; }
 
 ## Configure
@@ -35,5 +35,4 @@ echo "using gcc : 4.6.0 : $(psp-config --pspdev-path)/bin/psp-g++ ; " \
 	link=static \
 	threading=single \
 	runtime-link=static \
-	cxxflags="-I$(psp-config --pspsdk-path)/include" \
 || { exit 1; }
