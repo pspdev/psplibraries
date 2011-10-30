@@ -14,7 +14,7 @@ rm -Rf $DIRECTORY && mkdir $DIRECTORY && tar --strip-components=1 --directory=$D
 cd $DIRECTORY || { exit 1; }
 
 ## Patch
-echo "using gcc : 4.5.3 : ccache $(psp-config --pspdev-path)/bin/psp-g++ -std=c++0x : <compileflags>-I$(psp-config --pspsdk-path)/include ;" \
+echo "using gcc : 4.5.3 : ccache $(psp-config --pspdev-path)/bin/psp-g++ -std=c++0x : ;" \
 	> tools/build/v2/user-config.jam  \
 || { exit 1; }
 
@@ -34,4 +34,5 @@ echo "using gcc : 4.5.3 : ccache $(psp-config --pspdev-path)/bin/psp-g++ -std=c+
 	link=static \
 	threading=single \
 	runtime-link=static \
+	include="$(psp-config --pspsdk-path)/include" \
 || { exit 1; }
