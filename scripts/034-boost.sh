@@ -1,7 +1,7 @@
 #!/bin/sh
 # boost.sh by take_cheeze (takechi101010@gmail.com)
 
-VERSION=1.47.0
+VERSION=1.46.1
 DIRECTORY=boost-$VERSION
 
 ## Download
