@@ -29,17 +29,18 @@ echo "using gcc : 4.5.3 : ccache $(psp-config --pspdev-path)/bin/psp-g++ -std=c+
 ./bjam install \
 	--prefix=$(psp-config --psp-prefix) \
 	--without-iostreams \
+	--without-math \
 	--without-mpi \
 	--without-python \
 	--without-serialization \
+	--without-thread \
 	 \
 	toolset=gcc \
 	variant=release \
 	link=static \
 	runtime-link=static \
+	threading=single \
 || { exit 1; }
 
-#	threading=single \
-#	--without-thread \
 
 #	include="$(psp-config --pspsdk-path)/include" \
