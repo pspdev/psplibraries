@@ -11,4 +11,4 @@ rm -Rf psp-ports && mkdir psp-ports && tar --strip-components=1 --directory=psp-
 cd psp-ports/libpspvram || { exit 1; }
 
 ## Compile and install.
-make -j 4 && make install || { exit 1; }
+make && make install || { exit 1; }
