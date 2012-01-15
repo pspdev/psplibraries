@@ -14,7 +14,7 @@ cd psp-ports/SDL_mixer || { exit 1; }
 sh autogen.sh || { exit 1; }
 
 ## Configure the build.
-LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" ./configure --host psp --with-sdl-prefix=$(psp-config --psp-prefix) --prefix=$(psp-config --psp-prefix) --enable-music-mod || { exit 1; }
+LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" ./configure --host psp --with-sdl-prefix=$(psp-config --psp-prefix) --prefix=$(psp-config --psp-prefix) --enable-music-mod --disable-music-mp3 || { exit 1; }
 
 ## Compile and install.
 make -j 4 && make install || { exit 1; }

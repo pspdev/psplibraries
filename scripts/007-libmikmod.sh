@@ -1,8 +1,6 @@
 #!/bin/sh
 # libmikmod.sh by Dan Peori (dan.peori@oopo.net)
 
-exit;
-
 ## Download the source code.
 wget --continue --no-check-certificate https://github.com/pspdev/psp-ports/tarball/master -O psp-ports.tar.gz || { exit 1; }
 
@@ -12,5 +10,11 @@ rm -Rf psp-ports && mkdir psp-ports && tar --strip-components=1 --directory=psp-
 ## Enter the source directory.
 cd psp-ports/libmikmod || { exit 1; }
 
+# Setup configure file
+autoconf || { exit 1; }
+
+## Configure the build.
+LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" ./configure --host psp --prefix=$(psp-config --psp-prefix) || { exit 1; }
+
 ## Compile and install.
-make -f Makefile.psp -j 4 && make -f Makefile.psp install || { exit 1; }
+make -j 4 && make install || { exit 1; }
