@@ -1,5 +1,3 @@
-#!/bin/sh
-set -e
 download_and_extract ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p180.tar.bz2 ruby-1.9.2-p180
 cp ../../patches/config.sub tool/config.sub
 patch -p1 < ../../patches/ruby-1.9.2-p180.patch

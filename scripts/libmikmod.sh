@@ -1,5 +1,3 @@
-#!/bin/sh
-set -e
 get_pspports libmikmod
 autoconf
 run_configure

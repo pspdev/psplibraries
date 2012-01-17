@@ -1,5 +1,3 @@
-#!/bin/sh
-set -e
 download_and_extract http://www.sqlite.org/sqlite-3.7.3.tar.gz sqlite-3.7.3
 apply_patch sqlite-3.7.3-PSP
 mkdir build-ppu && cd build-ppu
