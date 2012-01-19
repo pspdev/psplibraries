@@ -1,0 +1,3 @@
+get_pspports freetype
+run_autogen_build
+
