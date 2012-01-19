@@ -1,33 +1,42 @@
 #!/bin/bash
-# libraries.sh by Dan Peori (danpeori@oopo.net)
 
- ## Enter the psplibraries directory.
  cd "`dirname $0`" || { echo "ERROR: Could not enter the psplibraries directory."; exit 1; }
 
- ## Create the build directory.
+ source common.sh
+ basepath=$PWD
  mkdir -p build || { echo "ERROR: Could not create the build directory."; exit 1; }
+ test_deps psptoolchain
 
- ## Enter the build directory.
- cd build || { echo "ERROR: Could not enter the build directory."; exit 1; }
-
- ## Fetch the depend scripts.
- DEPEND_SCRIPTS=(`ls ../depends/*.sh | sort`)
-
- ## Run all the depend scripts.
- for SCRIPT in ${DEPEND_SCRIPTS[@]}; do "$SCRIPT" || { echo "$SCRIPT: Failed."; exit 1; } done
-
- ## Fetch the build scripts.
- BUILD_SCRIPTS=(`ls ../scripts/*.sh | sort`)
-
- ## If specific steps were requested...
+ # If specific steps were requested, run the requested build scripts.
  if [ $1 ]; then
-
-  ## Run the requested build scripts.
-  for STEP in $@; do "${BUILD_SCRIPTS[$STEP-1]}" || { echo "${BUILD_SCRIPTS[$STEP-1]}: Failed."; exit 1; } done
-
+     buildall=0
+     list="$@"
+ # Else, run the all build scripts.
  else
-
-  ## Run the all build scripts.
-  for SCRIPT in ${BUILD_SCRIPTS[@]}; do "$SCRIPT" || { echo "$SCRIPT: Failed."; exit 1; } done
-
+     buildall=1
+     list="$(ls -1 $basepath/scripts/*.sh | sed -e "s/.*\///" -e "s/\..*//" | sort)"
  fi
+
+ faillist=""
+ for step in $list; do
+     f=$basepath/scripts/$step.sh
+     test_deps $step
+     if [ $? -ne 0 ] || [ $buildall -eq 0 ]; then
+         if [ -x $f ]; then
+             cd $basepath/build
+             sh -c "source ../common.sh; \
+             set -e; \
+             basepath=$basepath; \
+             source $f" || { echo "Failed installing $step!"; faillist="$faillist $step"; }
+         else
+             echo "Installation script for $step not found!"
+         fi
+     else
+         echo "$step already installed"
+     fi
+ done
+ echo "Installation finished."
+ if [ -n "$faillist" ]; then
+     echo "Failed installing:$faillist"
+ fi
+
