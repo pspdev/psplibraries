@@ -15,7 +15,6 @@ function test_deps {
             fi
         else
             echo "Dependency script for $dep not found. Fix your script!"
-            echo $script
             return 1
         fi
     done

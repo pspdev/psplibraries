@@ -9,24 +9,34 @@
 
  # If specific steps were requested, run the requested build scripts.
  if [ $1 ]; then
+     buildall=0
      list="$@"
  # Else, run the all build scripts.
  else
-     list="$(ls -1 $basepath/scripts/*.sh | sed -e "s/.*\///" | sort)"
+     buildall=1
+     list="$(ls -1 $basepath/scripts/*.sh | sed -e "s/.*\///" -e "s/\..*//" | sort)"
  fi
 
  faillist=""
  for step in $list; do
      f=$basepath/scripts/$step.sh
-     if [ -x $f ]; then
-         cd $basepath/build
-         sh -c "source ../common.sh; \
-         set -e; \
-         basepath=$basepath; \
-         source $f" || { echo "Failed installing $step!"; faillist="$faillist $step"; }
+     test_deps $step
+     if [ $? -ne 0 ] || [ $buildall -eq 0 ]; then
+         if [ -x $f ]; then
+             cd $basepath/build
+             sh -c "source ../common.sh; \
+             set -e; \
+             basepath=$basepath; \
+             source $f" || { echo "Failed installing $step!"; faillist="$faillist $step"; }
+         else
+             echo "Installation script for $step not found!"
+         fi
      else
-         echo "Installation script for $step not found!"
+         echo "$step already installed"
      fi
  done
- echo "Installation finished.\nFailed installing:$faillist"
+ echo "Installation finished."
+ if [ -n "$faillist" ]; then
+     echo "Failed installing:$faillist"
+ fi
 
