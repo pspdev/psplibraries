@@ -1,22 +1,34 @@
+# Usage: test_dep DEP
+function test_dep {
+    script="$basepath/depends/check-$dep.sh"
+    if [ -x $script ]; then
+        "$script" 1> /dev/null
+        return $?
+    fi
+    echo "Dependency script for $dep not found, assuming it's not installed."
+    return 1
+}
+
 # Usage: test_deps DEP1 DEP2 ...
 function test_deps {
     for dep in $*; do
-        script="$basepath/depends/check-$dep.sh"
-        if [ -x $script ]; then
-            "$script" 1> /dev/null
-            if [ $? -ne 0 ]; then
-                script2="$basepath/scripts/$dep.sh"
-                if [ -x $script2 ]; then
-                    "$script2" || { echo "Couldn't install dependency $dep, aborting."; return 1; }
-                else
-                    echo "Dependency $dep required but not found. Please install it."
-                    return 1
-                fi
+        test_dep $dep || return 1
+    done
+    return 0
+}
+
+# Usage: test_deps_install DEP1 DEP2 ... (tests dependencies and installs them if they aren't available)
+function test_deps_install {
+    for dep in $*; do
+        test_dep $dep || {
+            script2="$basepath/scripts/$dep.sh"
+            if [ -x $script2 ]; then
+                sh -c "source $basepath/common.sh; set -e; basepath=$basepath; source $script2" || { echo "Couldn't install dependency $dep, aborting."; return 1; }
+            else
+                echo "Dependency $dep required but not found. Please install it."
+                return 1
             fi
-        else
-            echo "Dependency script for $dep not found. Fix your script!"
-            return 1
-        fi
+        }
     done
     return 0
 }
@@ -24,6 +36,7 @@ function test_deps {
 # Usage: download_and_extract URL DIRECTORY
 function download_and_extract {
     cd $basepath/build
+    test_deps wget
     wget --continue --no-check-certificate $1
     name=`echo $1|sed -e "s/.*\///"`
     ext=`echo $name|sed -e "s/.*\.//"`
@@ -51,6 +64,7 @@ function download_and_extract {
 
 # Usage: get_pspports DIR
 function get_pspports {
+    cd $basepath/build
     test_deps wget tar
     wget --continue --no-check-certificate https://github.com/pspdev/psp-ports/tarball/master -O psp-ports.tar.gz || { return 1; }
     rm -Rf psp-ports
