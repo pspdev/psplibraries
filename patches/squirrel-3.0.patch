@@ -2,7 +2,7 @@ Index: SQUIRREL3/Makefile
 ===================================================================
 --- SQUIRREL3/Makefile	2011-04-19 02:34:34.372595486 +0900
 +++ SQUIRREL3/Makefile	2011-04-19 02:34:44.177690458 +0900
-@@ -5,14 +5,14 @@
+@@ -5,14 +5,23 @@
  sq32:
  	cd squirrel; $(MAKE) 
  	cd sqstdlib; $(MAKE) 
@@ -20,6 +20,15 @@ Index: SQUIRREL3/Makefile
  	cd sqstdlib; $(MAKE) sq64
 -	cd sq; $(MAKE) sq64
 +#	cd sq; $(MAKE) sq64
++
++PSPDIR=$(shell psp-config --psp-prefix)
++
++install:
++	@echo "Installing squirrel into $(PSPDIR)"
++	@mkdir -p $(PSPDIR)/include $(PSPDIR)/lib
++	@cp include/*.h $(PSPDIR)/include
++	@cp lib/*.a $(PSPDIR)/lib
++	@echo "Done."
 Index: SQUIRREL3/sq/Makefile
 ===================================================================
 --- SQUIRREL3/sq/Makefile	2011-04-19 01:51:20.975835457 +0900
