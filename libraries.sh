@@ -24,7 +24,7 @@
      if [ $? -ne 0 ] || [ $buildall -eq 0 ]; then
          if [ -x $f ]; then
              cd $basepath/build
-             sh -c "source ../common.sh; \
+             bash -c "source ../common.sh; \
              set -e; \
              basepath=$basepath; \
              source $f" || { echo "Failed installing $step!"; faillist="$faillist $step"; }
