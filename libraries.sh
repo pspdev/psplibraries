@@ -1,5 +1,10 @@
 #!/bin/bash
 
+ ## remove $CC and $CXX for configure
+ unset CC
+ unset CXX
+
+ ## Enter the psplibraries directory.
  cd "`dirname $0`" || { echo "ERROR: Could not enter the psplibraries directory."; exit 1; }
 
  source common.sh
