@@ -69,7 +69,7 @@ function get_pspports {
     wget --continue --no-check-certificate https://github.com/pspdev/psp-ports/tarball/master -O psp-ports.tar.gz || { return 1; }
     rm -Rf psp-ports
     mkdir psp-ports
-    tar --strip-components=1 --directory=psp-ports -xvzf psp-ports.tar.gz || { return 1; }
+    tar --strip-components=1 --directory=psp-ports -xzf psp-ports.tar.gz || { return 1; }
     cd psp-ports/$1 || { return 1; }
 }
 
