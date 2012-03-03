@@ -54,6 +54,10 @@ function download_and_extract {
             test_deps tar
             tar xjf $name
             ;;
+        "tbz2")
+            test_deps tar
+            tar xjf $name
+            ;;
         *)
             echo "Archive extension $ext unsupported."
             return 1
