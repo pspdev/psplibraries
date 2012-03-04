@@ -60,7 +60,7 @@ function download_and_extract {
             ;;
         "zip")
             test_deps unzip
-            unzip xjf $name
+            unzip $name
             ;;
         *)
             echo "Archive extension $ext unsupported."
