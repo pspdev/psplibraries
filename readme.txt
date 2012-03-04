@@ -12,7 +12,7 @@
 
  1) Set up your environment by installing the following software:
 
-  autoconf, automake, libtool, make, psptoolchain, subversion, wget, doxygen, ruby, unzip
+  autoconf, automake, libtool, make, psptoolchain, subversion, wget, doxygen, unzip
 
  2) Run the library script:
 
