@@ -1,20 +1,14 @@
 #!/bin/sh
 # boost.sh by take_cheeze (takechi101010@gmail.com)
 
-VERSION=1.46.1
+VERSION=1.49.0
 DIRECTORY=boost-$VERSION
+SRC=http://jaist.dl.sourceforge.net/project/boost/boost/$VERSION/boost_`echo $VERSION | sed -e "s/\./_/g"`.tar.gz
 
-## Download
-wget --continue http://jaist.dl.sourceforge.net/project/boost/boost/$VERSION/boost_$(echo $VERSION | sed -e "s/\./_/g").tar.bz2 -O $DIRECTORY.tar.bz2
-
-## Unpack
-rm -Rf $DIRECTORY && mkdir $DIRECTORY && tar --strip-components=1 --directory=$DIRECTORY -xjf $DIRECTORY.tar.bz2 || { exit 1; }
-
-## Enter
-cd $DIRECTORY || { exit 1; }
+download_and_extract $SRC $DIRECTORY
 
 ## Patch
-echo "using gcc : 4.5.3 : ccache $(psp-config --pspdev-path)/bin/psp-g++ -std=c++0x : ;" \
+echo "using gcc : 4.6.3 : ccache $(psp-config --pspdev-path)/bin/psp-g++ -std=c++0x : ;" \
 	> tools/build/v2/user-config.jam  \
 || { exit 1; }
 
