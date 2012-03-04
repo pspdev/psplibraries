@@ -58,6 +58,10 @@ function download_and_extract {
             test_deps tar
             tar xjf $name
             ;;
+        "zip")
+            test_deps unzip
+            unzip xjf $name
+            ;;
         *)
             echo "Archive extension $ext unsupported."
             return 1
