@@ -1,6 +1,8 @@
-download_and_extract ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p180.tar.bz2 ruby-1.9.2-p180
+test_deps libyaml
+
+download_and_extract ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p125.tar.bz2 ruby-1.9.3-p125
 cp ../../patches/config.sub tool/config.sub
-patch -p1 < ../../patches/ruby-1.9.2-p180.patch
+# patch -p1 < ../../patches/ruby-1.9.2-p180.patch
 
 ## Configure
 LDSHARED="psp-ld -Bdynamic -Bshareable" \
@@ -14,4 +16,3 @@ ac_cv_func_setpgrp_void="yes" \
     --disable-install-doc
 
 run_make -j 4
-
