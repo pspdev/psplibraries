@@ -14,4 +14,4 @@ sed -i -e "s/memory\.h/string.h/" Alc/*.c || { exit 1; }
 psp-cmake -D CMAKE_INSTALL_PREFIX=$(psp-config --psp-prefix) . || { exit 1; }
 
 ## Compile and Install
-make -j 4 && make install || { exit 1; }
+run_make -j 4
