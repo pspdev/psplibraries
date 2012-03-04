@@ -5,7 +5,7 @@ ANGELSCRIPT_VERSION=2.22.2
 
 download_and_extract http://www.angelcode.com/angelscript/sdk/files/angelscript_$ANGELSCRIPT_VERSION.zip sdk
 cd angelscript/projects/cmake || { return 1; }
-echo "install(DIRECTORY ../../include DESTINATION include FILES_MATCHING PATTERN '*.h')" >> CMakeLists.txt
+echo "install(DIRECTORY ../../include DESTINATION include FILES_MATCHING PATTERN \"*.h\")" >> CMakeLists.txt
 echo "install(TARGETS Angelscript ARCHIVE DESTINATION lib)" >> CMakeLists.txt
 
 ## Run cmake
