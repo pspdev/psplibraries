@@ -65,12 +65,20 @@ function download_and_extract {
 # Usage: get_pspports DIR
 function get_pspports {
     cd $basepath/build
-    test_deps wget tar
-    wget --continue --no-check-certificate https://github.com/pspdev/psp-ports/tarball/master -O psp-ports.tar.gz || { return 1; }
-    rm -Rf psp-ports
-    mkdir psp-ports
-    tar --strip-components=1 --directory=psp-ports -xvzf psp-ports.tar.gz || { return 1; }
-    cd psp-ports/$1 || { return 1; }
+    test_deps git
+
+    if [ -d "psp-ports" ]; then
+        # update psp-ports
+
+        cd "psp-ports"
+        git pull
+        cd $1 || { return 1; }
+    else
+        # clone psp-ports
+
+        git clone "https://github.com/pspdev/psp-ports.git" psp-ports
+        cd psp-ports/$1 || { return 1; } 
+    fi
 }
 
 # Usage: run_configure OPT1 OPT2 ...
@@ -102,4 +110,3 @@ function run_autogen_build {
 function apply_patch {
     patch -p1 < $basepath/patches/$1.patch
 }
-
