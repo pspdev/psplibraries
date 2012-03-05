@@ -1,7 +1,7 @@
 #!/bin/sh
 # openal-soft.sh by take_cheeze (takechi101010@gmail.com)
 
-test_deps cmake-toolchain-script
+test_deps cmake-toolchain-script pthreads-emb
 
 OPENAL_VERSION=1.13
 
