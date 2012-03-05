@@ -71,6 +71,12 @@ function get_pspports {
         # update psp-ports
 
         cd "psp-ports"
+
+        if [ ! -d ".git" ]; then
+            echo "Please delete 'build/psp-ports' and try again"
+            return 1
+        fi
+
         git pull
         cd $1 || { return 1; }
     else
