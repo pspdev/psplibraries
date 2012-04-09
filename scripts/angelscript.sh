@@ -1,5 +1,5 @@
 ## test dependency
-test_deps cmake-toolchain-script
+test_deps_install cmake-toolchain-script
 
 ANGELSCRIPT_VERSION=2.22.2
 
