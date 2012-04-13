@@ -1,7 +1,7 @@
 ## test dependency
 test_deps_install cmake-toolchain-script
 
-ANGELSCRIPT_VERSION=2.22.2
+ANGELSCRIPT_VERSION=2.23.0
 
 download_and_extract http://www.angelcode.com/angelscript/sdk/files/angelscript_$ANGELSCRIPT_VERSION.zip sdk
 cd angelscript/projects/cmake || { return 1; }
