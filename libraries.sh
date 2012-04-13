@@ -10,7 +10,7 @@
  source common.sh
  basepath=$PWD
  mkdir -p build || { echo "ERROR: Could not create the build directory."; exit 1; }
- test_deps psptoolchain
+ test_deps psptoolchain libtool
 
  # If specific steps were requested, run the requested build scripts.
  if [ $1 ]; then
