@@ -54,6 +54,14 @@ function download_and_extract {
             test_deps tar
             tar xjf $name
             ;;
+        "tbz2")
+            test_deps tar
+            tar xjf $name
+            ;;
+        "zip")
+            test_deps unzip
+            unzip $name
+            ;;
         *)
             echo "Archive extension $ext unsupported."
             return 1
@@ -89,7 +97,7 @@ function get_pspports {
 
 # Usage: run_configure OPT1 OPT2 ...
 function run_configure {
-    LDFLAGS="$LDFLAGS -L$(psp-config --pspsdk-path)/lib -lc -lpspuser" \
+    LDFLAGS="$LDFLAGS -L$(psp-config --pspsdk-path)/lib -L$(psp-config --psp-prefix)/lib -lc -lpspuser" \
     LIBS="$LIBS -lc -lpspuser" \
     ./configure --host=psp --prefix=$(psp-config --psp-prefix) $* || { return 1; }
     return 0

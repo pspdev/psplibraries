@@ -1,11 +1,16 @@
 #!/bin/bash
 
+ ## remove $CC and $CXX for configure
+ unset CC
+ unset CXX
+
+ ## Enter the psplibraries directory.
  cd "`dirname $0`" || { echo "ERROR: Could not enter the psplibraries directory."; exit 1; }
 
  source common.sh
  basepath=$PWD
  mkdir -p build || { echo "ERROR: Could not create the build directory."; exit 1; }
- test_deps psptoolchain
+ test_deps psptoolchain libtool
 
  # If specific steps were requested, run the requested build scripts.
  if [ $1 ]; then
@@ -24,7 +29,7 @@
      if [ $? -ne 0 ] || [ $buildall -eq 0 ]; then
          if [ -x $f ]; then
              cd $basepath/build
-             sh -c "source ../common.sh; \
+             bash -c "source ../common.sh; \
              set -e; \
              basepath=$basepath; \
              source $f" || { echo "Failed installing $step!"; faillist="$faillist $step"; }
