@@ -1,5 +1,7 @@
-download_and_extract http://cairographics.org/releases/pixman-0.22.0.tar.gz pixman-0.22.0
+PIXMAN_VERSION=0.24.4
+
+download_and_extract http://cairographics.org/releases/pixman-$PIXMAN_VERSION.tar.gz pixman-$PIXMAN_VERSION
 cp ../../patches/config.sub ./config.sub
-run_configure
+LIBS="-lz" run_configure
 run_make -j 4
 
