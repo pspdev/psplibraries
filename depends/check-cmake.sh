@@ -1,5 +1,5 @@
 #!/bin/sh
-# check-cmake.sh by Takeshi Watanabe (takechi101010@gmail.com)
+# check-cmake.sh by Dan Peori (danpeori@oopo.net)
 
- ## Check for cmake.
+ ## Check for make.
  cmake --version
