@@ -1,6 +1,11 @@
-download_and_extract http://mikmod.raphnet.net/files/libmikmod-3.2.0-beta2.tar.gz libmikmod-3.2.0-beta2
-apply_patch libmikmod-3.2.0-beta2-PSP
-autoconf
+download_and_extract http://mikmod.shlomifish.org/files/libmikmod-3.2.0.tar.gz libmikmod-3.2.0
+apply_patch libmikmod-3.2.0-PSP
+aclocal --force
+libtoolize --force
+aclocal --force
+autoconf --force
+autoheader --force
+automake --add-missing
 run_configure --disable-esd
 run_make -j 4
 
