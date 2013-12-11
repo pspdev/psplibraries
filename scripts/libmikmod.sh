@@ -1,4 +1,4 @@
-download_and_extract http://mikmod.shlomifish.org/files/libmikmod-3.2.0.tar.gz libmikmod-3.2.0
+download_and_extract http://jaist.dl.sourceforge.net/project/mikmod/libmikmod/3.2.0/libmikmod-3.2.0.tar.gz libmikmod-3.2.0
 apply_patch libmikmod-3.2.0-PSP
 aclocal --force
 libtoolize --force
