@@ -12,7 +12,7 @@ SET(CMAKE_EXECUTABLE_SUFFIX ".elf")
 
 # set find root path
 SET(CMAKE_FIND_ROOT_PATH "")
-FOREACH(i "--pspsdk-path" "--psp-prefix" "--pspdev-path")
+FOREACH(i "--pspsdk-path" "--psp-prefix")
   EXECUTE_PROCESS(
 	COMMAND "psp-config" ${i}
 	OUTPUT_VARIABLE output
@@ -27,14 +27,8 @@ SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
-# set install path
-EXECUTE_PROCESS(
-  COMMAND "psp-config" "--psp-prefix"
-  OUTPUT_VARIABLE CMAKE_INSTALL_PREFIX
-  OUTPUT_STRIP_TRAILING_WHITESPACE)
-
 # reduce link error
 ADD_DEFINITIONS("-G0")
 
 # linker flags
-LINK_LIBRARIES("-lpthread-psp -lc -lpspuser -lpspsdk -flto")
+LINK_LIBRARIES(pspdebug pspdisplay pspge pspsdk c pspuser)
