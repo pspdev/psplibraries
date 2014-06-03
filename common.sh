@@ -37,7 +37,7 @@ function test_deps_install {
 function download_and_extract {
     cd $basepath/build
     test_deps wget
-    wget --continue --no-check-certificate $1
+    wget --no-check-certificate $1
     name=`echo $1|sed -e "s/.*\///"`
     ext=`echo $name|sed -e "s/.*\.//"`
     rm -Rf $2 || { return 1; }
