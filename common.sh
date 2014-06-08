@@ -33,41 +33,50 @@ function test_deps_install {
     return 0
 }
 
-# Usage: download_and_extract URL DIRECTORY
-function download_and_extract {
-    cd $basepath/build
-    test_deps wget
-    wget --no-check-certificate $1
-    name=`echo $1|sed -e "s/.*\///"`
+# Usage: extract <archive>
+function auto_extract
+{
+    path=$1
+    name=`echo $path|sed -e "s/.*\///"`
     ext=`echo $name|sed -e "s/.*\.//"`
-    rm -Rf $2 || { return 1; }
+    
+    echo "Extracting $name..."
+    
     case $ext in
-        "tar")
-            test_deps tar
-            tar xf $name
-            ;;
-        "gz")
-            test_deps tar
-            tar xzf $name
-            ;;
-        "bz2")
-            test_deps tar
-            tar xjf $name
-            ;;
-        "tbz2")
-            test_deps tar
-            tar xjf $name
-            ;;
-        "zip")
-            test_deps unzip
-            unzip $name
-            ;;
-        *)
-            echo "Archive extension $ext unsupported."
-            return 1
+        "tar") tar -xf $path ;;
+        "gz"|"tgz") tar -xzf $path ;;
+        "bz2"|"tbz2") tar -xjf $path ;;
+        "zip") unzip $path ;;
+        *) echo "I don't know how to extract $ext archives!"; return 1 ;;
     esac
-    cd $2 || { return 1; }
+    
     return 0
+}
+
+# Usage: download_and_extract URL DIRECTORY
+function download_and_extract
+{
+    url=$1
+    name=`echo $url|sed -e "s/.*\///"`
+    outdir=$2
+    
+    # If there are already an extracted directory, delete it, otherwise
+    # reapplying patches gets messy. I tried.
+    [ -d $outdir ] && echo "Deleting old version of $outdir" && rm -rf $outdir
+    
+    # First, if the archive already exists, attempt to extract it. Failing
+    # that, attempt to continue an interrupted download. If that also fails,
+    # remove the presumably corrupted file.
+    [ -f $name ] && auto_extract $name || { wget --continue --no-check-certificate $url -O $name || rm -f $name; }
+    
+    # If the file does not exist at this point, it means it was either never
+    # downloaded, or it was deleted for being corrupted. Just go ahead and
+    # download it.
+    # Using wget --continue here would make buggy servers flip out for nothing.
+    [ -f $name ] || wget --no-check-certificate $url -O $name && auto_extract $name
+    
+    # Switch to the newly created directory
+    cd $outdir || return 1
 }
 
 # Usage: get_pspports DIR
