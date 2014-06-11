@@ -1,6 +1,6 @@
 EXPAT_VERSION=2.1.0
 
-download_and_extract http://jaist.dl.sourceforge.net/project/expat/expat/$EXPAT_VERSION/expat-$EXPAT_VERSION.tar.gz expat-$EXPAT_VERSION
+download_and_extract "http://sourceforge.net/projects/expat/files/expat/$EXPAT_VERSION/expat-$EXPAT_VERSION.tar.gz"  expat-$EXPAT_VERSION
 ## Patch
 cp ../../patches/config.sub ./config.sub
 cp ../../patches/config.sub ./conftools/config.sub
