@@ -1,5 +1,8 @@
 test_deps_install zlib
 
-get_pspports libpng
-chmod a+x ./autogen.sh && LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" ./autogen.sh --host psp --prefix=$(psp-config --psp-prefix) || { exit 1; }
+LIBPNG_VERSION=1.5.7
+
+download_and_extract http://sourceforge.net/projects/libpng/files/libpng15/older-releases/$LIBPNG_VERSION/libpng-$LIBPNG_VERSION.tar.gz libpng-$LIBPNG_VERSION
+apply_patch libpng-$LIBPNG_VERSION-PSP
+run_configure
 run_make -j 4
