@@ -4,6 +4,6 @@ apply_patch SDL_gfx-2.0.23-PSP
 aclocal --force
 autoconf --force
 automake --add-missing
-run_configure --prefix=/usr/psp --host=psp --disable-mmx --disable-shared
+run_configure --prefix=$(psp-config --psp-prefix) --host=psp --disable-mmx --disable-shared
 run_make
 #PNG_CFLAGS="-I$PSPDEV/psp/include" PNG_LIBS="-L$PSPDEV/psp/lib -lpng -lz" AR=psp-ar run_autogen_build --with-sdl-prefix=$(psp-config --psp-prefix) --host=psp --disable-mmx --disable-shared
