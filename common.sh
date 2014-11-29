@@ -1,3 +1,11 @@
+# Returns the number of processor cores available
+# Usage: num_cpus
+function num_cpus
+{
+    # This *should* be available on literally everything, including OSX
+    getconf _NPROCESSORS_ONLN
+}
+
 # Usage: test_dep DEP
 function test_dep {
     script="$basepath/depends/check-$dep.sh"
