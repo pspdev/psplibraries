@@ -71,6 +71,9 @@ function download_and_extract
     # If there are already an extracted directory, delete it, otherwise
     # reapplying patches gets messy. I tried.
     [ -d $outdir ] && echo "Deleting old version of $outdir" && rm -rf $outdir
+     
+    # Instead of wget's progress bar, just print that we're downloading the url
+    echo "Downloading: $url"
     
     # First, if the archive already exists, attempt to extract it. Failing
     # that, attempt to continue an interrupted download. If that also fails,
