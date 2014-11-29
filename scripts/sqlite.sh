@@ -4,5 +4,5 @@ mkdir build-ppu && cd build-ppu
 LDFLAGS="-L$(psp-config --pspsdk-path)/lib -lc -lpspuser" \
 CFLAGS="-DSQLITE_OS_OTHER=1 -DSQLITE_OS_PSP=1 -I$(psp-config --pspsdk-path)/include" \
 ../configure --host=psp --prefix=$(psp-config --psp-prefix) --disable-readline --disable-tcl --disable-threadsafe --disable-amalgamation
-run_make -j 4
+run_make -j `num_cpus`
 

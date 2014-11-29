@@ -10,6 +10,6 @@ cd angelscript/projects/cmake || { return 1; }
 psp-cmake -D CMAKE_INSTALL_PREFIX=$(psp-config --psp-prefix) . || { exit 1; }
 
 ## Compile and Install
-make -j 4 || { exit 1; }
+make -j `num_cpus` || { exit 1; }
 cp -v ../../include/*.h $(psp-config --psp-prefix)/include
 cp -v ../../lib/lib*.a $(psp-config --psp-prefix)/lib

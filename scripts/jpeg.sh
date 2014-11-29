@@ -1,3 +1,2 @@
 get_pspports jpeg
-run_make -j 4
-
+run_make -j `num_cpus`
