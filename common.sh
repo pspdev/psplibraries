@@ -58,7 +58,7 @@ function auto_extract
         *) echo "I don't know how to extract $ext archives!"; return 1 ;;
     esac
     
-    return 0
+    return $?
 }
 
 # Usage: download_and_extract URL DIRECTORY
