@@ -7,4 +7,4 @@ cat $i.c >> $i.c.tmp
 cat $i.c.tmp > $i.c
 done
 
-run_make -j 4
+run_make -j `num_cpus`

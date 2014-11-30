@@ -1,3 +1,11 @@
+# Returns the number of processor cores available
+# Usage: num_cpus
+function num_cpus
+{
+    # This *should* be available on literally everything, including OSX
+    getconf _NPROCESSORS_ONLN
+}
+
 # Usage: test_dep DEP
 function test_dep {
     script="$basepath/depends/check-$dep.sh"
@@ -43,14 +51,14 @@ function auto_extract
     echo "Extracting $name..."
     
     case $ext in
-        "tar") tar -xf $path ;;
-        "gz"|"tgz") tar -xzf $path ;;
-        "bz2"|"tbz2") tar -xjf $path ;;
+        "tar") tar --no-same-owner -xf $path ;;
+        "gz"|"tgz") tar --no-same-owner -xzf $path ;;
+        "bz2"|"tbz2") tar --no-same-owner -xjf $path ;;
         "zip") unzip $path ;;
         *) echo "I don't know how to extract $ext archives!"; return 1 ;;
     esac
     
-    return 0
+    return $?
 }
 
 # Usage: download_and_extract URL DIRECTORY

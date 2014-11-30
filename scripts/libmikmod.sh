@@ -11,5 +11,4 @@ autoconf --force
 autoheader --force
 automake --add-missing
 run_configure --disable-esd
-run_make -j 4
-
+run_make -j `num_cpus`

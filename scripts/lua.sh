@@ -1,3 +1,2 @@
 get_pspports lua
-make -f Makefile.psp -j 4 && make -f Makefile.psp install
-
+make -f Makefile.psp -j `num_cpus` && make -f Makefile.psp install
