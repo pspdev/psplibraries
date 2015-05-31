@@ -10,5 +10,5 @@ aclocal --force
 autoconf --force
 autoheader --force
 automake --add-missing
-run_configure --disable-esd
+run_configure --disable-esd --enable-osx=no
 run_make -j `num_cpus`

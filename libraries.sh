@@ -4,6 +4,14 @@
  unset CC
  unset CXX
 
+ ## Set executable name for libtoolize
+ if [ "$(uname)" == "Darwin" ]; then
+     LIBTOOLIZE=glibtoolize
+ else
+     LIBTOOLIZE=libtoolize
+ fi
+ export LIBTOOLIZE
+
  ## Enter the psplibraries directory.
  cd "`dirname $0`" || { echo "ERROR: Could not enter the psplibraries directory."; exit 1; }
 
