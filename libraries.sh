@@ -27,7 +27,7 @@
  # Else, run the all build scripts.
  else
      buildall=1
-     list="$(ls -1 $basepath/scripts/*.sh | sed -e "s/.*\///" -e "s/\..*//" | sort)"
+     list="$(ls -1 $basepath/scripts/*.sh | sed -e "s/.*\///" -e "s/\..*//" | sort -f)"
  fi
 
  faillist=""
