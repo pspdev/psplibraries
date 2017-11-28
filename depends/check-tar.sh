@@ -1,5 +1,5 @@
 #!/bin/sh
-# check-tar.sh by Dan Peori (danpeori@oopo.net)
+# check-tar.sh by Naomi Peori (naomi@peori.ca)
 
  ## Check for tar.
  tar --version

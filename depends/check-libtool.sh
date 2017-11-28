@@ -1,5 +1,5 @@
 #!/bin/sh
-# check-libtool.sh by Dan Peori (danpeori@oopo.net)
+# check-libtool.sh by Naomi Peori (naomi@peori.ca)
 
  ## Check for libtool.
  ${LIBTOOLIZE:-libtoolize} --version

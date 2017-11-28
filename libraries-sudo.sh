@@ -1,5 +1,5 @@
 #!/bin/bash
-# libraries-sudo.sh by Dan Peori (danpeori@oopo.net)
+# libraries-sudo.sh by Naomi Peori (naomi@peori.ca)
 
  ## Enter the psplibraries directory.
  cd "`dirname $0`" || { echo "ERROR: Could not enter the psplibraries directory."; exit 1; }

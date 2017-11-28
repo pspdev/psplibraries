@@ -1,5 +1,5 @@
 #!/bin/sh
-# check-make.sh by Dan Peori (danpeori@oopo.net)
+# check-make.sh by Naomi Peori (naomi@peori.ca)
 
  ## Check for make.
  make -v

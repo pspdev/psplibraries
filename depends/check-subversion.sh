@@ -1,5 +1,5 @@
 #!/bin/sh
-# check-subversion.sh by Dan Peori (danpeori@oopo.net)
+# check-subversion.sh by Naomi Peori (naomi@peori.ca)
 
  ## Check for subversion.
  svn --version
