@@ -1,11 +1,14 @@
 #!/bin/sh
 
-MODULE_PATH=$(psp-config --psp-prefix)/share/cmake-2.8/Modules
 psp_prefix=`psp-config --psp-prefix`
+
+export PKG_CONFIG_LIBDIR=${psp_prefix}/lib/pkgconfig
+
+MODULE_PATH=${psp_prefix}/share/cmake
 
 cmake \
   -DCMAKE_INSTALL_PREFIX:PATH=${psp_prefix} \
   -DBUILD_SHARED_LIBS:BOOL=OFF \
   -DCMAKE_MODULE_PATH=$MODULE_PATH \
-  -DCMAKE_TOOLCHAIN_FILE=$MODULE_PATH/Platform/PSP.cmake \
+  -DCMAKE_TOOLCHAIN_FILE=$MODULE_PATH/PSP.cmake \
   "$@"

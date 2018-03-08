@@ -3,25 +3,23 @@ SET(CMAKE_SYSTEM_VERSION 1)
 SET(CMAKE_CROSSCOMPILING TRUE)
 
 # set compiler
-INCLUDE(CMakeForceCompiler)
-CMAKE_FORCE_C_COMPILER(psp-gcc GNU)
-CMAKE_FORCE_CXX_COMPILER(psp-g++ GNU)
+set(CMAKE_C_COMPILER psp-gcc)
+set(CMAKE_CXX_COMPILER psp-g++)
 
 SET(BUILD_SHARED_LIBS FALSE)
 SET(CMAKE_EXECUTABLE_SUFFIX ".elf")
 
 # set find root path
-SET(CMAKE_FIND_ROOT_PATH "")
-FOREACH(i "--pspsdk-path" "--psp-prefix")
-  EXECUTE_PROCESS(
-	COMMAND "psp-config" ${i}
-	OUTPUT_VARIABLE output
-	OUTPUT_STRIP_TRAILING_WHITESPACE)
+execute_process(COMMAND psp-config --pspsdk-path
+  OUTPUT_VARIABLE PSPSDK_PATH
+  OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-  LIST(APPEND CMAKE_FIND_ROOT_PATH "${output}")
-  INCLUDE_DIRECTORIES(SYSTEM "${output}/include")
-  LINK_DIRECTORIES("${output}/lib")
-ENDFOREACH()
+execute_process(COMMAND psp-config --psp-prefix
+  OUTPUT_VARIABLE PSP_PREFIX
+  OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+set(CMAKE_FIND_ROOT_PATH "${PSPSDK_PATH};${PSP_PREFIX}")
+include_directories(SYSTEM "${PSPSDK_PATH}/include;${PSP_PREFIX}/include")
 
 SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
@@ -31,4 +29,6 @@ SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 ADD_DEFINITIONS("-G0")
 
 # linker flags
-LINK_LIBRARIES(pspdebug pspdisplay pspge pspsdk c pspuser)
+set(PSP_LIBRARIES "-lpspdebug -lpspdisplay -lpspge -lpspctrl -lc -lpspsdk -lc -lpspnet -lpspnet_inet -lpspnet_apctl -lpspnet_resolver -lpspaudiolib -lpsputility -lpspuser -lpspkernel -L${PSPSDK_PATH}/lib -L${PSP_PREFIX}/lib")
+set(CMAKE_C_STANDARD_LIBRARIES "${PSP_LIBRARIES}")
+set(CMAKE_CXX_STANDARD_LIBRARIES "-lstdc++ ${PSP_LIBRARIES}")
