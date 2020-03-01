@@ -11,7 +11,7 @@ download_and_extract http://kcat.strangesoft.net/openal-releases/openal-soft-$OP
 sed -i -e "s/memory\.h/string.h/" Alc/*.c Alc/backends/*.c || { exit 1; }
 
 ## Run cmake
-psp-cmake -D CMAKE_INSTALL_PREFIX=$(psp-config --psp-prefix) -D UTILS=OFF . || { exit 1; }
+psp-cmake -D CMAKE_INSTALL_PREFIX=$(psp-config --psp-prefix) -D UTILS=OFF -D EXAMPLES=OFF . || { exit 1; }
 
 ## Compile and Install
 run_make -j `num_cpus`
