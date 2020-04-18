@@ -31,7 +31,7 @@ function test_deps_install {
         test_dep $dep || {
             script2="$basepath/scripts/$dep.sh"
             if [ -x $script2 ]; then
-                sh -c "source $basepath/common.sh; set -e; basepath=$basepath; source $script2" || { echo "Couldn't install dependency $dep, aborting."; return 1; }
+                bash -c "source $basepath/common.sh; set -e; basepath=$basepath; source $script2" || { echo "Couldn't install dependency $dep, aborting."; return 1; }
             else
                 echo "Dependency $dep required but not found. Please install it."
                 return 1
