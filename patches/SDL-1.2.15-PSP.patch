@@ -34,7 +34,7 @@ diff -burN SDL-1.2.15/configure.in SDL-1.2.15-PSP/configure.in
 +        AC_MSG_RESULT($video_opengl)
 +        if test x$video_opengl = xyes; then
 +            EXTRA_CFLAGS="$EXTRA_CFLAGS -DHAVE_OPENGL"
-+            EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lGL -lpspvfpu"
++            EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lGL -lm -lpspvfpu"
 +        fi
 +    fi
 +}
