@@ -4,4 +4,4 @@
  ## Check for cmake toolchain script.
  ls \
      $(psp-config --pspdev-path)/bin/psp-cmake \
-     $(psp-config --psp-prefix)/share/cmake-2.8/Modules/Platform/PSP.cmake
+     $(psp-config --psp-prefix)/share/cmake/PSP.cmake
