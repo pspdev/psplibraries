@@ -22,13 +22,15 @@ macro(create_pbp_file)
         endif()
     endforeach()
 
-    add_custom_command(TARGET ${ARG_TARGET} POST_BUILD
+    add_custom_command(
+            TARGET ${ARG_TARGET} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E make_directory
             $<TARGET_FILE_DIR:${ARG_TARGET}>/psp_artifact
             COMMENT "Creating psp_artifact directory."
     )
 
-    add_custom_command(TARGET ${ARG_TARGET} POST_BUILD
+    add_custom_command(
+            TARGET ${ARG_TARGET} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
             $<TARGET_FILE:${ARG_TARGET}>
             $<TARGET_FILE_DIR:${ARG_TARGET}>/psp_artifact
