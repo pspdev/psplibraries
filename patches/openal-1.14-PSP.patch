@@ -1,0 +1,129 @@
+diff --git a/Alc/ALc.c b/Alc/ALc.c
+index 52ba680..12dcf8f 100644
+--- a/Alc/ALc.c
++++ b/Alc/ALc.c
+@@ -23,7 +23,7 @@
+ #include <math.h>
+ #include <stdlib.h>
+ #include <stdio.h>
+-#include <memory.h>
++#include <string.h>
+ #include <ctype.h>
+ #include <signal.h>
+ 
+diff --git a/Alc/backends/alsa.c b/Alc/backends/alsa.c
+index fa5ef1a..22ece9b 100644
+--- a/Alc/backends/alsa.c
++++ b/Alc/backends/alsa.c
+@@ -22,7 +22,7 @@
+ 
+ #include <stdlib.h>
+ #include <stdio.h>
+-#include <memory.h>
++#include <string.h>
+ 
+ #include "alMain.h"
+ 
+diff --git a/Alc/backends/dsound.c b/Alc/backends/dsound.c
+index 0eab62a..d14fac6 100644
+--- a/Alc/backends/dsound.c
++++ b/Alc/backends/dsound.c
+@@ -22,7 +22,7 @@
+ 
+ #include <stdlib.h>
+ #include <stdio.h>
+-#include <memory.h>
++#include <string.h>
+ 
+ #include <dsound.h>
+ #include <cguid.h>
+diff --git a/Alc/backends/mmdevapi.c b/Alc/backends/mmdevapi.c
+index 6861430..ca02f7c 100644
+--- a/Alc/backends/mmdevapi.c
++++ b/Alc/backends/mmdevapi.c
+@@ -23,7 +23,7 @@
+ #define COBJMACROS
+ #include <stdlib.h>
+ #include <stdio.h>
+-#include <memory.h>
++#include <string.h>
+ 
+ #include <mmdeviceapi.h>
+ #include <audioclient.h>
+diff --git a/Alc/backends/oss.c b/Alc/backends/oss.c
+index a577d8b..bf6914c 100644
+--- a/Alc/backends/oss.c
++++ b/Alc/backends/oss.c
+@@ -26,7 +26,7 @@
+ #include <fcntl.h>
+ #include <stdlib.h>
+ #include <stdio.h>
+-#include <memory.h>
++#include <string.h>
+ #include <unistd.h>
+ #include <errno.h>
+ #include <math.h>
+diff --git a/Alc/backends/solaris.c b/Alc/backends/solaris.c
+index 26d923c..7557eb0 100644
+--- a/Alc/backends/solaris.c
++++ b/Alc/backends/solaris.c
+@@ -26,7 +26,7 @@
+ #include <fcntl.h>
+ #include <stdlib.h>
+ #include <stdio.h>
+-#include <memory.h>
++#include <string.h>
+ #include <unistd.h>
+ #include <errno.h>
+ #include <math.h>
+diff --git a/Alc/backends/wave.c b/Alc/backends/wave.c
+index d9f1fdc..a222438 100644
+--- a/Alc/backends/wave.c
++++ b/Alc/backends/wave.c
+@@ -22,7 +22,7 @@
+ 
+ #include <stdlib.h>
+ #include <stdio.h>
+-#include <memory.h>
++#include <string.h>
+ #include "alMain.h"
+ #include "AL/al.h"
+ #include "AL/alc.h"
+diff --git a/Alc/backends/winmm.c b/Alc/backends/winmm.c
+index 9641bcf..7fe7e9a 100644
+--- a/Alc/backends/winmm.c
++++ b/Alc/backends/winmm.c
+@@ -22,7 +22,7 @@
+ 
+ #include <stdlib.h>
+ #include <stdio.h>
+-#include <memory.h>
++#include <string.h>
+ 
+ #include <windows.h>
+ #include <mmsystem.h>
+diff --git a/OpenAL32/Include/alu.h b/OpenAL32/Include/alu.h
+index fa71480..a277914 100644
+--- a/OpenAL32/Include/alu.h
++++ b/OpenAL32/Include/alu.h
+@@ -11,7 +11,7 @@
+ #include <float.h>
+ /* HACK: Seems cross-compiling with MinGW includes the wrong float.h, which
+  * doesn't define Windows' _controlfp and related macros */
+-#if defined(__MINGW32__) && !defined(_RC_CHOP)
++#if (defined(__PSP__) || defined(__MINGW32__)) && !defined(_RC_CHOP)
+ /* Control word masks for unMask */
+ #define _MCW_EM         0x0008001F      /* Error masks */
+ #define _MCW_IC         0x00040000      /* Infinity */
+@@ -33,9 +33,11 @@
+ #define _PC_24          0x00020000
+ #define _PC_53          0x00010000
+ #define _PC_64          0x00000000
++#if defined(__MINGW32__)
+ _CRTIMP unsigned int __cdecl __MINGW_NOTHROW _controlfp (unsigned int unNew, unsigned int unMask);
+ #endif
+ #endif
++#endif
+ #ifdef HAVE_IEEEFP_H
+ #include <ieeefp.h>
+ #endif
