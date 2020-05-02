@@ -50,18 +50,15 @@ add_definitions("-G0")
 add_definitions("-D__PSP__")
 add_definitions("-DHAVE_OPENGL")
 
-# Pass these libraries to linker calls by default:
+# Aggregated list of all PSP-specific libraries for convenience.
 set(PSP_LIBRARIES
         "-lg -lc -lpspdebug -lpspctrl -lpspsdk \
         -lpspnet -lpspnet_inet -lpspnet_apctl -lpspnet_resolver -lpspaudiolib \
         -lpsputility -lGL \
-        -lpspvfpu -lpspdisplay -lpsphprm \
+        -lpspvfpu -lpspdisplay -lpsphprm -lpspirkeyb \
         -lpsprtc -lpspaudio -lpspvram  -lpspgu -lpspge -lpspuser \
         -L${PSPSDK}/lib -L${PSPDEV}/lib"
 )
-
-set(CMAKE_C_STANDARD_LIBRARIES "${PSP_LIBRARIES}")
-set(CMAKE_CXX_STANDARD_LIBRARIES "-lstdc++ ${PSP_LIBRARIES}")
 
 # File defining macro outputting PSP-specific EBOOT.PBP out of passed executable target:
 include("${PSPCMAKE}/CreatePBP.cmake")
