@@ -1,34 +1,67 @@
-SET(CMAKE_SYSTEM_NAME Generic)
-SET(CMAKE_SYSTEM_VERSION 1)
-SET(CMAKE_CROSSCOMPILING TRUE)
+#
+# CMake toolchain file for PSP.
+#
+# Copyright 2019 - Wally
+# Copyright 2020 - Daniel 'dbeef' Zalega
 
-# set compiler
-set(CMAKE_C_COMPILER psp-gcc)
-set(CMAKE_CXX_COMPILER psp-g++)
+if (DEFINED PSPDEV)
+    # Custom PSPDEV passed as cmake call argument.
+else()
+    # Determine PSP toolchain installation directory;
+    # psp-config binary is guaranteed to be in path after successful installation:
+    execute_process(COMMAND bash -c "psp-config --pspdev-path" OUTPUT_VARIABLE PSPDEV OUTPUT_STRIP_TRAILING_WHITESPACE)
+endif()
 
-SET(BUILD_SHARED_LIBS FALSE)
-SET(CMAKE_EXECUTABLE_SUFFIX ".elf")
+# Assert that PSP SDK path is now defined:
+if (NOT DEFINED PSPDEV)
+    message(FATAL_ERROR "PSPDEV not defined. Make sure psp-config in your path or pass custom \
+                        toolchain location via PSPDEV variable in cmake call.")
+endif ()
 
-# set find root path
-execute_process(COMMAND psp-config --pspsdk-path
-  OUTPUT_VARIABLE PSPSDK_PATH
-  OUTPUT_STRIP_TRAILING_WHITESPACE)
+# Set helper variables:
+set(PSPSDK ${PSPDEV}/psp/sdk)
+set(PSPBIN ${PSPDEV}/bin)
+set(PSPCMAKE ${PSPDEV}/psp/share/cmake)
 
-execute_process(COMMAND psp-config --psp-prefix
-  OUTPUT_VARIABLE PSP_PREFIX
-  OUTPUT_STRIP_TRAILING_WHITESPACE)
+# Basic CMake Declarations
+set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_C_COMPILER ${PSPBIN}/psp-gcc)
+set(CMAKE_CXX_COMPILER ${PSPBIN}/psp-g++)
+set(CMAKE_FIND_ROOT_PATH "${PSPSDK};${PSPDEV}")
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
-set(CMAKE_FIND_ROOT_PATH "${PSPSDK_PATH};${PSP_PREFIX}")
-include_directories(SYSTEM "${PSPSDK_PATH}/include;${PSP_PREFIX}/include")
+# Set paths to PSP-specific utilities:
+set(MKSFO ${PSPBIN}/mksfo)
+set(MKSFOEX ${PSPBIN}/mksfoex)
+set(PACK_PBP ${PSPBIN}/pack-pbp)
+set(FIXUP ${PSPBIN}/psp-fixup-imports)
+set(ENC ${PSPBIN}/PrxEncrypter)
 
-SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+# Include directories:
+include_directories(${include_directories} ${PSPDEV}/include ${PSPSDK}/include)
 
-# reduce link error
-ADD_DEFINITIONS("-G0")
+# Discard debug information:
+add_definitions("-G0")
 
-# linker flags
-set(PSP_LIBRARIES "-lpspdebug -lpspdisplay -lpspge -lpspctrl -lc -lpspsdk -lc -lpspnet -lpspnet_inet -lpspnet_apctl -lpspnet_resolver -lpspaudiolib -lpsputility -lpspuser -lpspkernel -L${PSPSDK_PATH}/lib -L${PSP_PREFIX}/lib")
+# Definitions that may be needed to use some libraries:
+add_definitions("-D__PSP__")
+add_definitions("-DHAVE_OPENGL")
+
+# Pass these libraries to linker calls by default:
+set(PSP_LIBRARIES
+        "-lg -lc -lpspdebug -lpspdisplay -lpspge -lpspctrl -lpspsdk \
+        -lpspnet -lpspnet_inet -lpspnet_apctl -lpspnet_resolver -lpspaudiolib \
+        -lpsputility -lpspuser -lpspkernel -L${PSPSDK}/lib -L${PSPDEV}/lib"
+)
+
 set(CMAKE_C_STANDARD_LIBRARIES "${PSP_LIBRARIES}")
 set(CMAKE_CXX_STANDARD_LIBRARIES "-lstdc++ ${PSP_LIBRARIES}")
+
+# File defining macro outputting PSP-specific EBOOT.PBP out of passed executable target:
+include("${PSPCMAKE}/CreatePBP.cmake")
+
+# Helper variable for multi-platform projects to identify current platform:
+set(PLATFORM_PSP TRUE BOOL)
