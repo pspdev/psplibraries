@@ -3,6 +3,7 @@
 #
 # Args:
 # TARGET - defined by an add_executable call before calling create_pbp_file
+# TITLE - optional, string, target's name in PSP menu
 # ICON_PATH - optional, absolute path to .png file, 144x82
 # BACKGROUND_PATH - optional, absolute path to .png file, 480x272
 # PREVIEW_PATH - optional, absolute path to .png file, 480x272
@@ -11,7 +12,7 @@ cmake_minimum_required(VERSION 3.10)
 
 macro(create_pbp_file)
 
-    set(oneValueArgs TARGET ICON_PATH BACKGROUND_PATH PREVIEW_PATH)
+    set(oneValueArgs TARGET TITLE ICON_PATH BACKGROUND_PATH PREVIEW_PATH)
     cmake_parse_arguments("ARG" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     # As pack-pbp takes undefined arguments in form of "NULL" string,
@@ -47,7 +48,7 @@ macro(create_pbp_file)
     add_custom_command(
             TARGET ${ARG_TARGET}
             POST_BUILD COMMAND
-            "${MKSFOEX}" "-d" "MEMSIZE=1" "$<TARGET_FILE_DIR:${ARG_TARGET}>/psp_artifact/${ARG_TARGET}" "PARAM.SFO"
+            "${MKSFOEX}" "-d" "MEMSIZE=1" "${ARG_TITLE}" "PARAM.SFO"
             COMMENT "Calling mksfoex"
     )
 
