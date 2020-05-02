@@ -52,9 +52,12 @@ add_definitions("-DHAVE_OPENGL")
 
 # Pass these libraries to linker calls by default:
 set(PSP_LIBRARIES
-        "-lg -lc -lpspdebug -lpspdisplay -lpspge -lpspctrl -lpspsdk \
+        "-lg -lc -lpspdebug -lpspctrl -lpspsdk \
         -lpspnet -lpspnet_inet -lpspnet_apctl -lpspnet_resolver -lpspaudiolib \
-        -lpsputility -lpspuser -lpspkernel -L${PSPSDK}/lib -L${PSPDEV}/lib"
+        -lpsputility -lGL \
+        -lpspvfpu -lpspdisplay -lpsphprm \
+        -lpsprtc -lpspaudio -lpspvram  -lpspgu -lpspge -lpspuser \
+        -L${PSPSDK}/lib -L${PSPDEV}/lib"
 )
 
 set(CMAKE_C_STANDARD_LIBRARIES "${PSP_LIBRARIES}")
