@@ -23,6 +23,21 @@ macro(create_pbp_file)
         endif()
     endforeach()
 
+    if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+        add_custom_command(
+            TARGET ${ARG_TARGET}
+            POST_BUILD COMMAND
+            "${STRIP}" "$<TARGET_FILE:${ARG_TARGET}>"
+            COMMENT "Stripping binary"
+        )
+    else()
+        add_custom_command(
+            TARGET ${ARG_TARGET}
+            POST_BUILD COMMAND
+            ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Not stripping binary, build type is ${CMAKE_BUILD_TYPE}."
+        )
+    endif()
+
     add_custom_command(
             TARGET ${ARG_TARGET} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E make_directory
