@@ -112,6 +112,36 @@ function get_pspports {
     fi
 }
 
+# Usage: get_pspport repository branch(defaults to master)
+function get_pspport {
+    cd $basepath/build
+    test_deps git
+
+    repository=$1
+    branch=${2:-"master"}
+
+    if [ -d "$repository" ]; then
+        # update
+        cd $repository
+
+        if [ ! -d ".git" ]; then
+            echo "Please delete 'build/$repository' and try again"
+            return 1
+        fi
+        # cleanup
+        git reset --hard
+        git clean -fd
+        git fetch
+        git checkout $branch -- || return 1;
+        git pull || { echo "Please delete 'build/$repository' and try again"; return 1; }
+    else
+        # clone
+        git clone "https://github.com/pspdev/$repository.git" $repository
+        cd $repository || return 1;
+        git checkout $branch
+    fi
+}
+
 # Usage: run_configure OPT1 OPT2 ...
 function run_configure {
     LDFLAGS="$LDFLAGS -L$(psp-config --pspsdk-path)/lib -L$(psp-config --psp-prefix)/lib -lc -lpspuser" \
