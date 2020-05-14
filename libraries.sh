@@ -12,6 +12,10 @@
  fi
  export LIBTOOLIZE
 
+ ## Enforce pkg-config path, to not get fooled by host libraries
+ unset PKG_CONFIG_PATH
+ export PKG_CONFIG_LIBDIR="$(psp-config --psp-prefix)/lib/pkgconfig"
+
  ## Enter the psplibraries directory.
  cd "`dirname $0`" || { echo "ERROR: Could not enter the psplibraries directory."; exit 1; }
 
