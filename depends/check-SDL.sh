@@ -1,3 +1,5 @@
 #!/bin/sh
- $(psp-config --psp-prefix)/bin/sdl-config --version
 
+ PREFIX=$(psp-config --psp-prefix)
+
+ ls $PREFIX/lib/libSDL.a $PREFIX/lib/libSDLmain.a $PREFIX/include/SDL
