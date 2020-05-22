@@ -1,6 +1,6 @@
 # Contribution guidelines
 
-This repository contains a set of PSPBUILDs which allow for building different libraries for the PSP. Contributions to this repository are very welcome and help improve the PSP toolchain.
+This repository contains a set of PSPBUILDs which allow for building different libraries for the PSP. Contributions to this repository are very welcome and helps improve the PSP toolchain.
 
 For new PSPBUILDs or updates to existing ones to be mergable in this repository, the following criteria will need to be met:
 
