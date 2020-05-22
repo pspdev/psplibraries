@@ -2,9 +2,9 @@
 pkgname=bzip2
 pkgver=1.0.6
 pkgrel=1
-pkgdesc="OpenGL-ESish library for PSP"
+pkgdesc="A high-quality data compression library"
 arch=('mips')
-url="https://github.com/pspdev/psp-ports"
+url="http://www.sourceware.org/bzip2/"
 license=('GPL')
 depends=()
 makedepends=()
