@@ -5,7 +5,7 @@ pkgrel=1
 pkgdesc="OpenGL-ESish library for PSP"
 arch=('mips')
 url="https://github.com/pspdev/psp-ports"
-license=('GPL')
+license=('BSD')
 depends=()
 makedepends=()
 optdepends=()
@@ -44,5 +44,7 @@ package() {
 	mkdir -m 755 -p "$pkgdir/psp/include/GL/" "$pkgdir/psp/include/GLES/"
 	install -Dm 644 GL/* "$pkgdir/psp/include/GL/"
 	install -Dm 644 GLES/* "$pkgdir/psp/include/GLES/"
+
+	install -Dm644 LICENSE "$pkgdir/psp/share/licenses/$pkgname/LICENSE"
 }
 
