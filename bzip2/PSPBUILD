@@ -1,0 +1,35 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=bzip2
+pkgver=1.0.6
+pkgrel=1
+pkgdesc="OpenGL-ESish library for PSP"
+arch=('mips')
+url="https://github.com/pspdev/psp-ports"
+license=('GPL')
+depends=()
+makedepends=()
+optdepends=()
+source=(
+	"ftp://sourceware.org/pub/${pkgname}/${pkgname}-${pkgver}.tar.gz"
+	"${pkgname}-${pkgver}-PSP.patch"
+)
+sha256sums=(
+	'a2848f34fcd5d6cf47def00461fcb528a0484d8edef8208d6d2e2909dc61d9cd'
+	'SKIP'
+)
+
+prepare() {
+	cd "$pkgname-$pkgver"
+	patch -p1 < ../${pkgname}-${pkgver}-PSP.patch
+}
+
+build() {
+	cd "$pkgname-$pkgver"
+	make -j`nproc`
+}
+
+package() {
+	cd "$pkgname-$pkgver"
+	make PREFIX="$pkgdir/psp" install
+}
+
