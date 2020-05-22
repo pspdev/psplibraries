@@ -14,6 +14,8 @@ sha256sums=('SKIP')
 
 pkgver() {
   cd psp-ports
+  # Set the revisioin of the repo as version
+  # Means any update to psp-ports will result in a new version number
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
@@ -34,6 +36,7 @@ build() {
 
 package() {
 	cd "psp-ports/$pkgname"
+	# make install isn't usable for pspgl, so we're installing manually
 	install -Dm 644 "libGL.a" "$pkgdir/psp/lib/libGL.a"
 	install -Dm 644 "libGLU.a" "$pkgdir/psp/lib/libGLU.a"
 	install -Dm 644 "libglut.a" "$pkgdir/psp/lib/libglut.a"
