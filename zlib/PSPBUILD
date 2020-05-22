@@ -1,0 +1,35 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=zlib
+pkgver=1.2.8
+pkgrel=1
+pkgdesc="Compression library implementing the deflate compression method found in gzip and PKZIP"
+arch=('mips')
+url="https://www.zlib.net/"
+license=('custom')
+depends=()
+makedepends=()
+optdepends=()
+source=(
+	"ftp://sourceware.org/pub/${pkgname}/${pkgname}-${pkgver}.tar.gz"
+	"${pkgname}-${pkgver}-PSP.patch"
+)
+sha256sums=(
+	'a2848f34fcd5d6cf47def00461fcb528a0484d8edef8208d6d2e2909dc61d9cd'
+	'SKIP'
+)
+
+prepare() {
+	cd "$pkgname-$pkgver"
+	patch -p1 < ../${pkgname}-${pkgver}-PSP.patch
+}
+
+build() {
+	cd "$pkgname-$pkgver"
+	make -j`nproc`
+}
+
+package() {
+	cd "$pkgname-$pkgver"
+	make PREFIX="$pkgdir/psp" install
+}
+
