@@ -5,7 +5,7 @@ pkgrel=1
 pkgdesc="A high-quality data compression library"
 arch=('mips')
 url="http://www.sourceware.org/bzip2/"
-license=('GPL')
+license=('custom')
 depends=()
 makedepends=()
 optdepends=()
@@ -31,5 +31,7 @@ build() {
 package() {
 	cd "$pkgname-$pkgver"
 	make PREFIX="$pkgdir/psp" install
+
+	install -Dm644 LICENSE "$pkgdir/psp/share/licenses/$pkgname/LICENSE"
 }
 
