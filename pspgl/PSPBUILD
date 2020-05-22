@@ -1,0 +1,45 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=pspgl
+pkgver=r59.2e82204
+pkgrel=1
+pkgdesc="OpenGL-ESish library for PSP"
+arch=('mips')
+url="https://github.com/pspdev/psp-ports"
+license=('GPL')
+depends=()
+makedepends=()
+optdepends=()
+source=("git+https://github.com/pspdev/psp-ports.git")
+sha256sums=('SKIP')
+
+pkgver() {
+  cd psp-ports
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+	cd "psp-ports/$pkgname"
+	for i in glLockArraysEXT pspgl_dlist pspgl_vidmem
+	do
+		echo '#include <psptypes.h>' > $i.c.tmp
+		cat $i.c >> $i.c.tmp
+		cat $i.c.tmp > $i.c
+	done
+}
+
+build() {
+	cd "psp-ports/$pkgname"
+	make -j`nproc`
+}
+
+package() {
+	cd "psp-ports/$pkgname"
+	install -Dm 644 "libGL.a" "$pkgdir/psp/lib/libGL.a"
+	install -Dm 644 "libGLU.a" "$pkgdir/psp/lib/libGLU.a"
+	install -Dm 644 "libglut.a" "$pkgdir/psp/lib/libglut.a"
+
+	mkdir -m 755 -p "$pkgdir/psp/include/GL/" "$pkgdir/psp/include/GLES/"
+	install -Dm 644 GL/* "$pkgdir/psp/include/GL/"
+	install -Dm 644 GLES/* "$pkgdir/psp/include/GLES/"
+}
+
