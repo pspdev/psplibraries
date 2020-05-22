@@ -2,8 +2,7 @@ build/
 
 # Build files for packages
 */*/
-*.pkg.tar.gz
-*.tar.gz
-*.tar.xz
 *.gz
+*.xz
 *.zip
+*.bz2
