@@ -12,7 +12,7 @@ For new PSPBUILDs or updates to existing ones to be mergable in this repository,
   - ``sha256sums`` should be used for integrity checks of downloaded files. Only version controlled repositories (think git, svn or mercurial) and local patches are allowed to use ``SKIP``.
   - PSPBUILDs based on versioned archive files (yourlibrary-1.2.tar.gz for instance) are preferred over those based on version controlled repositories.
   - The license of the library should be installed in ``$pkgdir/psp/share/licenses/$pkgname``.
-  - For PSPBUILDs based on a version controlled repository, use the ``pkgver()`` function to set the ``pkgver`` to something which only changes if the git repo is updated. See [this page](https://wiki.archlinux.org/index.php/VCS_package_guidelines) for instructions on how to do that.
+  - For PSPBUILDs based on a version controlled repository, use the ``pkgver()`` function to set the ``pkgver`` to something which only changes if that repository is updated. See [this page](https://wiki.archlinux.org/index.php/VCS_package_guidelines) for instructions on how to do that.
   - No packages which can not be legally distributed after building are allowed.
   - ``pkgname`` should not contain capital letters or special characters other than ``-``.
   - PSPBUILDS should start with ``#Maintainer: Your Name``. Adding an email at the end like ``<youemail@example.com>`` is optional, but encouraged.
