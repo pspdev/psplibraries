@@ -25,7 +25,6 @@ build() {
 
 package() {
 	cd "$pkgname"
-	# make install isn't usable for pspgl, so we're installing manually
 	install -Dm 644 "libpspvalloc.a" "$pkgdir/psp/lib/libpspvalloc.a"
 	install -Dm 644 "libpspvram.a" "$pkgdir/psp/lib/libpspvram.a"
 
