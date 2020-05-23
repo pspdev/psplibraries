@@ -14,7 +14,7 @@ sha256sums=('SKIP')
 
 pkgver() {
   cd "$pkgname"
-  # Set the revisioin of the repo as version
+  # Set the revision of the repo as version
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
@@ -30,7 +30,7 @@ package() {
 	install -Dm 644 "libpspvram.a" "$pkgdir/psp/lib/libpspvram.a"
 
 	mkdir -m 755 -p "$pkgdir/psp/include/"
-	install -Dm 644 *.h "$pkgdir/psp/include/"
+	install -m 644 *.h "$pkgdir/psp/include/"
 
 	install -Dm644 LICENSE "$pkgdir/psp/share/licenses/$pkgname/LICENSE"
 }
