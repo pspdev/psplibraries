@@ -1,0 +1,37 @@
+# Maintainer: Nicholas Jackson <sirfortesque.git@gmail.com>
+pkgname=sqlite
+pkgver=3.7.3
+pkgrel=1
+pkgdesc="SQLite is a C-language library that implements a small, fast, self-contained, high-reliability, full-featured, SQL database engine."
+arch=('mips')
+url="https://www.sqlite.org/"
+license=('custom:Public Domain')
+depends=()
+optdepends=()
+makedepends=()
+source=(
+    "http://www.sqlite.org/${pkgname}-${pkgver}.tar.gz"
+    "${pkgname}-${pkgver}-PSP.patch"
+)
+sha256sums=(
+    "dbf352e8fbb74829f5e7a88f9f6ceeb80a709537f668c36e4b6cdfb271309ef6"
+    "SKIP"
+)
+
+prepare() {
+    cd "$pkgname-$pkgver"
+	patch -p1 < ../${pkgname}-${pkgver}-PSP.patch
+}
+
+build() {
+    cd "$pkgname-$pkgver"
+    LDFLAGS="-L$(psp-config --pspsdk-path)/lib -lc -lpspuser" \
+    CFLAGS="-DSQLITE_OS_OTHER=1 -DSQLITE_OS_PSP=1 -I$(psp-config --pspsdk-path)/include" \
+    ./configure --host=psp --prefix="" --disable-readline --disable-tcl --disable-threadsafe --disable-amalgamation
+    make
+}
+
+package() {
+    cd "$pkgname-$pkgver"
+	make DESTDIR="$pkgdir/psp" install
+}
