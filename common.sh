@@ -142,6 +142,31 @@ function get_pspport {
     fi
 }
 
+# Clones or updates a Git repository.
+# Usage: clone_git_repo <hostname> <user> <repo> <branch>
+function clone_git_repo
+{
+    host=$1
+    user=$2
+    repo=$3
+    branch=${4:-master}
+    
+    OLDPWD=$PWD
+    
+    # Try to update an existing repository at the target path.
+    # Nuke it if it's corrupted and the pull fails.
+    [ -d $repo/.git ] && { cd $repo && git pull; } || rm -rf $OLDPWD/$repo
+    
+    # The above command may leave us standing in the existing repo.
+    cd $OLDPWD
+    
+    # If it does not exist at this point, it was never there in the first place
+    # or it was nuked due to being corrupted. Clone and track master, please.
+    # Attempt to clone over SSH if possible, use anonymous HTTP as fallback.
+    # Set SSH_ASKPASS and stdin(<) to prevent it from freezing to ask for auth.
+    [ -d $repo ] || SSH_ASKPASS=false git clone --recursive --depth 1 -b $branch git@$host:$user/$repo.git $repo < /dev/null || SSH_ASKPASS=false git clone --recursive --depth 1 -b $branch https://$host/$user/$repo.git $repo < /dev/null || return 1
+}
+
 # Usage: run_configure OPT1 OPT2 ...
 function run_configure {
     LDFLAGS="$LDFLAGS -L$(psp-config --pspsdk-path)/lib -L$(psp-config --psp-prefix)/lib -lc -lpspuser" \
