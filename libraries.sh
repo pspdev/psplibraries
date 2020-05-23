@@ -20,7 +20,7 @@ build_package() {
 
     echo "Building ${1}..."
     cd "${1}"
-    psp-makepkg -i
+    psp-makepkg -i --noconfirm
     cd $WORKDIR
 }
 
