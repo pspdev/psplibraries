@@ -1,0 +1,36 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=NAME
+pkgver=VERSION
+pkgrel=1
+pkgdesc=""
+arch=('mips')
+url=""
+license=('GPL')
+depends=()
+makedepends=()
+optdepends=()
+source=("$pkgname-$pkgver.tar.gz"
+        "$pkgname-$pkgver.patch")
+sha256sums=()
+
+prepare() {
+	cd "$pkgname-$pkgver"
+	patch -p1 -i "$srcdir/$pkgname-$pkgver.patch"
+}
+
+build() {
+	cd "$pkgname-$pkgver"
+	./configure --prefix=/usr
+	make
+}
+
+check() {
+	cd "$pkgname-$pkgver"
+	make -k check
+}
+
+package() {
+	cd "$pkgname-$pkgver"
+	make DESTDIR="$pkgdir/" install
+}
+
