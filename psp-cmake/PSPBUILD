@@ -13,11 +13,13 @@ source=(
 	"CreatePBP.cmake"
 	"PSP.cmake"
 	"psp-cmake"
+	"https://www.gnu.org/licenses/gpl-3.0.txt"
 )
 sha256sums=(
 	'SKIP'
 	'SKIP'
 	'SKIP'
+	'3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986'
 )
 
 
@@ -25,5 +27,6 @@ package() {
 	install -Dm644 CreatePBP.cmake "$pkgdir/psp/share/cmake/CreatePBP.cmake"
 	install -Dm644 PSP.cmake "$pkgdir/psp/share/cmake/PSP.cmake"
 	install -Dm755 psp-cmake "$pkgdir/bin/psp-cmake"
+	install -Dm644 gpl-3.0.txt "$pkgdir/share/licenses/$pkgname/LICENSE"
 }
 
