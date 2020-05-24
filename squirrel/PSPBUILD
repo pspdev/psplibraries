@@ -2,7 +2,7 @@
 pkgname=squirrel
 pkgver=3.0.7
 pkgrel=1
-pkgdesc="runtime libraries for the Squirrel programming language"
+pkgdesc="Runtime libraries for the Squirrel programming language"
 arch=('mips')
 url="http://squirrel-lang.org/"
 license=('custom')
