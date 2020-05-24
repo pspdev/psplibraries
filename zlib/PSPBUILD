@@ -10,11 +10,11 @@ depends=()
 makedepends=()
 optdepends=()
 source=(
-	"ftp://sourceware.org/pub/${pkgname}/${pkgname}-${pkgver}.tar.gz"
+    "https://sourceforge.net/projects/libpng/files/${pkgname}/${pkgver}/${pkgname}-${pkgver}.tar.gz"
 	"${pkgname}-${pkgver}-PSP.patch"
 )
 sha256sums=(
-	'a2848f34fcd5d6cf47def00461fcb528a0484d8edef8208d6d2e2909dc61d9cd'
+	'36658cb768a54c1d4dec43c3116c27ed893e88b02ecfcb44f2166f9c0b7f2a0d'
 	'SKIP'
 )
 
@@ -30,6 +30,14 @@ build() {
 
 package() {
 	cd "$pkgname-$pkgver"
-	make PREFIX="$pkgdir/psp" install
+	install -Dm 644 libz.a "$pkgdir/psp/lib/libz.a"
+	install -Dm 644 zlib.h "$pkgdir/psp/include/zlib.h"
+	install -Dm 644 zconf.h "$pkgdir/psp/include/zconf.h"
+	
+	install -Dm 644 README "$pkgdir/psp/share/licenses/$pkgname/README"
+	
+	# Install documentation
+	mkdir -p "$pkgdir/psp/share/doc/"
+	cp -r doc "$pkgdir/psp/share/doc/$pkgname"
 }
 
