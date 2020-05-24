@@ -2,10 +2,10 @@
 pkgname=squirrel
 pkgver=3.0.7
 pkgrel=1
-pkgdesc="Compression library implementing the deflate compression method found in gzip and PKZIP"
+pkgdesc="runtime libraries for the Squirrel programming language"
 arch=('mips')
-url="https://www.zlib.net/"
-license=('ZLIB')
+url="http://squirrel-lang.org/"
+license=('custom')
 depends=()
 makedepends=()
 optdepends=()
