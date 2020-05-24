@@ -1,6 +1,6 @@
 # Maintainer: Wouter Wijsman <wwijsman@live.nl>
 pkgname=pspgl
-pkgver=r59.2e82204
+pkgver=r61.27cb71f
 pkgrel=1
 pkgdesc="OpenGL-ESish library for PSP"
 arch=('mips')
@@ -17,16 +17,6 @@ pkgver() {
   # Set the revisioin of the repo as version
   # Means any update to psp-ports will result in a new version number
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
-}
-
-prepare() {
-	cd "psp-ports/$pkgname"
-	for i in glLockArraysEXT pspgl_dlist pspgl_vidmem
-	do
-		echo '#include <psptypes.h>' > $i.c.tmp
-		cat $i.c >> $i.c.tmp
-		cat $i.c.tmp > $i.c
-	done
 }
 
 build() {
