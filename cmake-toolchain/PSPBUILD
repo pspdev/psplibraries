@@ -1,0 +1,29 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=psp-cmake
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="CMake wrapper for building PSP software"
+arch=('any')
+url="https://github.com/pspdev/psplibraries"
+license=('custom')
+depends=()
+makedepends=()
+optdepends=()
+source=(
+	"CreatePBP.cmake"
+	"PSP.cmake"
+	"psp-cmake"
+)
+sha256sums=(
+	'SKIP'
+	'SKIP'
+	'SKIP'
+)
+
+
+package() {
+	install -Dm644 CreatePBP.cmake "$pkgdir/psp/share/cmake/CreatePBP.cmake"
+	install -Dm644 PSP.cmake "$pkgdir/psp/share/cmake/PSP.cmake"
+	install -Dm755 psp-cmake "$pkgdir/bin/psp-cmake"
+}
+
