@@ -22,5 +22,7 @@ For new PSPBUILDs or updates to existing ones to be mergable in this repository,
   - Libraries go in ``$pkgdir/psp/lib/``.
   - Include files go in ``$pkgdir/psp/include/``.
   - Pkgconfig files go in ``$pkgdir/psp/lib/pkgconfig``.
+  - License files go in ``$pkgdir/psp/share/licenses/$pkgname``.
   - Scripts which should be in the path of the user go in ``$pkgdir/bin``.
   - Other scripts go in ``$pkgdir/psp/bin`` or ``$pspdir/share/$pkgname/bin``.
+  - Documentation goes in ``$pkgdir/psp/share/doc/$pkgname`` or ``$pkgdir/share/doc/$pkgname``.
