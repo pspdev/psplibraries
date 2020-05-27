@@ -32,6 +32,7 @@ package() {
 	cd "$pkgname-$pkgver"
 	make PREFIX="$pkgdir/psp" install
 
-	install -Dm644 LICENSE "$pkgdir/psp/share/licenses/$pkgname/LICENSE"
+	mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+	install -m 644 LICENSE "$pkgdir/psp/share/licenses/$pkgname/LICENSE"
 }
 

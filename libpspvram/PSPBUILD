@@ -25,12 +25,14 @@ build() {
 
 package() {
 	cd "$pkgname"
-	install -Dm 644 "libpspvalloc.a" "$pkgdir/psp/lib/libpspvalloc.a"
-	install -Dm 644 "libpspvram.a" "$pkgdir/psp/lib/libpspvram.a"
+	mkdir -m 755 -p "$pkgdir/psp/lib"
+	install -m 644 "libpspvalloc.a" "$pkgdir/psp/lib/libpspvalloc.a"
+	install -m 644 "libpspvram.a" "$pkgdir/psp/lib/libpspvram.a"
 
 	mkdir -m 755 -p "$pkgdir/psp/include/"
 	install -m 644 *.h "$pkgdir/psp/include/"
 
-	install -Dm644 LICENSE "$pkgdir/psp/share/licenses/$pkgname/LICENSE"
+	mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+	install -m 644 LICENSE "$pkgdir/psp/share/licenses/$pkgname/LICENSE"
 }
 

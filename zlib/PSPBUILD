@@ -30,11 +30,14 @@ build() {
 
 package() {
 	cd "$pkgname-$pkgver"
-	install -Dm 644 libz.a "$pkgdir/psp/lib/libz.a"
-	install -Dm 644 zlib.h "$pkgdir/psp/include/zlib.h"
-	install -Dm 644 zconf.h "$pkgdir/psp/include/zconf.h"
+
+	mkdir -m 755 -p "$pkgdir/psp/lib" "$pkgdir/psp/include"
+	install -m 644 libz.a "$pkgdir/psp/lib/libz.a"
+	install -m 644 zlib.h "$pkgdir/psp/include/zlib.h"
+	install -m 644 zconf.h "$pkgdir/psp/include/zconf.h"
 	
-	install -Dm 644 README "$pkgdir/psp/share/licenses/$pkgname/README"
+	mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+	install -m 644 README "$pkgdir/psp/share/licenses/$pkgname/README"
 	
 	# Install documentation
 	mkdir -p "$pkgdir/psp/share/doc/"
