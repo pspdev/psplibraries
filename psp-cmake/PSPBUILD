@@ -24,9 +24,12 @@ sha256sums=(
 
 
 package() {
-	install -Dm644 CreatePBP.cmake "$pkgdir/psp/share/cmake/CreatePBP.cmake"
-	install -Dm644 PSP.cmake "$pkgdir/psp/share/cmake/PSP.cmake"
-	install -Dm755 psp-cmake "$pkgdir/bin/psp-cmake"
-	install -Dm644 gpl-3.0.txt "$pkgdir/share/licenses/$pkgname/LICENSE"
+	mkdir -m 755 -p "$pkgdir/psp/share/cmake" "$pkgdir/bin"
+	install -m 644 CreatePBP.cmake "$pkgdir/psp/share/cmake/CreatePBP.cmake"
+	install -m 644 PSP.cmake "$pkgdir/psp/share/cmake/PSP.cmake"
+	install -m 755 psp-cmake "$pkgdir/bin/psp-cmake"
+
+	mkdir -m 755 -p "$pkgdir/share/licenses/$pkgname"
+	install -m 644 gpl-3.0.txt "$pkgdir/share/licenses/$pkgname/LICENSE"
 }
 

@@ -20,10 +20,12 @@ build() {
 
 package() {
 	cd "sdk/${pkgname}/"
-	install -Dm 644 "lib/libAngelscript.a" "$pkgdir/psp/lib/libAngelscript.a"
-	install -Dm 644 "include/angelscript.h" "$pkgdir/psp/include/angelscript.h"
+	mkdir -m 755 -p "$pkgdir/psp/lib" "$pkgdir/psp/include"
+	install -m 644 "lib/libAngelscript.a" "$pkgdir/psp/lib/libAngelscript.a"
+	install -m 644 "include/angelscript.h" "$pkgdir/psp/include/angelscript.h"
 	
-	install -Dm644 ../docs/manual/doc_license.html "$pkgdir/psp/share/licenses/$pkgname/license.html"
+	mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+	install -m 644 ../docs/manual/doc_license.html "$pkgdir/psp/share/licenses/$pkgname/license.html"
 	
 	# Install documentation
 	mkdir -p "$pkgdir/psp/share/doc/"

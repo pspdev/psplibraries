@@ -36,7 +36,8 @@ package() {
 	cd "$pkgname-$pkgver"
 	make DESTDIR="$pkgdir/" install
 	
-	install -Dm 644 COPYING "$pkgdir/psp/share/licenses/$pkgname/COPYING"
+	mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+	install -m 644 COPYING "$pkgdir/psp/share/licenses/$pkgname/COPYING"
 
 	# Remove the binary we can't use
 	rm -rf "${pkgdir}/psp/share/man"

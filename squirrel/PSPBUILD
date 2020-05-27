@@ -32,12 +32,14 @@ build() {
 package() {
 	cd "SQUIRREL3"
 
-	install -Dm 644 "lib/libsqstdlib.a" "$pkgdir/psp/lib/libsqstdlib.a"
-	install -Dm 644 "lib/libsquirrel.a" "$pkgdir/psp/lib/libsquirrel.a"
+	mkdir -m 755 -p "$pkgdir/psp/lib"
+	install -m 644 "lib/libsqstdlib.a" "$pkgdir/psp/lib/libsqstdlib.a"
+	install -m 644 "lib/libsquirrel.a" "$pkgdir/psp/lib/libsquirrel.a"
 
 	mkdir -m 755 -p "$pkgdir/psp/include/"
 	install -m 644 include/*.h "$pkgdir/psp/include/"
 
-	install -Dm644 COPYRIGHT "$pkgdir/psp/share/licenses/$pkgname/COPYRIGHT"
+	mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+	install -m 644 COPYRIGHT "$pkgdir/psp/share/licenses/$pkgname/COPYRIGHT"
 }
 
