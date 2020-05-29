@@ -1,5 +1,7 @@
---- smpeg-psp/audio/hufftable.cpp	2019-07-11 21:25:52.983004746 -0400
-+++ smpeg-psp-fix/audio/hufftable.cpp	2019-07-10 22:26:05.909736000 -0400
+diff --git a/audio/hufftable.cpp b/audio/hufftable.cpp
+index 6bc8e86..54a42b2 100644
+--- a/audio/hufftable.cpp
++++ b/audio/hufftable.cpp
 @@ -9,6 +9,7 @@
  #include "config.h"
  #endif
@@ -8,7 +10,7 @@
  #include "MPEGaudio.h"
  
  static const unsigned int
-@@ -550,11 +551,11 @@
+@@ -550,11 +551,11 @@ htd33[ 31][2]={{ 16,  1},{  8,  1},{  4,  1},{  2,  1},{  0,  0},{  0,  1},
  
  const HUFFMANCODETABLE MPEGaudio::ht[HTN]=
  {
@@ -22,7 +24,7 @@
    { 5, 4-1, 4-1, 0, 31,htd05},
    { 6, 4-1, 4-1, 0, 31,htd06},
    { 7, 6-1, 6-1, 0, 71,htd07},
-@@ -564,7 +565,7 @@
+@@ -564,7 +565,7 @@ const HUFFMANCODETABLE MPEGaudio::ht[HTN]=
    {11, 8-1, 8-1, 0,127,htd11},
    {12, 8-1, 8-1, 0,127,htd12},
    {13,16-1,16-1, 0,511,htd13},
@@ -31,3 +33,16 @@
    {15,16-1,16-1, 0,511,htd15},
    {16,16-1,16-1, 1,511,htd16},
    {17,16-1,16-1, 2,511,htd16},
+diff --git a/audio/mpegtoraw.cpp b/audio/mpegtoraw.cpp
+index 9105a58..327c7a7 100644
+--- a/audio/mpegtoraw.cpp
++++ b/audio/mpegtoraw.cpp
+@@ -28,7 +28,7 @@
+ #define _KEY 3
+ #endif
+ 
+-static __inline__ Uint16 SDL_Swap16(Uint16 x) { return ((x<<8)|(x>>8)); }
++static __inline__ Uint16 Disable_SDL_Swap16(Uint16 x) { return ((x<<8)|(x>>8)); }
+ 
+ int MPEGaudio::getbits( int bits )
+ {
