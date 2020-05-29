@@ -1,0 +1,34 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=opentri
+pkgver=r6.ec3f441
+pkgrel=1
+pkgdesc="openTRI is a game engine for the PSP"
+arch=('mips')
+url="https://github.com/albe/libpspvram"
+license=('GPL2')
+depends=('zlib' 'freetype')
+makedepends=()
+optdepends=()
+source=("git+https://github.com/SamRH/openTRI.git")
+sha256sums=('SKIP')
+
+pkgver() {
+  cd openTRI
+  # Set the revision of the repo as version
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+	cd openTRI
+	 PNG=1 FT=1 make
+}
+
+package() {
+	cd openTRI
+	mkdir -m 755 -p "$pkgdir/psp/lib"
+	make CP=cp MKDIR=mkdir DOXYGEN=doxygen PSPDIR="$pkgdir/psp" install
+
+	mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+	install -m 644 LICENSE "$pkgdir/psp/share/licenses/$pkgname/LICENSE"
+}
+
