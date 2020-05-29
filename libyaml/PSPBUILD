@@ -2,7 +2,7 @@
 pkgname=libyaml
 pkgver=0.1.4
 pkgrel=1
-pkgdesc="LibYAML is a YAML parser and emitter library."
+pkgdesc="LibYAML is a YAML parser and emitter library"
 arch=('mips')
 url="https://pyyaml.org/wiki/LibYAML"
 license=('MIT')
