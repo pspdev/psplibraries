@@ -1,0 +1,31 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=pthread-embedded
+pkgver=2.8.0
+pkgrel=1
+pkgdesc="psp's pthread"
+arch=('mips')
+url="https://github.com/take-cheeze/pthreads-emb"
+license=('GPL2')
+depends=()
+makedepends=()
+optdepends=()
+provides=('pthread')
+source=("git+https://github.com/take-cheeze/pthreads-emb.git")
+sha256sums=('SKIP')
+
+build() {
+	cd pthreads-emb
+	 make -C platform/psp
+}
+
+package() {
+	cd pthreads-emb
+	mkdir -m 755 -p "$pkgdir/psp/lib" "$pkgdir/psp/includes"
+	cp -v platform/psp/libpthread-psp.a "$pkgdir/psp/lib"
+	cp -v platform/psp/*.h "$pkgdir/psp/includes"
+	cp -v *.h "$pkgdir/psp/includes"
+
+	mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+	install -m 644 COPYING "$pkgdir/psp/share/licenses/$pkgname/COPYING"
+}
+
