@@ -13,10 +13,9 @@ source=("git+https://github.com/pspdev/psp-ports.git")
 sha256sums=('SKIP')
 
 pkgver() {
-  cd psp-ports
-  # Set the revisioin of the repo as version
-  # Means any update to psp-ports will result in a new version number
-  printf "r%s" "$(git rev-list --count HEAD ${pkgname})"
+	cd psp-ports
+	# Set the version to the revision of the pspgl directory
+	printf "r%s" "$(git rev-list --count HEAD ${pkgname})"
 }
 
 build() {
