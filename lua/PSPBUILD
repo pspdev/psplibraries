@@ -24,5 +24,7 @@ build() {
 
 package() {
 	cd "psp-ports/$pkgname"
-	make -f Makefile.psp PSPDIR="${pkgdir}" install
+	make -f Makefile.psp PSPDIR="${pkgdir}/psp" install
+	mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+	install -m 644 doc/readme.html "$pkgdir/psp/share/licenses/$pkgname/readme.html"
 }
