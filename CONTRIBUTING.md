@@ -15,7 +15,7 @@ For new PSPBUILDs or updates to existing ones to be mergable in this repository,
   - For PSPBUILDs based on a version controlled repository, use the ``pkgver()`` function to set the ``pkgver`` to something which only changes if that repository is updated. See [this page](https://wiki.archlinux.org/index.php/VCS_package_guidelines) for instructions on how to do that.
   - No packages which can not be legally distributed after building are allowed.
   - ``pkgname`` should not contain capital letters or special characters other than ``-``.
-  - PSPBUILDS should start with ``# Contributor: Your Name``. Adding an email at the end like ``<youemail@example.com>`` is optional, but encouraged.
+  - PSPBUILDS should start with ``# Contributor: Your Name``. Adding an email at the after it like ``<youemail@example.com>`` is optional, but encouraged.
 - For existing packages:
   - Either the ``pkgver`` or ``rel`` has been changed.
 - For all PSPBUILDs:
