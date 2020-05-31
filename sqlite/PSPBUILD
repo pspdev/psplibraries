@@ -20,7 +20,7 @@ sha256sums=(
 
 prepare() {
     cd "$pkgname-$pkgver"
-	patch -p1 < ../${pkgname}-${pkgver}-PSP.patch
+    patch -p1 < ../${pkgname}-${pkgver}-PSP.patch
 }
 
 build() {
@@ -33,5 +33,5 @@ build() {
 
 package() {
     cd "$pkgname-$pkgver"
-	make DESTDIR="$pkgdir/psp" install
+    make DESTDIR="$pkgdir/psp" install
 }

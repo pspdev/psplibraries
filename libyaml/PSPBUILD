@@ -10,32 +10,32 @@ depends=()
 makedepends=()
 optdepends=()
 source=(
-	"http://pyyaml.org/download/libyaml/yaml-${pkgver}.tar.gz"
-	"config.sub"
+    "http://pyyaml.org/download/libyaml/yaml-${pkgver}.tar.gz"
+    "config.sub"
 )
 sha256sums=(
-	'7bf81554ae5ab2d9b6977da398ea789722e0db75b86bffdaeb4e66d961de6a37'
-	'SKIP'
+    '7bf81554ae5ab2d9b6977da398ea789722e0db75b86bffdaeb4e66d961de6a37'
+    'SKIP'
 )
 
 prepare() {
-  cd "yaml-$pkgver"
-  cp ../config.sub config/config.sub
+    cd "yaml-$pkgver"
+    cp ../config.sub config/config.sub
 }
 
 build() {
-	cd "yaml-$pkgver"
-	LDFLAGS="$LDFLAGS -L$(psp-config --pspsdk-path)/lib -L$(psp-config --psp-prefix)/lib -lc -lpspuser" \
+    cd "yaml-$pkgver"
+    LDFLAGS="$LDFLAGS -L$(psp-config --pspsdk-path)/lib -L$(psp-config --psp-prefix)/lib -lc -lpspuser" \
     LIBS="$LIBS -lc -lpspuser" \
     ./configure --host=psp --prefix=/psp
-	make
+    make
 }
 
 package() {
-	cd "yaml-$pkgver"
-	make DESTDIR="$pkgdir/" install
-	
-	mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
-	install -m 644 LICENSE "$pkgdir/psp/share/licenses/$pkgname/LICENSE"
+    cd "yaml-$pkgver"
+    make DESTDIR="$pkgdir/" install
+
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 LICENSE "$pkgdir/psp/share/licenses/$pkgname"
 }
 

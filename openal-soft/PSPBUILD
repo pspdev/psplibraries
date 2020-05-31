@@ -12,30 +12,29 @@ optdepends=()
 provides=('openal')
 source=(
     "http://kcat.strangesoft.net/openal-releases/${pkgname}-${pkgver}.tar.bz2"
-	"${pkgname}-${pkgver}-PSP.patch"
+    "${pkgname}-${pkgver}-PSP.patch"
 )
 sha256sums=(
-	'87bd8d61d5943387898c92b6a2bbbb26118e745dec57550c817526a70fad0914'
-	'SKIP'
+    '87bd8d61d5943387898c92b6a2bbbb26118e745dec57550c817526a70fad0914'
+    'SKIP'
 )
 
 prepare() {
-	cd "$pkgname-$pkgver"
-	patch -p1 < ../${pkgname}-${pkgver}-PSP.patch
+    cd "$pkgname-$pkgver"
+    patch -p1 < ../${pkgname}-${pkgver}-PSP.patch
 }
 
 build() {
-	cd "$pkgname-$pkgver"
-	psp-cmake -D CMAKE_INSTALL_PREFIX="/psp" -D UTILS=OFF -D EXAMPLES=OFF .
-	make
+    cd "$pkgname-$pkgver"
+    psp-cmake -D CMAKE_INSTALL_PREFIX="/psp" -D UTILS=OFF -D EXAMPLES=OFF .
+    make
 }
 
 package() {
-	cd "$pkgname-$pkgver"
-	
-	make DESTDIR="${pkgdir}" install
+    cd "$pkgname-$pkgver"
+    make DESTDIR="${pkgdir}" install
 
-	mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
-	install -m 644 COPYING "$pkgdir/psp/share/licenses/$pkgname/COPYING"
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 COPYING "$pkgdir/psp/share/licenses/$pkgname"
 }
 

@@ -13,29 +13,29 @@ source=("git+https://github.com/pspdev/psp-ports.git")
 sha256sums=('SKIP')
 
 pkgver() {
-	cd psp-ports
-	# Set the version to the revision of the pspgl directory
-	printf "r%s" "$(git rev-list --count HEAD ${pkgname})"
+    cd psp-ports
+    # Set the version to the revision of the pspgl directory
+    printf "r%s" "$(git rev-list --count HEAD ${pkgname})"
 }
 
 build() {
-	cd "psp-ports/$pkgname"
-	make
+    cd "psp-ports/$pkgname"
+    make
 }
 
 package() {
-	cd "psp-ports/$pkgname"
-	# make install isn't usable for pspgl, so we're installing manually
-	mkdir -m 755 -p "$pkgdir/psp/lib" "$pkgdir/psp/include"
-	install -Dm 644 "libGL.a" "$pkgdir/psp/lib/libGL.a"
-	install -Dm 644 "libGLU.a" "$pkgdir/psp/lib/libGLU.a"
-	install -Dm 644 "libglut.a" "$pkgdir/psp/lib/libglut.a"
+    cd "psp-ports/$pkgname"
+    # make install isn't usable for pspgl, so we're installing manually
+    mkdir -m 755 -p "$pkgdir/psp/lib"
+    install -m 644 "libGL.a" "$pkgdir/psp/lib"
+    install -m 644 "libGLU.a" "$pkgdir/psp/lib"
+    install -m 644 "libglut.a" "$pkgdir/psp/lib"
 
-	mkdir -m 755 -p "$pkgdir/psp/include/GL/" "$pkgdir/psp/include/GLES/"
-	install -m 644 GL/* "$pkgdir/psp/include/GL/"
-	install -m 644 GLES/* "$pkgdir/psp/include/GLES/"
+    mkdir -m 755 -p "$pkgdir/psp/include/GL/" "$pkgdir/psp/include/GLES"
+    install -m 644 GL/* "$pkgdir/psp/include/GL"
+    install -m 644 GLES/* "$pkgdir/psp/include/GLES"
 
-	mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
-	install -m644 LICENSE "$pkgdir/psp/share/licenses/$pkgname/LICENSE"
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 LICENSE "$pkgdir/psp/share/licenses/$pkgname"
 }
 

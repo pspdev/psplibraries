@@ -10,33 +10,33 @@ depends=('libpng')
 makedepends=()
 optdepends=()
 source=(
-	"http://cairographics.org/releases/${pkgname}-${pkgver}.tar.gz"
-	"config.sub"
+    "http://cairographics.org/releases/${pkgname}-${pkgver}.tar.gz"
+    "config.sub"
 )
 sha256sums=(
-	'fea7869c2ba41f49fbe1c9382390ff671ac62add44dc5f29134e61d0f17960de'
-	'SKIP'
+    'fea7869c2ba41f49fbe1c9382390ff671ac62add44dc5f29134e61d0f17960de'
+    'SKIP'
 )
 
 prepare() {
-  cd "$pkgname-$pkgver"
-  cp ../config.sub config.sub
+    cd "$pkgname-$pkgver"
+    cp ../config.sub config.sub
 }
 
 build() {
-	cd "$pkgname-$pkgver"
-	LDFLAGS="$LDFLAGS -L$(psp-config --pspsdk-path)/lib -L$(psp-config --psp-prefix)/lib -lc -lpspuser" \
+    cd "$pkgname-$pkgver"
+    LDFLAGS="$LDFLAGS -L$(psp-config --pspsdk-path)/lib -L$(psp-config --psp-prefix)/lib -lc -lpspuser" \
     LIBS="$LIBS -lc -lpspuser" \
     PNG_CFLAGS="-I$(psp-config --psp-prefix)/include" PNG_LIBS="-L$(psp-config --psp-prefix)/lib -lpng -lz" \
     ./configure --host=psp --prefix=/psp
-	make
+    make
 }
 
 package() {
-	cd "$pkgname-$pkgver"
-	make DESTDIR="$pkgdir/" install
-	
-	mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
-	install -m 644 COPYING "$pkgdir/psp/share/licenses/$pkgname/COPYING"
+    cd "$pkgname-$pkgver"
+    make DESTDIR="$pkgdir/" install
+
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 COPYING "$pkgdir/psp/share/licenses/$pkgname"
 }
 

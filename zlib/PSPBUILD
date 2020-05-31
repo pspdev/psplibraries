@@ -11,36 +11,36 @@ makedepends=()
 optdepends=()
 source=(
     "https://sourceforge.net/projects/libpng/files/${pkgname}/${pkgver}/${pkgname}-${pkgver}.tar.gz"
-	"${pkgname}-${pkgver}-PSP.patch"
+    "${pkgname}-${pkgver}-PSP.patch"
 )
 sha256sums=(
-	'36658cb768a54c1d4dec43c3116c27ed893e88b02ecfcb44f2166f9c0b7f2a0d'
-	'SKIP'
+    '36658cb768a54c1d4dec43c3116c27ed893e88b02ecfcb44f2166f9c0b7f2a0d'
+    'SKIP'
 )
 
 prepare() {
-	cd "$pkgname-$pkgver"
-	patch -p1 < ../${pkgname}-${pkgver}-PSP.patch
+    cd "$pkgname-$pkgver"
+    patch -p1 < ../${pkgname}-${pkgver}-PSP.patch
 }
 
 build() {
-	cd "$pkgname-$pkgver"
-	make
+    cd "$pkgname-$pkgver"
+    make
 }
 
 package() {
-	cd "$pkgname-$pkgver"
+    cd "$pkgname-$pkgver"
 
-	mkdir -m 755 -p "$pkgdir/psp/lib" "$pkgdir/psp/include"
-	install -m 644 libz.a "$pkgdir/psp/lib/libz.a"
-	install -m 644 zlib.h "$pkgdir/psp/include/zlib.h"
-	install -m 644 zconf.h "$pkgdir/psp/include/zconf.h"
-	
-	mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
-	install -m 644 README "$pkgdir/psp/share/licenses/$pkgname/README"
-	
-	# Install documentation
-	mkdir -p "$pkgdir/psp/share/doc/"
-	cp -r doc "$pkgdir/psp/share/doc/$pkgname"
+    mkdir -m 755 -p "$pkgdir/psp/lib" "$pkgdir/psp/include"
+    install -m 644 libz.a "$pkgdir/psp/lib"
+    install -m 644 zlib.h "$pkgdir/psp/include"
+    install -m 644 zconf.h "$pkgdir/psp/include"
+
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 README "$pkgdir/psp/share/licenses/$pkgname"
+
+    # Install documentation
+    mkdir -p "$pkgdir/psp/share/doc/"
+    cp -r doc "$pkgdir/psp/share/doc/$pkgname"
 }
 

@@ -14,20 +14,20 @@ source=("https://github.com/pspdev/freetype2/archive/${pkgver}-psp.tar.gz")
 sha256sums=('cda92a07646c0d1192a8d27b460c063a55a17bbf3961079bf12a6436bc652938')
 
 build() {
-	cd "$pkgname-$pkgver-psp"
-	./autogen.sh
-	LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" \
-	./configure --host psp --prefix=/psp
-	make
+    cd "$pkgname-$pkgver-psp"
+    ./autogen.sh
+    LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" \
+    ./configure --host psp --prefix=/psp
+    make
 }
 
 package() {
-	cd "$pkgname-$pkgver-psp"
-	make DESTDIR="$pkgdir/" install
+    cd "$pkgname-$pkgver-psp"
+    make DESTDIR="$pkgdir/" install
 
-	mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
-	install -m644 docs/LICENSE.TXT "$pkgdir/psp/share/licenses/$pkgname/LICENSE.TXT"
-	install -m644 docs/GPLv2.TXT "$pkgdir/psp/share/licenses/$pkgname/GPLv2.TXT"
-	install -m644 docs/FTL.TXT "$pkgdir/psp/share/licenses/$pkgname/FTL.TXT"
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 docs/LICENSE.TXT "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 docs/GPLv2.TXT "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 docs/FTL.TXT "$pkgdir/psp/share/licenses/$pkgname"
 }
 
