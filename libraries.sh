@@ -4,6 +4,8 @@
 cd "$(dirname "$0")"
 WORKDIR="${PWD}"
 
+FAILED=""
+
 build_package() {
     # Make sure ${1} is set
     if [ -z "${1}" ]; then
@@ -35,7 +37,11 @@ build_package() {
 
     echo "Building ${1}..."
     cd "$(dirname ${PSPBUILD})"
-    psp-makepkg -i --noconfirm
+    if ! psp-makepkg -i --noconfirm; then
+        if [[ ! "${FAILED}" =~ " ${1} " ]]; then
+           FAILED="${FAILED} ${1}"
+        fi
+    fi
     cd "${WORKDIR}"
 }
 
@@ -44,3 +50,7 @@ for pspbuild in $(find -type f -name PSPBUILD); do
     pkgname="$(bash -c "./parse_pspbuild.sh ${pspbuild} pkgname")"
     build_package "${pkgname}"
 done
+
+if [ ! -z "${FAILED}" ]; then
+    echo "The following packages failed to build or install:${FAILED}"
+fi
