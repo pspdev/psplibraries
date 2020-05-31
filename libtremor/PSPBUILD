@@ -19,7 +19,7 @@ prepare() {
 
 build() {
     cd "psp-ports/libTremor"
-    LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" ./autogen.sh --host psp --prefix="/psp" || { exit 1; }
+    LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" ./autogen.sh --host psp --prefix="/psp"
     make
 }
 
