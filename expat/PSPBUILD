@@ -10,37 +10,37 @@ depends=()
 makedepends=()
 optdepends=()
 source=(
-	"http://sourceforge.net/projects/expat/files/${pkgname}/${pkgver}/${pkgname}-${pkgver}.tar.gz"
-	"config.sub"
+    "http://sourceforge.net/projects/expat/files/${pkgname}/${pkgver}/${pkgname}-${pkgver}.tar.gz"
+    "config.sub"
 )
 sha256sums=(
-	'823705472f816df21c8f6aa026dd162b280806838bb55b3432b0fb1fcca7eb86'
-	'SKIP'
+    '823705472f816df21c8f6aa026dd162b280806838bb55b3432b0fb1fcca7eb86'
+    'SKIP'
 )
 
 prepare() {
-  cd "$pkgname-$pkgver"
-  cp ../config.sub config.sub
-  cp ../config.sub conftools/config.sub
+    cd "$pkgname-$pkgver"
+    cp ../config.sub config.sub
+    cp ../config.sub conftools/config.sub
 }
 
 build() {
-	cd "$pkgname-$pkgver"
-	LDFLAGS="$LDFLAGS -L$(psp-config --pspsdk-path)/lib -L$(psp-config --psp-prefix)/lib -lc -lpspuser" \
+    cd "$pkgname-$pkgver"
+    LDFLAGS="$LDFLAGS -L$(psp-config --pspsdk-path)/lib -L$(psp-config --psp-prefix)/lib -lc -lpspuser" \
     LIBS="$LIBS -lc -lpspuser" \
     ./configure --host=psp --prefix=/psp
-	make
+    make
 }
 
 package() {
-	cd "$pkgname-$pkgver"
-	make DESTDIR="$pkgdir/" install
-	
-	mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
-	install -m 644 COPYING "$pkgdir/psp/share/licenses/$pkgname/COPYING"
+    cd "$pkgname-$pkgver"
+    make DESTDIR="$pkgdir/" install
 
-	# Remove the binary we can't use
-	rm -rf "${pkgdir}/psp/share/man"
-	rm -rf "${pkgdir}/psp/bin"
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 COPYING "$pkgdir/psp/share/licenses/$pkgname"
+
+    # Remove the binary we can't use
+    rm -rf "${pkgdir}/psp/share/man"
+    rm -rf "${pkgdir}/psp/bin"
 }
 

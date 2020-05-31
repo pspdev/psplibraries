@@ -13,18 +13,18 @@ source=("https://github.com/pspdev/SDL_mixer/archive/${pkgver}-psp.tar.gz")
 sha256sums=('6e6a3a07898b164140b4032635829a725cd78a3f7123cba5b3746aa8e4ad76c9')
 
 build() {
-	cd "SDL_mixer-$pkgver-psp"
-	./autogen.sh
-	LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" \
-	./configure --host psp --prefix=/psp --with-sdl-prefix=$(psp-config --psp-prefix) --disable-music-cmd --disable-music-mp3
-	make
+    cd "SDL_mixer-$pkgver-psp"
+    ./autogen.sh
+    LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" \
+    ./configure --host psp --prefix=/psp --with-sdl-prefix=$(psp-config --psp-prefix) --disable-music-cmd --disable-music-mp3
+    make
 }
 
 package() {
-	cd "SDL_mixer-$pkgver-psp"
-	make DESTDIR="$pkgdir/" install
+    cd "SDL_mixer-$pkgver-psp"
+    make DESTDIR="$pkgdir/" install
 
-	mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
-	install -m644 COPYING "$pkgdir/psp/share/licenses/$pkgname/COPYING"
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 COPYING "$pkgdir/psp/share/licenses/$pkgname/COPYING"
 }
 

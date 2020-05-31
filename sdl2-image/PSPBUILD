@@ -13,19 +13,19 @@ source=("https://github.com/pspdev/SDL_image/archive/${pkgver}-psp.tar.gz")
 sha256sums=('21532e894f174a1be1ddf2e1242fe42604d4ad8abac61e97186adddf20e8dac0')
 
 build() {
-	cd "SDL_image-$pkgver-psp"
-	./autogen.sh
-	LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" \
-	SDL_CFLAGS="-I$(psp-config --psp-prefix)/include/SDL2" SDL_LIBS="-lSDL2" \
-	./configure --host psp --prefix=/psp
-	make
+    cd "SDL_image-$pkgver-psp"
+    ./autogen.sh
+    LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" \
+    SDL_CFLAGS="-I$(psp-config --psp-prefix)/include/SDL2" SDL_LIBS="-lSDL2" \
+    ./configure --host psp --prefix=/psp
+    make
 }
 
 package() {
-	cd "SDL_image-$pkgver-psp"
-	make DESTDIR="$pkgdir/" install
+    cd "SDL_image-$pkgver-psp"
+    make DESTDIR="$pkgdir/" install
 
-	mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
-	install -m644 COPYING.txt "$pkgdir/psp/share/licenses/$pkgname/COPYING.txt"
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m644 COPYING.txt "$pkgdir/psp/share/licenses/$pkgname"
 }
 

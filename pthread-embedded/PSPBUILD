@@ -19,18 +19,18 @@ prepare() {
 }
 
 build() {
-	cd pthreads-emb
-	 make -C platform/psp
+    cd pthreads-emb
+    make -C platform/psp
 }
 
 package() {
-	cd pthreads-emb
-	mkdir -m 755 -p "$pkgdir/psp/lib" "$pkgdir/psp/includes"
-	cp -v platform/psp/libpthread-psp.a "$pkgdir/psp/lib"
-	cp -v platform/psp/*.h "$pkgdir/psp/includes"
-	cp -v *.h "$pkgdir/psp/includes"
+    cd pthreads-emb
+    mkdir -m 755 -p "$pkgdir/psp/lib" "$pkgdir/psp/includes"
+    cp -v platform/psp/libpthread-psp.a "$pkgdir/psp/lib"
+    cp -v platform/psp/*.h "$pkgdir/psp/includes"
+    cp -v *.h "$pkgdir/psp/includes"
 
-	mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
-	install -m 644 COPYING "$pkgdir/psp/share/licenses/$pkgname/COPYING"
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 COPYING "$pkgdir/psp/share/licenses/$pkgname"
 }
 

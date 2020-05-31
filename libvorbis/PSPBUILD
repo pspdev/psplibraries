@@ -13,21 +13,21 @@ source=("git+https://github.com/pspdev/psp-ports.git")
 sha256sums=('SKIP')
 
 prepare() {
-	cd psp-ports
-	git checkout f47bd37edf202284fc039106a5b27d9b7314bd76
+    cd psp-ports
+    git checkout f47bd37edf202284fc039106a5b27d9b7314bd76
 }
 
 build() {
-	cd "psp-ports/$pkgname"
-	LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" ./autogen.sh --host psp --prefix=/psp
-	make
+    cd "psp-ports/$pkgname"
+    LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" ./autogen.sh --host psp --prefix=/psp
+    make
 }
 
 package() {
-	cd "psp-ports/$pkgname"
-	make DESTDIR="${pkgdir}" install
+    cd "psp-ports/$pkgname"
+    make DESTDIR="${pkgdir}" install
 
-	mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
-	install -m 644 COPYING "$pkgdir/psp/share/licenses/$pkgname/COPYING"
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 COPYING "$pkgdir/psp/share/licenses/$pkgname"
 }
 
