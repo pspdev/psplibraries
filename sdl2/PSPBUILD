@@ -27,8 +27,7 @@ build() {
 package() {
     cd SDL2
     mkdir -m 755 -p "$pkgdir/psp/lib" 
-    install -m 644 "libSDL2.a" "$pkgdir/psp/lib/libSDL2.a"
-    install -m 644 "libSDL2main.a" "$pkgdir/psp/lib/libSDL2main.a"
+    install -m 644 "libSDL2.a" "libSDL2main.a" "$pkgdir/psp/lib"
 
     mkdir -m 755 -p "$pkgdir/psp/include/SDL2"
     cp -v include/*.h "$pkgdir/psp/include/SDL2"
