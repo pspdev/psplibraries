@@ -10,7 +10,7 @@ depends=('sdl')
 makedepends=()
 optdepends=()
 source=(
-    "git+https://github.com/fungos/smpeg-psp.git"
+    "git+https://github.com/fungos/smpeg-psp.git#commit=bee77b1c97b9ce437f1c4a5ba644244ab2a2c433"
     "${pkgname}-psp.patch"
 )
 sha256sums=(
@@ -20,7 +20,6 @@ sha256sums=(
 
 prepare() {
     cd smpeg-psp
-    git checkout bee77b1c97b9ce437f1c4a5ba644244ab2a2c433
     patch -p1 < ../${pkgname}-psp.patch
 }
 
