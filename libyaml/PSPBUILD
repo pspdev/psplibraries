@@ -11,11 +11,11 @@ makedepends=()
 optdepends=()
 source=(
     "http://pyyaml.org/download/libyaml/yaml-${pkgver}.tar.gz"
-    "config.sub"
+    "https://raw.githubusercontent.com/pspdev/psplibraries/c4746da120f66f08e07d714334fcf557e259f6cc/patches/config.sub"
 )
 sha256sums=(
     '7bf81554ae5ab2d9b6977da398ea789722e0db75b86bffdaeb4e66d961de6a37'
-    'SKIP'
+    '4f39430baff745be9a2518d53d92c0612a298526e20dab259cdf0f62d60489ab'
 )
 
 prepare() {
