@@ -10,13 +10,8 @@ depends=('libpspvram' 'pspgl')
 makedepends=()
 optdepends=()
 provides=('sdl2-main')
-source=("git+https://github.com/joel16/SDL2.git")
+source=("git+https://github.com/joel16/SDL2.git#commit=17769844cbdb6ef9de01ed84e012b8af4bbddaac")
 sha256sums=('SKIP')
-
-prepare() {
-    cd SDL2
-    git checkout 17769844cbdb6ef9de01ed84e012b8af4bbddaac
-}
 
 build() {
     cd SDL2

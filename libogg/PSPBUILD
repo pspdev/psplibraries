@@ -9,13 +9,8 @@ license=('BSD')
 depends=()
 makedepends=()
 optdepends=()
-source=("git+https://github.com/pspdev/psp-ports.git")
+source=("git+https://github.com/pspdev/psp-ports.git#commit=f47bd37edf202284fc039106a5b27d9b7314bd76")
 sha256sums=('SKIP')
-
-prepare() {
-    cd psp-ports
-    git checkout f47bd37edf202284fc039106a5b27d9b7314bd76
-}
 
 build() {
     cd "psp-ports/$pkgname"
