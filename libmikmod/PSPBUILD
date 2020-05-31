@@ -20,7 +20,7 @@ sha256sums=(
 
 prepare() {
     cd "$pkgname-$pkgver"
-    -p1 < ../${pkgname}-${pkgver}-PSP.patch
+    patch -p1 < ../${pkgname}-${pkgver}-PSP.patch
 }
 
 build() {
