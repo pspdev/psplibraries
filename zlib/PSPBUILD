@@ -31,10 +31,7 @@ build() {
 package() {
     cd "$pkgname-$pkgver"
 
-    mkdir -m 755 -p "$pkgdir/psp/lib" "$pkgdir/psp/include"
-    install -m 644 libz.a "$pkgdir/psp/lib"
-    install -m 644 zlib.h "$pkgdir/psp/include"
-    install -m 644 zconf.h "$pkgdir/psp/include"
+    make PSPDIR="$pkgdir/psp" install
 
     mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
     install -m 644 README "$pkgdir/psp/share/licenses/$pkgname"
