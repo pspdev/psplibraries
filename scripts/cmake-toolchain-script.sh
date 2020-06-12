@@ -7,6 +7,8 @@ TOOLCHAIN_SCRIPT_PATH=${DESTDIR}$(psp-config --psp-prefix)/share/cmake
 ## copy toolchain script
 install -d $TOOLCHAIN_SCRIPT_PATH
 install -m644 ../patches/PSP.cmake $TOOLCHAIN_SCRIPT_PATH || { exit 1; }
+## copy BuildPRX.cmake
+install -m644 ../patches/BuildPRX.cmake $TOOLCHAIN_SCRIPT_PATH || { exit 1; }
 ## copy CreatePBP.cmake
 install -m644 ../patches/CreatePBP.cmake $TOOLCHAIN_SCRIPT_PATH || { exit 1; }
 ## copy psp-cmake

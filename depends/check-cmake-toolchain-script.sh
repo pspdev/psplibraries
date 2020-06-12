@@ -5,4 +5,5 @@
  ls \
      $(psp-config --pspdev-path)/bin/psp-cmake \
      $(psp-config --psp-prefix)/share/cmake/PSP.cmake \
+     $(psp-config --psp-prefix)/share/cmake/BuildPRX.cmake \
      $(psp-config --psp-prefix)/share/cmake/CreatePBP.cmake

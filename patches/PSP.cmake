@@ -40,12 +40,17 @@ set(PACK_PBP ${PSPBIN}/pack-pbp)
 set(FIXUP ${PSPBIN}/psp-fixup-imports)
 set(ENC ${PSPBIN}/PrxEncrypter)
 set(STRIP ${PSPBIN}/psp-strip)
+set(PRXGEN ${PSPBIN}/psp-prxgen)
 
 # Include directories:
 include_directories(${include_directories} ${PSPDEV}/include ${PSPSDK}/include)
 
-# Discard debug information:
-add_definitions("-G0")
+# Set flags for building prx files for non-release builds
+if(NOT "${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+	set(_DEBUG_FLAGS "-ggdb -specs=${PSPSDK}/lib/prxspecs -Wl,-q,-T${PSPSDK}/lib/linkfile.prx")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_DEBUG} ${_DEBUG_FLAGS}")
+	set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS_DEBUG} ${_DEBUG_FLAGS}")
+endif()
 
 # Definitions that may be needed to use some libraries:
 add_definitions("-D__PSP__")
@@ -62,6 +67,7 @@ set(PSP_LIBRARIES
 )
 
 # File defining macro outputting PSP-specific EBOOT.PBP out of passed executable target:
+include("${PSPCMAKE}/BuildPRX.cmake")
 include("${PSPCMAKE}/CreatePBP.cmake")
 
 # Helper variable for multi-platform projects to identify current platform:
