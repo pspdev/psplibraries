@@ -2,7 +2,7 @@
 pkgname=sdl2-image
 pkgver=2.0.5
 pkgrel=1
-pkgdesc="a simple library to load images of various formats as SDL2 surfaces"
+pkgdesc="a simple library to load images of various formats as SDL surfaces"
 arch=('mips')
 url="https://www.libsdl.org/projects/SDL_image/"
 license=('MIT')
