@@ -1,4 +1,4 @@
-download_and_extract http://www.sqlite.org/sqlite-3.7.3.tar.gz sqlite-3.7.3
+download_and_extract https://www.sqlite.org/src/tarball/26778480/SQLite-26778480.tar.gz SQLite-26778480
 apply_patch sqlite-3.7.3-PSP
 mkdir build-ppu && cd build-ppu
 LDFLAGS="-L$(psp-config --pspsdk-path)/lib -lc -lpspuser" \
