@@ -5,7 +5,7 @@ test_deps_install cmake-toolchain-script pthreads-emb
 
 OPENAL_VERSION=1.14
 
-download_and_extract http://kcat.strangesoft.net/openal-releases/openal-soft-$OPENAL_VERSION.tar.bz2 openal-soft-$OPENAL_VERSION
+download_and_extract http://openal-soft.org/openal-releases/openal-soft-$OPENAL_VERSION.tar.bz2 openal-soft-$OPENAL_VERSION
 apply_patch openal-$OPENAL_VERSION-PSP
 
 ## Run cmake
