@@ -1,6 +1,6 @@
 # Maintainer: Wouter Wijsman <wwijsman@live.nl>
 pkgname=sdl2
-pkgver=2.0.9
+pkgver=2.0.12
 pkgrel=1
 pkgdesc="a library designed to provide low level access to audio, input, and graphics hardware"
 arch=('mips')
@@ -10,7 +10,7 @@ depends=('libpspvram' 'pspgl')
 makedepends=()
 optdepends=()
 provides=('sdl2-main')
-source=("git+https://github.com/joel16/SDL2.git#commit=17769844cbdb6ef9de01ed84e012b8af4bbddaac")
+source=("git+https://github.com/joel16/SDL2.git#commit=a75dbad1176ce0496867eb243f126dfaf25b57c5")
 sha256sums=('SKIP')
 
 build() {
