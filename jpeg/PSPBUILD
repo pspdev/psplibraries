@@ -1,0 +1,27 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=jpeg
+pkgver=8c
+pkgrel=1
+pkgdesc="a free library for JPEG image compression"
+arch=('mips')
+url="https://ijg.org/"
+license=('custom')
+depends=()
+makedepends=()
+optdepends=()
+source=("git+https://github.com/pspdev/psp-ports.git#commit=f47bd37edf202284fc039106a5b27d9b7314bd76")
+sha256sums=('SKIP')
+
+build() {
+    cd "psp-ports/$pkgname"
+    make
+}
+
+package() {
+    cd "psp-ports/$pkgname"
+    make PSPDIR="${pkgdir}/psp" install
+
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 README "$pkgdir/psp/share/licenses/$pkgname"
+}
+

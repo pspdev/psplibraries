@@ -1,0 +1,31 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=sdl2-gfx
+pkgver=1.0.4
+pkgrel=1
+pkgdesc="SDL2 graphics drawing primitives and other support functions"
+arch=('mips')
+url="http://www.ferzkopp.net/wordpress/2016/01/02/sdl_gfx-sdl2_gfx/"
+license=('ZLIB')
+depends=('sdl2')
+makedepends=()
+optdepends=()
+source=("https://github.com/pspdev/SDL_gfx/archive/${pkgver}-psp.tar.gz")
+sha256sums=('2942c1b29a2574964b7a4caebef02e0ac4d9fbab11c87e6733ee2741c8b7fb12')
+
+build() {
+    cd "SDL_gfx-$pkgver-psp"
+    ./autogen.sh
+    LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" \
+    SDL_CFLAGS="-I$(psp-config --psp-prefix)/include/SDL2" SDL_LIBS="-lSDL2" \
+    ./configure --host psp --prefix=/psp --disable-mmx
+    make
+}
+
+package() {
+    cd "SDL_gfx-$pkgver-psp"
+    make DESTDIR="$pkgdir/" install
+
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m644 COPYING "$pkgdir/psp/share/licenses/$pkgname"
+}
+

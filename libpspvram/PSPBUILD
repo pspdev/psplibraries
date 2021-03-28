@@ -1,0 +1,38 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=libpspvram
+pkgver=r3.5b6fabf
+pkgrel=1
+pkgdesc="Dynamic VRAM allocation manager for the PSP"
+arch=('mips')
+url="https://github.com/albe/libpspvram"
+license=('MIT')
+depends=()
+makedepends=()
+optdepends=()
+source=("git+https://github.com/albe/libpspvram.git")
+sha256sums=('SKIP')
+
+pkgver() {
+    cd "$pkgname"
+    # Set the revision of the repo as version
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+    cd "$pkgname"
+    make
+}
+
+package() {
+    cd "$pkgname"
+    mkdir -m 755 -p "$pkgdir/psp/lib"
+    install -m 644 "libpspvalloc.a" "$pkgdir/psp/lib"
+    install -m 644 "libpspvram.a" "$pkgdir/psp/lib"
+
+    mkdir -m 755 -p "$pkgdir/psp/include/"
+    install -m 644 *.h "$pkgdir/psp/include/"
+
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 LICENSE "$pkgdir/psp/share/licenses/$pkgname"
+}
+

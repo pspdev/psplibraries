@@ -1,0 +1,31 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=sdl2-mixer
+pkgver=2.0.4
+pkgrel=1
+pkgdesc="an audio mixer library based on the SDL2 library"
+arch=('mips')
+url="https://www.libsdl.org/projects/SDL_mixer/"
+license=('MIT')
+depends=('sdl2' 'libmikmod')
+makedepends=()
+optdepends=()
+source=("https://github.com/pspdev/SDL_mixer/archive/${pkgver}-psp.tar.gz")
+sha256sums=('b55f88ff0b63744be466ca8546249070fdfdb08258a0d008f54990226f462f8b')
+
+build() {
+    cd "SDL_mixer-$pkgver-psp"
+    ./autogen.sh
+    LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" \
+    SDL_CFLAGS="-I$(psp-config --psp-prefix)/include/SDL2" SDL_LIBS="-lSDL2" \
+    ./configure --host psp --prefix=/psp --disable-music-cmd
+    make
+}
+
+package() {
+    cd "SDL_mixer-$pkgver-psp"
+    make DESTDIR="$pkgdir/" install
+
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m644 COPYING.txt "$pkgdir/psp/share/licenses/$pkgname"
+}
+

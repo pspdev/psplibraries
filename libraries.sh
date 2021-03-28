@@ -1,59 +1,56 @@
 #!/bin/bash
+# libraries.sh by Wouter Wijsman (wwijsman@live.nl)
 
- ## remove $CC and $CXX for configure
- unset CC
- unset CXX
+cd "$(dirname "$0")"
+WORKDIR="${PWD}"
 
- ## Set executable name for libtoolize
- if [ "$(uname)" == "Darwin" ]; then
-     LIBTOOLIZE=glibtoolize
- else
-     LIBTOOLIZE=libtoolize
- fi
- export LIBTOOLIZE
+FAILED=""
 
- ## Enforce pkg-config path, to not get fooled by host libraries
- unset PKG_CONFIG_PATH
- export PKG_CONFIG_LIBDIR="$(psp-config --psp-prefix)/lib/pkgconfig"
+build_package() {
+    # Make sure ${1} is set
+    if [ -z "${1}" ]; then
+        echo "No argument specified for build_package function"
+        return
+    fi
 
- ## Enter the psplibraries directory.
- cd "`dirname $0`" || { echo "ERROR: Could not enter the psplibraries directory."; exit 1; }
+    # Find the PSPBUILD which provides what we're looking for
+    PSPBUILD=""
+    for pspbuild in $(find -type f -name PSPBUILD); do
+        #Check if the current PSPBUILD provides what we need
+        provides="$(bash -c "./parse_pspbuild.sh "${pspbuild}" provides")"
+        if [[ $provides =~ (^|[[:space:]])$1($|[[:space:]]) ]]; then
+            PSPBUILD="${pspbuild}"
+            break
+        fi
+    done
 
- source common.sh
- basepath=$PWD
- mkdir -p build || { echo "ERROR: Could not create the build directory."; exit 1; }
- test_deps psptoolchain libtool
+    # Make sure the PSPBUILD exists and is a file
+    if [ -z "${PSPBUILD}" ]; then
+        echo "No PSPBUILD which provides ${1} was found"
+        exit 1
+    fi
 
- # If specific steps were requested, run the requested build scripts.
- if [ $1 ]; then
-     buildall=0
-     list="$@"
- # Else, run the all build scripts.
- else
-     buildall=1
-     list="$(ls -1 $basepath/scripts/*.sh | sed -e "s/.*\///" -e "s/\..*//" | sort -f)"
- fi
+    echo "Checking dependencies for ${1}..."
+    for dependency in $(bash -c "./parse_pspbuild.sh ${PSPBUILD} depends"); do
+        build_package "${dependency}"
+    done
 
- faillist=""
- for step in $list; do
-     f=$basepath/scripts/$step.sh
-     test_deps $step
-     if [ $? -ne 0 ] || [ $buildall -eq 0 ]; then
-         if [ -x $f ]; then
-             cd $basepath/build
-             bash -c "source ../common.sh; \
-             set -e; \
-             basepath=$basepath; \
-             source $f" || { echo "Failed installing $step!"; faillist="$faillist $step"; }
-         else
-             echo "Installation script for $step not found!"
-         fi
-     else
-         echo "$step already installed"
-     fi
- done
- echo "Installation finished."
- if [ -n "$faillist" ]; then
-     echo "Failed installing:$faillist"
- fi
+    echo "Building ${1}..."
+    cd "$(dirname ${PSPBUILD})"
+    if ! psp-makepkg -i --noconfirm; then
+        if [[ ! "${FAILED}" =~ " ${1} " ]]; then
+           FAILED="${FAILED} ${1}"
+        fi
+    fi
+    cd "${WORKDIR}"
+}
 
+# Build all packages
+for pspbuild in $(find -type f -name PSPBUILD); do
+    pkgname="$(bash -c "./parse_pspbuild.sh ${pspbuild} pkgname")"
+    build_package "${pkgname}"
+done
+
+if [ ! -z "${FAILED}" ]; then
+    echo "The following packages failed to build or install:${FAILED}"
+fi

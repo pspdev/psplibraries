@@ -1,0 +1,42 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=libpng
+pkgver=1.5.7
+pkgrel=1
+pkgdesc="libpng is the official PNG reference library"
+arch=('mips')
+url="http://libpng.org/pub/png/libpng.html"
+license=('ZLIB')
+depends=('zlib')
+makedepends=()
+optdepends=()
+source=(
+    "http://sourceforge.net/projects/libpng/files/libpng15/older-releases/${pkgver}/${pkgname}-${pkgver}.tar.gz"
+    "${pkgname}-${pkgver}-PSP.patch"
+)
+sha256sums=(
+    '7d6431388f67b48f20242d2623e1aaa99e1c7cab5d2d699742d0e4ac987e8241'
+    'SKIP'
+)
+
+prepare() {
+    cd "$pkgname-$pkgver"
+    patch -p1 < ../${pkgname}-${pkgver}-PSP.patch
+}
+
+build() {
+    cd "$pkgname-$pkgver"
+    LDFLAGS="$LDFLAGS -L$(psp-config --pspsdk-path)/lib -L$(psp-config --psp-prefix)/lib -lc -lpspuser" \
+    LIBS="$LIBS -lc -lpspuser" \
+    ./configure --host=psp --prefix="/psp"
+    make
+}
+
+package() {
+    cd "$pkgname-$pkgver"
+
+    make DESTDIR="${pkgdir}" install
+
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 LICENSE "$pkgdir/psp/share/licenses/$pkgname"
+}
+

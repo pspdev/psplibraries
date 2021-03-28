@@ -1,0 +1,33 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=sdl2
+pkgver=2.0.12
+pkgrel=1
+pkgdesc="a library designed to provide low level access to audio, input, and graphics hardware"
+arch=('mips')
+url="http://libsdl.org/"
+license=('ZLIB')
+depends=('libpspvram' 'pspgl')
+makedepends=()
+optdepends=()
+provides=('sdl2-main')
+source=("git+https://github.com/joel16/SDL2.git#commit=a75dbad1176ce0496867eb243f126dfaf25b57c5")
+sha256sums=('SKIP')
+
+build() {
+    cd SDL2
+    make -f Makefile.psp
+    make -f Makefile.main.psp
+}
+
+package() {
+    cd SDL2
+    mkdir -m 755 -p "$pkgdir/psp/lib" 
+    install -m 644 "libSDL2.a" "libSDL2main.a" "$pkgdir/psp/lib"
+
+    mkdir -m 755 -p "$pkgdir/psp/include/SDL2"
+    cp -v include/*.h "$pkgdir/psp/include/SDL2"
+
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 COPYING.txt "$pkgdir/psp/share/licenses/$pkgname"
+}
+

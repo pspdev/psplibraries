@@ -1,0 +1,42 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=libmikmod
+pkgver=3.3.11.1
+pkgrel=1
+pkgdesc="a portable sound library capable of playing samples as well as module files"
+arch=('mips')
+url="http://mikmod.sourceforge.net/"
+license=('GPL2.1')
+depends=()
+makedepends=()
+optdepends=()
+source=(
+    "https://downloads.sourceforge.net/mikmod/${pkgname}-${pkgver}.tar.gz"
+    "${pkgname}-${pkgver}-PSP.patch"
+)
+sha256sums=(
+    'ad9d64dfc8f83684876419ea7cd4ff4a41d8bcd8c23ef37ecb3a200a16b46d19'
+    'SKIP'
+)
+
+prepare() {
+    cd "$pkgname-$pkgver"
+    patch -p1 < ../${pkgname}-${pkgver}-PSP.patch
+}
+
+build() {
+    cd "$pkgname-$pkgver"
+    LDFLAGS="$LDFLAGS -L$(psp-config --pspsdk-path)/lib -L$(psp-config --psp-prefix)/lib -lc -lpspuser" \
+    LIBS="$LIBS -lc -lpspuser" \
+    ./configure --host=psp --prefix="/psp" --disable-alldrv --enable-psp --enable-aiff --enable-wav --enable-raw
+    make
+}
+
+package() {
+    cd "$pkgname-$pkgver"
+
+    make DESTDIR="${pkgdir}" install
+
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 COPYING.LIB "$pkgdir/psp/share/licenses/$pkgname"
+}
+

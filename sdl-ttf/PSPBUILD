@@ -1,0 +1,31 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=sdl-ttf
+pkgver=2.0.11
+pkgrel=1
+pkgdesc="a companion library to SDL for working with TrueType (tm) fonts"
+arch=('mips')
+url="https://www.libsdl.org/projects/SDL_ttf/release-1.2.html"
+license=('custom')
+depends=('sdl' 'freetype2')
+makedepends=()
+optdepends=()
+source=("https://github.com/pspdev/SDL_ttf/archive/${pkgver}-psp.tar.gz")
+sha256sums=('55e7366d62067837aef247c5b1ffe1559333773c7559e1f27070398589e10ae1')
+
+build() {
+    cd "SDL_ttf-$pkgver-psp"
+    ./autogen.sh
+    LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" \
+    ./configure --host psp --prefix=/psp --with-sdl-prefix=$(psp-config --psp-prefix) \
+    --with-freetype-prefix=$(psp-config --psp-prefix) --without-x
+    make
+}
+
+package() {
+    cd "SDL_ttf-$pkgver-psp"
+    make DESTDIR="$pkgdir/" install
+
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 COPYING "$pkgdir/psp/share/licenses/$pkgname/COPYING"
+}
+

@@ -1,0 +1,40 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=smpeg
+pkgver=0.4.5
+pkgrel=1
+pkgdesc="a free MPEG1 video player library with sound support"
+arch=('mips')
+url="https://github.com/fungos/smpeg-psp/"
+license=('LGPL2')
+depends=('sdl')
+makedepends=()
+optdepends=()
+source=(
+    "git+https://github.com/fungos/smpeg-psp.git#commit=bee77b1c97b9ce437f1c4a5ba644244ab2a2c433"
+    "${pkgname}-psp.patch"
+)
+sha256sums=(
+    'SKIP'
+    'SKIP'
+)
+
+prepare() {
+    cd smpeg-psp
+    patch -p1 < ../${pkgname}-psp.patch
+}
+
+build() {
+    cd smpeg-psp
+    make
+}
+
+package() {
+    cd smpeg-psp
+    mkdir -m 755 -p "$pkgdir/psp/lib" "$pkgdir/psp/includes"
+    cp -v libsmpeg.a "$pkgdir/psp/lib/"
+    cp -v *.h "$pkgdir/psp/includes/"
+
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 COPYING "$pkgdir/psp/share/licenses/$pkgname"
+}
+

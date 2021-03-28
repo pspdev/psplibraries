@@ -1,0 +1,44 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=pspirkeyb
+pkgver=r1
+pkgrel=1
+pkgdesc="a library for using IRDA keyboards with Playstation Portable"
+arch=('mips')
+url="https://github.com/pspdev/psp-ports"
+license=('LGPL2.1')
+depends=()
+makedepends=()
+optdepends=()
+source=("git+https://github.com/pspdev/psp-ports.git")
+sha256sums=('SKIP')
+
+pkgver() {
+    cd psp-ports
+    # Set the version to the revision of the pspirkeyb directory
+    printf "r%s" "$(git rev-list --count HEAD ${pkgname})"
+}
+
+build() {
+    cd "psp-ports/$pkgname"
+    make
+}
+
+package() {
+    cd "psp-ports/$pkgname"
+
+    mkdir -m 755 -p "$pkgdir/psp/sdk/lib" "$pkgdir/psp/sdk/include"
+    cp -v libpspirkeyb/libpspirkeyb.a "$pkgdir/psp/sdk/lib"
+    cp -v libpspirkeyb/include/pspirkeyb.h "$pkgdir/psp/sdk/include"
+    cp -v libpspirkeyb/include/pspirkeyb_rawkeys.h "$pkgdir/psp/sdk/include"
+
+    mkdir -m 755 -p "$pkgdir/psp/sdk/samples/irkeyb" "$pkgdir/psp/sdk/samples/irkeyb/keymap"
+    cp libpspirkeyb/keymap/*.ini "$pkgdir/psp/sdk/samples/irkeyb/keymap"
+    cp libpspirkeyb/keymap/README.txt "$pkgdir/psp/sdk/samples/irkeyb/keymap"
+    cp libpspirkeyb/config/pspirkeyb.ini "$pkgdir/psp/sdk/samples/irkeyb"
+    cp asciidemo/main.c "$pkgdir/psp/sdk/samples/irkeyb"
+    cp asciidemo/Makefile.sdk "$pkgdir/psp/sdk/samples/irkeyb/Makefile"
+
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m644 LICENSE "$pkgdir/psp/share/licenses/$pkgname"
+}
+

@@ -1,0 +1,42 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=pixman
+pkgver=0.24.4
+pkgrel=1
+pkgdesc="Pixman is a low-level software library for pixel manipulation"
+arch=('mips')
+url="http://pixman.org/"
+license=('MIT')
+depends=('libpng')
+makedepends=()
+optdepends=()
+source=(
+    "http://cairographics.org/releases/${pkgname}-${pkgver}.tar.gz"
+    "https://raw.githubusercontent.com/pspdev/psplibraries/c4746da120f66f08e07d714334fcf557e259f6cc/patches/config.sub"
+)
+sha256sums=(
+    '4f39430baff745be9a2518d53d92c0612a298526e20dab259cdf0f62d60489ab'
+    'SKIP'
+)
+
+prepare() {
+    cd "$pkgname-$pkgver"
+    cp ../config.sub config.sub
+}
+
+build() {
+    cd "$pkgname-$pkgver"
+    LDFLAGS="$LDFLAGS -L$(psp-config --pspsdk-path)/lib -L$(psp-config --psp-prefix)/lib -lc -lpspuser" \
+    LIBS="$LIBS -lc -lpspuser" \
+    PNG_CFLAGS="-I$(psp-config --psp-prefix)/include" PNG_LIBS="-L$(psp-config --psp-prefix)/lib -lpng -lz" \
+    ./configure --host=psp --prefix=/psp
+    make
+}
+
+package() {
+    cd "$pkgname-$pkgver"
+    make DESTDIR="$pkgdir/" install
+
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 COPYING "$pkgdir/psp/share/licenses/$pkgname"
+}
+

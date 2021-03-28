@@ -1,0 +1,26 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=lua
+pkgver=5.2
+pkgrel=1
+pkgdesc="Lua programming language for PSP"
+arch=('mips')
+url="https://lua.org"
+license=('MIT')
+depends=()
+makedepends=()
+optdepends=()
+source=("git+https://github.com/pspdev/psp-ports.git#commit=f47bd37edf202284fc039106a5b27d9b7314bd76")
+sha256sums=('SKIP')
+
+build() {
+    cd "psp-ports/$pkgname"
+    make -f Makefile.psp
+}
+
+package() {
+    cd "psp-ports/$pkgname"
+    make -f Makefile.psp PSPDIR="${pkgdir}/psp" install
+
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 doc/readme.html "$pkgdir/psp/share/licenses/$pkgname"
+}

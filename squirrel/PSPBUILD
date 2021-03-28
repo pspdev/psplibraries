@@ -1,0 +1,45 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=squirrel
+pkgver=3.0.7
+pkgrel=1
+pkgdesc="Runtime libraries for the Squirrel programming language"
+arch=('mips')
+url="http://squirrel-lang.org/"
+license=('custom')
+depends=()
+makedepends=()
+optdepends=()
+source=(
+    "http://sourceforge.net/projects/squirrel/files/${pkgname}_3_0_7_stable.tar.gz"
+    "${pkgname}-${pkgver}.patch"
+)
+sha256sums=(
+    'c7c2548e2d2d74116303445118e197f585a3a5e6bde06fdfe668c05b1cb43fa2'
+    'SKIP'
+)
+
+prepare() {
+    cd "SQUIRREL3"
+    patch -p1 < ../${pkgname}-${pkgver}.patch
+}
+
+build() {
+    cd "SQUIRREL3"
+    AR="psp-ar" CC="psp-gcc" CXX="psp-g++" LIBS="-lc -lpspuser" make -C squirrel sq32
+    AR="psp-ar" CC="psp-gcc" CXX="psp-g++" LIBS="-lc -lpspuser" make -C sqstdlib sq32
+}
+
+package() {
+    cd "SQUIRREL3"
+
+    mkdir -m 755 -p "$pkgdir/psp/lib"
+    install -m 644 "lib/libsqstdlib.a" "$pkgdir/psp/lib"
+    install -m 644 "lib/libsquirrel.a" "$pkgdir/psp/lib"
+
+    mkdir -m 755 -p "$pkgdir/psp/include"
+    install -m 644 include/*.h "$pkgdir/psp/include"
+
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 COPYRIGHT "$pkgdir/psp/share/licenses/$pkgname"
+}
+

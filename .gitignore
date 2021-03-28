@@ -1,1 +1,9 @@
 build/
+
+# Build files for packages
+*/*/
+*.gz
+*.xz
+*.zip
+*.bz2
+gpl-3.0.txt

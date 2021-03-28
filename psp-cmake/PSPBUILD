@@ -1,0 +1,35 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=psp-cmake
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="CMake wrapper for building PSP software"
+arch=('any')
+url="https://github.com/pspdev/psplibraries"
+license=('GPL')
+depends=()
+makedepends=()
+optdepends=()
+source=(
+    "CreatePBP.cmake"
+    "PSP.cmake"
+    "psp-cmake"
+    "https://www.gnu.org/licenses/gpl-3.0.txt"
+)
+sha256sums=(
+    'SKIP'
+    'SKIP'
+    'SKIP'
+    '3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986'
+)
+
+
+package() {
+    mkdir -m 755 -p "$pkgdir/psp/share/cmake" "$pkgdir/bin"
+    install -m 644 CreatePBP.cmake "$pkgdir/psp/share/cmake"
+    install -m 644 PSP.cmake "$pkgdir/psp/share/cmake"
+    install -m 755 psp-cmake "$pkgdir/bin"
+
+    mkdir -m 755 -p "$pkgdir/share/licenses/$pkgname"
+    install -m 644 gpl-3.0.txt "$pkgdir/share/licenses/$pkgname"
+}
+

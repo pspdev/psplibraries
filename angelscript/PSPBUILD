@@ -1,0 +1,34 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=angelscript
+pkgver=2.23.0
+pkgrel=1
+pkgdesc="A game-oriented interpreted compiled scripting language library"
+arch=('mips')
+url="http://angelcode.com/angelscript/"
+license=('ZLIB')
+depends=()
+makedepends=('psp-cmake')
+optdepends=()
+source=("http://www.angelcode.com/angelscript/sdk/files/${pkgname}_${pkgver}.zip")
+sha256sums=('667e5238c1ec687df8e5b6888871855a50d892a548970680f6c8556f19023e0c')
+
+build() {
+    cd "sdk/${pkgname}/projects/cmake"
+    psp-cmake -D CMAKE_INSTALL_PREFIX=/psp/ .
+    make
+}
+
+package() {
+    cd "sdk/${pkgname}/"
+    mkdir -m 755 -p "$pkgdir/psp/lib" "$pkgdir/psp/include"
+    install -m 644 "lib/libAngelscript.a" "$pkgdir/psp/lib"
+    install -m 644 "include/angelscript.h" "$pkgdir/psp/include"
+
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 ../docs/manual/doc_license.html "$pkgdir/psp/share/licenses/$pkgname/license.html"
+
+    # Install documentation
+    mkdir -p "$pkgdir/psp/share/doc/"
+    cp -r ../docs "$pkgdir/psp/share/doc/$pkgname"
+}
+

@@ -1,0 +1,27 @@
+# Maintainer: Wouter Wijsman <wwijsman@live.nl>
+pkgname=libtremor
+pkgver=1.0.2
+pkgrel=1
+pkgdesc="Vorbis decoder for PSP"
+arch=('mips')
+url="https://xiph.org/vorbis"
+license=('BSD')
+depends=()
+makedepends=()
+optdepends=()
+source=("git+https://github.com/pspdev/psp-ports.git#commit=f47bd37edf202284fc039106a5b27d9b7314bd76")
+sha256sums=('SKIP')
+
+build() {
+    cd "psp-ports/libTremor"
+    LDFLAGS="-L$(psp-config --pspsdk-path)/lib" LIBS="-lc -lpspuser" ./autogen.sh --host psp --prefix="/psp"
+    make
+}
+
+package() {
+    cd "psp-ports/libTremor"
+    make DESTDIR="${pkgdir}" install
+
+    mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
+    install -m 644 COPYING "$pkgdir/psp/share/licenses/$pkgname"
+}
