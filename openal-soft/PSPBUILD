@@ -11,7 +11,7 @@ makedepends=()
 optdepends=()
 provides=('openal')
 source=(
-    "http://kcat.strangesoft.net/openal-releases/${pkgname}-${pkgver}.tar.bz2"
+    "http://openal-soft.org/openal-releases/${pkgname}-${pkgver}.tar.bz2"
     "${pkgname}-${pkgver}-PSP.patch"
 )
 sha256sums=(
