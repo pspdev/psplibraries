@@ -1,6 +1,6 @@
 # Maintainer: Wouter Wijsman <wwijsman@live.nl>
 pkgname=expat
-pkgver=2.1.0
+pkgver=2.3.0
 pkgrel=1
 pkgdesc="XML parsing C library"
 arch=('mips')
@@ -14,7 +14,7 @@ source=(
     "https://raw.githubusercontent.com/pspdev/psplibraries/c4746da120f66f08e07d714334fcf557e259f6cc/patches/config.sub"
 )
 sha256sums=(
-    '823705472f816df21c8f6aa026dd162b280806838bb55b3432b0fb1fcca7eb86'
+    '89df123c62f2c2e2b235692d9fe76def6a9ab03dbe95835345bf412726eb1987'
     '4f39430baff745be9a2518d53d92c0612a298526e20dab259cdf0f62d60489ab'
 )
 
@@ -28,7 +28,7 @@ build() {
     cd "$pkgname-$pkgver"
     LDFLAGS="$LDFLAGS -L$(psp-config --pspsdk-path)/lib -L$(psp-config --psp-prefix)/lib -lc -lpspuser" \
     LIBS="$LIBS -lc -lpspuser" \
-    ./configure --host=psp --prefix=/psp
+    ./configure --host=psp --prefix=/psp --without-docbook
     make
 }
 
