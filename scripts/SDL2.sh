@@ -1,6 +1,7 @@
 test_deps_install libpspvram pspgl
-git clone https://github.com/pspdev/SDL SDL2 -b psp-v2.0.14 --depth=1
-cd SDL2
+clone_git_repo github.com pspdev SDL psp-v2.0.14 
+
+cd SDL
 make -f Makefile.psp
 
 mkdir -p $(psp-config --psp-prefix)/include/SDL2
