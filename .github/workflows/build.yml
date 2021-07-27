@@ -3,8 +3,8 @@ name: Packages
 on:
   workflow_dispatch:
   pull_request:
-  schedule:
-    - cron: "0 */6 * * *"
+  push:
+    branches: master
   repository_dispatch:
     types: [run_build]
 
@@ -31,8 +31,6 @@ jobs:
       fail-fast: false
       matrix:
         package: ${{ fromJson(needs.prepare_jobs.outputs.non_dependant) }}
-    env:
-      SSHPASS: ${{ secrets.SSHPASS }}
     steps:
     - uses: actions/checkout@v2
     - name: Build package
@@ -69,22 +67,16 @@ jobs:
       matrix:
         package: ${{ fromJson(needs.prepare_jobs.outputs.dependant) }}
 
-    env:
-      SSHPASS: ${{ secrets.SSHPASS }}
     steps:
     - uses: actions/checkout@v2
     - uses: actions/download-artifact@v2
     - name: Install packages
       run: |
-        export VITASDK=/usr/local/vitasdk
-        export PATH=$(pwd)/../vita-makepkg:$VITASDK/bin:$PATH
         cd package
         for f in *.tar.xz; do tar -C $VITASDK/arm-vita-eabi/ -xvf "$f"; done
         cd ..
     - name: Build packages
       run: |
-        export VITASDK=/usr/local/vitasdk
-        export PATH=$(pwd)/../vita-makepkg:$VITASDK/bin:$PATH
         for f in ${{ matrix.package }}; do bash ./build.sh $f; done
     - name: Upload package
       run: |
