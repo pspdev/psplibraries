@@ -1,0 +1,111 @@
+name: Packages
+
+on:
+  workflow_dispatch:
+  pull_request:
+  schedule:
+    - cron: "0 */6 * * *"
+  repository_dispatch:
+    types: [run_build]
+
+jobs:
+  prepare_jobs:
+    runs-on: ubuntu-18.04
+    container: node:lts
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        id: set-matrix
+        run: |
+          echo "::set-output name=dependant::$(node create-matrix.js dependant)"
+          echo "::set-output name=non_dependant::$(node create-matrix.js non_dependant)"
+    outputs:
+      dependant: ${{ steps.set-matrix.outputs.dependant }}
+      non_dependant: ${{ steps.set-matrix.outputs.non_dependant }}
+
+  build:
+    needs: [prepare_jobs]
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJson(needs.prepare_jobs.outputs.non_dependant) }}
+    env:
+      SSHPASS: ${{ secrets.SSHPASS }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build package
+      run: |
+        export VITASDK=/usr/local/vitasdk
+        export PATH=$(pwd)/../vita-makepkg:$VITASDK/bin:$PATH
+        bash ./build.sh ${{ matrix.package }}
+    - name: Upload package
+      run: |
+        echo ${{ matrix.package }}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: package
+        path: ${{ matrix.package }}/*-arm.tar.xz
+    - name: Rename release artifacts
+      if: contains(github.ref,'refs/heads/master')
+      run: |
+        cd ${{ matrix.package }}
+        export FILE=`echo *-arm.tar.xz`
+        mv $FILE ${{ matrix.package }}.tar.xz
+    - uses: svenstaro/upload-release-action@v2
+      if: contains(github.ref,'refs/heads/master')
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: ${{ matrix.package }}/*.tar.xz
+        overwrite: true
+        file_glob: true
+        tag: ${{ github.ref }}     
+        release_name: master
+  build_depends:
+    needs: [prepare_jobs, build]
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJson(needs.prepare_jobs.outputs.dependant) }}
+
+    env:
+      SSHPASS: ${{ secrets.SSHPASS }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/download-artifact@v2
+    - name: Install packages
+      run: |
+        export VITASDK=/usr/local/vitasdk
+        export PATH=$(pwd)/../vita-makepkg:$VITASDK/bin:$PATH
+        cd package
+        for f in *.tar.xz; do tar -C $VITASDK/arm-vita-eabi/ -xvf "$f"; done
+        cd ..
+    - name: Build packages
+      run: |
+        export VITASDK=/usr/local/vitasdk
+        export PATH=$(pwd)/../vita-makepkg:$VITASDK/bin:$PATH
+        for f in ${{ matrix.package }}; do bash ./build.sh $f; done
+    - name: Upload package
+      run: |
+        export PACKAGE=`echo ${{ matrix.package }} | awk '{print $NF}'`
+        echo "PACKAGE=$PACKAGE" >> $GITHUB_ENV
+    - uses: actions/upload-artifact@v2
+      with:
+        name: package
+        path: ${{ env.PACKAGE }}/*-arm.tar.xz
+    - name: Rename release artifacts
+      if: contains(github.ref,'refs/heads/master')
+      run: |
+        cd ${{ env.PACKAGE }}
+        export FILE=`echo *-arm.tar.xz`
+        mv $FILE ${{ env.PACKAGE }}.tar.xz
+    - uses: svenstaro/upload-release-action@v2
+      if: contains(github.ref,'refs/heads/master')
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: ${{ env.PACKAGE }}/*.tar.xz
+        overwrite: true
+        file_glob: true
+        tag: ${{ github.ref }}        
+        release_name: master
