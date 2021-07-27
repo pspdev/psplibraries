@@ -41,11 +41,11 @@ resolveDependency = (name, map) => {
 let directories = fs.readdirSync(testFolder).filter(file => fs.lstatSync(file).isDirectory());
 
 directories = directories.filter(directory => {
-    return fs.readdirSync(directory).filter(file => file == 'VITABUILD').length > 0;
+    return fs.readdirSync(directory).filter(file => file == 'PSPBUILD').length > 0;
 });
 
 directories.forEach(directory => {
-    const content = fs.readFileSync(path.join(directory, "VITABUILD"));
+    const content = fs.readFileSync(path.join(directory, "PSPBUILD"));
     const lines = content.toString().split('\n');
     for (let i = 0; i < lines.length; i++) {
         const KV = lines[i].split("=");
