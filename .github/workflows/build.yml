@@ -36,8 +36,9 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build package
       run: |
+        chown -R build:build ${{ matrix.package }}
         cd ${{ matrix.package }}
-        sudo -u build /usr/local/pspdev/bin/psp-makepkg -i
+        sudo -u build PSPDEV=/usr/local/pspdev /usr/local/pspdev/bin/psp-makepkg -i
         cd ..
     - name: Upload package
       run: |
@@ -77,13 +78,14 @@ jobs:
     - name: Install packages
       run: |
         cd package
-        for f in *.tar.xz; do tar -C $VITASDK/arm-vita-eabi/ -xvf "$f"; done
+        for f in *.tar.xz; do psp-pacman -U "$f"; done
         cd ..
     - name: Build packages
       run: |
         for f in ${{ matrix.package }}; do
+        chown -R build:build $f
         cd $f
-        sudo -u build /usr/local/pspdev/bin/psp-makepkg -i
+        sudo -u build PSPDEV=/usr/local/pspdev /usr/local/pspdev/bin/psp-makepkg -i
         cd ..
         done
     - name: Upload package
