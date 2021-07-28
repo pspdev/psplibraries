@@ -38,7 +38,7 @@ jobs:
       run: |
         chown -R build:build ${{ matrix.package }}
         cd ${{ matrix.package }}
-        sudo -u build PSPDEV=/usr/local/pspdev /usr/local/pspdev/bin/psp-makepkg -i
+        sudo -u build PATH=${PATH} PSPDEV=${PSPDEV} ${PSPDEV}/bin/psp-makepkg -i --noconfirm
         cd ..
     - name: Upload package
       run: |
@@ -46,18 +46,18 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: package
-        path: ${{ matrix.package }}/*-arm.tar.xz
+        path: ${{ matrix.package }}/*-mips.pkg.tar.gz
     - name: Rename release artifacts
       if: contains(github.ref,'refs/heads/master')
       run: |
         cd ${{ matrix.package }}
-        export FILE=`echo *-arm.tar.xz`
-        mv $FILE ${{ matrix.package }}.tar.xz
+        export FILE=`echo *-mips.pkg.tar.gz`
+        mv $FILE ${{ matrix.package }}.pkg.tar.gz
     - uses: svenstaro/upload-release-action@v2
       if: contains(github.ref,'refs/heads/master')
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: ${{ matrix.package }}/*.tar.xz
+        file: ${{ matrix.package }}/*.pkg.tar.gz
         overwrite: true
         file_glob: true
         tag: ${{ github.ref }}     
@@ -78,14 +78,14 @@ jobs:
     - name: Install packages
       run: |
         cd package
-        for f in *.tar.xz; do psp-pacman -U "$f"; done
+        for f in *.pkg.tar.gz; do psp-pacman -U "$f"; done
         cd ..
     - name: Build packages
       run: |
         for f in ${{ matrix.package }}; do
         chown -R build:build $f
         cd $f
-        sudo -u build PSPDEV=/usr/local/pspdev /usr/local/pspdev/bin/psp-makepkg -i
+        sudo -u build PATH=${PATH} PSPDEV=${PSPDEV} ${PSPDEV}/bin/psp-makepkg -i --noconfirm
         cd ..
         done
     - name: Upload package
@@ -95,18 +95,18 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: package
-        path: ${{ env.PACKAGE }}/*-arm.tar.xz
+        path: ${{ env.PACKAGE }}/*-mips.pkg.tar.gz
     - name: Rename release artifacts
       if: contains(github.ref,'refs/heads/master')
       run: |
         cd ${{ env.PACKAGE }}
-        export FILE=`echo *-arm.tar.xz`
-        mv $FILE ${{ env.PACKAGE }}.tar.xz
+        export FILE=`echo *-mips.pkg.tar.gz`
+        mv $FILE ${{ env.PACKAGE }}.pkg.tar.gz
     - uses: svenstaro/upload-release-action@v2
       if: contains(github.ref,'refs/heads/master')
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: ${{ env.PACKAGE }}/*.tar.xz
+        file: ${{ env.PACKAGE }}/*.pkg.tar.gz
         overwrite: true
         file_glob: true
         tag: ${{ github.ref }}        
