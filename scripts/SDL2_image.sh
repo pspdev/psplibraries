@@ -1,3 +1,4 @@
+#!/bin/sh
 test_deps_install SDL2 libpng jpeg
 get_pspport SDL_image SDL2_image-psp
 

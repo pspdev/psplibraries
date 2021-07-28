@@ -1,3 +1,4 @@
+#!/bin/sh
 ## test dependency
 test_deps_install cmake-toolchain-script
 

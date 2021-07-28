@@ -1,3 +1,4 @@
+#!/bin/sh
 test_deps_install libpng
 PIXMAN_VERSION=0.24.4
 
