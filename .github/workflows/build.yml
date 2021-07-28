@@ -78,7 +78,9 @@ jobs:
     - name: Install packages
       run: |
         cd package
-        for f in *.pkg.tar.gz; do psp-pacman -U --noconfirm "$f"; done
+        for f in *.pkg.tar.gz; do
+        sudo -u build PATH=${PATH} PSPDEV=${PSPDEV} ${PSPDEV}/bin/psp-pacman -U --noconfirm "$f"
+        done
         cd ..
     - name: Build packages
       run: |
