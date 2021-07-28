@@ -1,3 +1,4 @@
+#!/bin/sh
 test_deps_install SDL2 freetype
 get_pspport SDL_ttf SDL2_ttf-psp
 

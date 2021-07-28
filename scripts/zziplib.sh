@@ -1,3 +1,4 @@
+#!/bin/sh
 test_deps_install zlib
 get_pspports zziplib
 run_configure

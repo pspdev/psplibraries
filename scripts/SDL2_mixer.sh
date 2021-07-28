@@ -1,3 +1,4 @@
+#!/bin/sh
 test_deps_install SDL2 libmikmod
 get_pspport SDL_mixer SDL2_mixer-psp
 

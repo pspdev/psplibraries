@@ -1,3 +1,4 @@
+#!/bin/sh
 BZIP2_VERSION=1.0.6
 
 download_and_extract ftp://sourceware.org/pub/bzip2/bzip2-$BZIP2_VERSION.tar.gz bzip2-$BZIP2_VERSION

@@ -1,3 +1,4 @@
+#!/bin/sh
 test_deps_install libpspvram pspgl
 git clone https://github.com/pspdev/SDL SDL2 -b psp-v2.0.14 --depth=1 
 

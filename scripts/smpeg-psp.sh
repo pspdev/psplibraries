@@ -1,3 +1,4 @@
+#!/bin/sh
 wget --continue --no-check-certificate https://github.com/fungos/smpeg-psp/tarball/master -O smpeg-psp.tar.gz
 rm -Rf smpeg-psp && mkdir smpeg-psp && tar --strip-components=1 --directory=smpeg-psp -xvzf smpeg-psp.tar.gz
 cd smpeg-psp

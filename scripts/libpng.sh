@@ -1,3 +1,4 @@
+#!/bin/sh
 test_deps_install zlib
 
 LIBPNG_VERSION=1.5.7

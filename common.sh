@@ -1,3 +1,4 @@
+#!/bin/sh
 # Returns the number of processor cores available
 # Usage: num_cpus
 function num_cpus
