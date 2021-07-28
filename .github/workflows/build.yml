@@ -46,12 +46,12 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: package
-        path: ${{ matrix.package }}/*-mips.pkg.tar.gz
+        path: ${{ matrix.package }}/*.pkg.tar.gz
     - name: Rename release artifacts
       if: contains(github.ref,'refs/heads/master')
       run: |
         cd ${{ matrix.package }}
-        export FILE=`echo *-mips.pkg.tar.gz`
+        export FILE=`echo *.pkg.tar.gz`
         mv $FILE ${{ matrix.package }}.pkg.tar.gz
     - uses: svenstaro/upload-release-action@v2
       if: contains(github.ref,'refs/heads/master')
@@ -95,12 +95,12 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: package
-        path: ${{ env.PACKAGE }}/*-mips.pkg.tar.gz
+        path: ${{ env.PACKAGE }}/*.pkg.tar.gz
     - name: Rename release artifacts
       if: contains(github.ref,'refs/heads/master')
       run: |
         cd ${{ env.PACKAGE }}
-        export FILE=`echo *-mips.pkg.tar.gz`
+        export FILE=`echo *.pkg.tar.gz`
         mv $FILE ${{ env.PACKAGE }}.pkg.tar.gz
     - uses: svenstaro/upload-release-action@v2
       if: contains(github.ref,'refs/heads/master')
