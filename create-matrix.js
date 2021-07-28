@@ -50,13 +50,11 @@ directories.forEach(directory => {
     for (let i = 0; i < lines.length; i++) {
         const KV = lines[i].split("=");
         if (KV.length > 1 && (KV[0].trim() == 'depends' || KV[0].trim() == 'makedepends')) {
-
             const dependencies = KV[1].trim().replace("(", "").replace(")", "").replace(/\'||\)/g, "").split(' ');
-            if (dependencies[0] != '') {
-                dependant.set(directory, dependencies);
+            if (dependencies[0] == '' && dependencies.length == 1) {
+                continue;
             }
-
-            break;
+            dependant.set(directory, dependencies);
         }
     }
 
