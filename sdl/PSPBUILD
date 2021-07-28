@@ -9,6 +9,7 @@ license=('GPL2.1')
 depends=('pspirkeyb')
 makedepends=()
 optdepends=()
+group=('all')
 source=(
     "http://www.libsdl.org/release/SDL-${pkgver}.tar.gz"
     "SDL-${pkgver}-PSP.patch"

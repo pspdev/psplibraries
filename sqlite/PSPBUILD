@@ -9,6 +9,7 @@ license=('custom:Public Domain')
 depends=()
 optdepends=()
 makedepends=()
+group=('all')
 source=(
     "https://www.sqlite.org/src/tarball/26778480/SQLite-26778480.tar.gz"
     "${pkgname}-${pkgver}-PSP.patch"

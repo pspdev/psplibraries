@@ -10,6 +10,7 @@ depends=('psp-cmake' 'pthread-embedded')
 makedepends=()
 optdepends=()
 provides=('openal')
+group=('all')
 source=(
     "http://openal-soft.org/openal-releases/${pkgname}-${pkgver}.tar.bz2"
     "${pkgname}-${pkgver}-PSP.patch"

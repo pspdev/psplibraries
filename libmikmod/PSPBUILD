@@ -9,6 +9,7 @@ license=('GPL2.1')
 depends=()
 makedepends=()
 optdepends=()
+group=('all')
 source=(
     "https://downloads.sourceforge.net/mikmod/${pkgname}-${pkgver}.tar.gz"
     "${pkgname}-${pkgver}-PSP.patch"

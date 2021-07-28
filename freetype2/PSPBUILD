@@ -10,6 +10,7 @@ depends=('zlib')
 makedepends=()
 optdepends=()
 provides=('freetype')
+group=('all')
 source=("https://github.com/pspdev/freetype2/archive/${pkgver}-psp.tar.gz")
 sha256sums=('cda92a07646c0d1192a8d27b460c063a55a17bbf3961079bf12a6436bc652938')
 

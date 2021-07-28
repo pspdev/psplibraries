@@ -9,6 +9,7 @@ license=('GPL')
 depends=()
 makedepends=()
 optdepends=()
+group=('all')
 source=(
     "CreatePBP.cmake"
     "PSP.cmake"

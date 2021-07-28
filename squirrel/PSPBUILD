@@ -9,6 +9,7 @@ license=('custom')
 depends=()
 makedepends=()
 optdepends=()
+group=('all')
 source=(
     "http://sourceforge.net/projects/squirrel/files/${pkgname}_3_0_7_stable.tar.gz"
     "${pkgname}-${pkgver}.patch"

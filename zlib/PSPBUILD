@@ -9,6 +9,7 @@ license=('ZLIB')
 depends=()
 makedepends=()
 optdepends=()
+group=('all')
 source=(
     "https://sourceforge.net/projects/libpng/files/${pkgname}/${pkgver}/${pkgname}-${pkgver}.tar.gz"
     "${pkgname}-${pkgver}-PSP.patch"
