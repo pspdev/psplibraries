@@ -1,6 +1,6 @@
 # Maintainer: Wouter Wijsman <wwijsman@live.nl>
 pkgname=expat
-pkgver=2.3.0
+pkgver=2.4.1
 pkgrel=1
 pkgdesc="XML parsing C library"
 arch=('mips')
@@ -15,7 +15,7 @@ source=(
     "https://raw.githubusercontent.com/pspdev/psplibraries/c4746da120f66f08e07d714334fcf557e259f6cc/patches/config.sub"
 )
 sha256sums=(
-    '89df123c62f2c2e2b235692d9fe76def6a9ab03dbe95835345bf412726eb1987'
+    'a00ae8a6b96b63a3910ddc1100b1a7ef50dc26dceb65ced18ded31ab392f132b'
     '4f39430baff745be9a2518d53d92c0612a298526e20dab259cdf0f62d60489ab'
 )
 
