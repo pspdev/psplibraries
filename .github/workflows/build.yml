@@ -123,7 +123,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: actions/download-artifact@v2
-    - name: Upload package
+    - name: Upload db files
       if: contains(github.ref,'refs/heads/master')
       run: |
         cd package
@@ -133,7 +133,16 @@ jobs:
       if: contains(github.ref,'refs/heads/master')
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: package/pspdev.*
+        file: package/pspdev.db
+        overwrite: true
+        file_glob: true
+        tag: ${{ github.ref }}
+        release_name: master
+    - uses: svenstaro/upload-release-action@v2
+      if: contains(github.ref,'refs/heads/master')
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: package/pspdev.db.tar.gz
         overwrite: true
         file_glob: true
         tag: ${{ github.ref }}
