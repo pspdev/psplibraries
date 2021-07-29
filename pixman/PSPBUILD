@@ -15,7 +15,7 @@ source=(
     "https://raw.githubusercontent.com/pspdev/psplibraries/c4746da120f66f08e07d714334fcf557e259f6cc/patches/config.sub"
 )
 sha256sums=(
-    '4f39430baff745be9a2518d53d92c0612a298526e20dab259cdf0f62d60489ab'
+    'fea7869c2ba41f49fbe1c9382390ff671ac62add44dc5f29134e61d0f17960de'
     'SKIP'
 )
 
