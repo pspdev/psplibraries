@@ -115,6 +115,7 @@ jobs:
         release_name: master
 
   build_database:
+    if: always()
     needs: [prepare_jobs, build, build_depends]
     runs-on: ubuntu-18.04
     container: ghcr.io/sharkwouter/pspdev-library-build-container:latest
