@@ -1,0 +1,14 @@
+diff --git a/tool/lemon.c b/tool/lemon-windows.c
+index 70d7c1c..2157245 100755
+--- a/tool/lemon.c
++++ b/tool/lemon-windows.c
+@@ -34,6 +34,9 @@ extern int access();
+ #define MAXRHS 1000
+ #endif
+ 
++#ifdef _WIN32
++#define long long long
++#endif
+ static int showPrecedenceConflict = 0;
+ static const char **made_files = NULL;
+ static int made_files_count = 0;

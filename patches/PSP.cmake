@@ -9,7 +9,7 @@ if (DEFINED PSPDEV)
 else()
     # Determine PSP toolchain installation directory;
     # psp-config binary is guaranteed to be in path after successful installation:
-    execute_process(COMMAND bash -c "psp-config --pspdev-path" OUTPUT_VARIABLE PSPDEV OUTPUT_STRIP_TRAILING_WHITESPACE)
+    execute_process(COMMAND sh -c "psp-config --pspdev-path" OUTPUT_VARIABLE PSPDEV OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif()
 
 # Assert that PSP SDK path is now defined:
