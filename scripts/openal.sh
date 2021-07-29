@@ -9,7 +9,7 @@ download_and_extract http://openal-soft.org/openal-releases/openal-soft-$OPENAL_
 apply_patch openal-$OPENAL_VERSION-PSP
 
 ## Run cmake
-psp-cmake -D CMAKE_INSTALL_PREFIX=$(psp-config --psp-prefix) -D UTILS=OFF -D EXAMPLES=OFF . || { exit 1; }
+psp-cmake -G "Unix Makefiles" -D CMAKE_INSTALL_PREFIX=$(psp-config --psp-prefix) -D UTILS=OFF -D EXAMPLES=OFF . || { exit 1; }
 
 ## Compile and Install
 run_make -j `num_cpus`

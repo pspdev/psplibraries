@@ -8,7 +8,7 @@ download_and_extract http://www.angelcode.com/angelscript/sdk/files/angelscript_
 cd angelscript/projects/cmake || { return 1; }
 
 ## Run cmake
-psp-cmake -D CMAKE_INSTALL_PREFIX=$(psp-config --psp-prefix) . || { exit 1; }
+psp-cmake -G "Unix Makefiles" -D CMAKE_INSTALL_PREFIX=$(psp-config --psp-prefix) . || { exit 1; }
 
 ## Compile and Install
 make -j `num_cpus` || { exit 1; }
