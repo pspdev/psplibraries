@@ -127,13 +127,13 @@ jobs:
       if: contains(github.ref,'refs/heads/master')
       run: |
         cd package
-        ${PSPDEV}/share/pacman/bin/repo-add pspdev.db *.pkg.tar.gz
+        ${PSPDEV}/share/pacman/bin/repo-add pspdev.db.tar.gz *.pkg.tar.gz
         cd ..
     - uses: svenstaro/upload-release-action@v2
       if: contains(github.ref,'refs/heads/master')
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: package/pspdev.db
+        file: package/pspdev.*
         overwrite: true
         file_glob: true
         tag: ${{ github.ref }}
