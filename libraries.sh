@@ -4,6 +4,15 @@
  unset CC
  unset CXX
 
+
+ if [ "$(uname -o)" == "Msys" ]; then
+	 mv $PSPDEV/bin/psp-gcc.exe $PSPDEV/bin/psp-gcc
+	 mv $PSPDEV/bin/psp-g++.exe $PSPDEV/bin/psp-g++
+
+	 cp $PSPDEV/bin/psp-gcc $PSPDEV/bin/psp-gcc.exe
+	 cp $PSPDEV/bin/psp-g++ $PSPDEV/bin/psp-g++.exe
+ fi
+
  ## Set executable name for libtoolize
  if [ "$(uname)" == "Darwin" ]; then
      LIBTOOLIZE=glibtoolize
