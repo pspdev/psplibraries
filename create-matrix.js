@@ -59,7 +59,11 @@ directories.forEach(directory => {
             if (dependencies[0] == '' && dependencies.length == 1) {
                 continue;
             }
-            dependant.set(directory, dependencies);
+            if (dependant.get(directory) != undefined) {
+                dependant.set(directory, [...dependant.get(directory),...dependencies]);
+            } else {
+                dependant.set(directory, dependencies);
+            }
         }
     }
 
