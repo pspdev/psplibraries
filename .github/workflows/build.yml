@@ -40,7 +40,7 @@ jobs:
         cd ${{ matrix.package }}
         sudo -u build PATH=${PATH} PSPDEV=${PSPDEV} ${PSPDEV}/bin/psp-makepkg -i --noconfirm
         cd ..
-    - name: Upload package
+    - name: Store package
       run: |
         echo ${{ matrix.package }}
     - uses: actions/upload-artifact@v2
@@ -75,7 +75,7 @@ jobs:
         sudo -u build PATH=${PATH} PSPDEV=${PSPDEV} ${PSPDEV}/bin/psp-makepkg -i --noconfirm
         cd ..
         done
-    - name: Upload package
+    - name: Store package
       run: |
         export PACKAGE=`echo ${{ matrix.package }} | awk '{print $NF}'`
         echo "PACKAGE=$PACKAGE" >> $GITHUB_ENV
@@ -93,17 +93,18 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: actions/download-artifact@v2
-    - name: Upload db files
+    - name: Create db files
       if: contains(github.ref,'refs/heads/master')
       run: |
         cd package
         ${PSPDEV}/share/pacman/bin/repo-add pspdev.db.tar.gz *.pkg.tar.gz
         cd ..
+    - name: Upload files
     - uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: package/*
         overwrite: true
         file_glob: true
-        tag: ${{ github.run_id }}
-        release_name: ${{ github.run_id }}
+        tag: ${{ github.ref }}-${{ github.run_id }}
+        release_name: ${{ github.ref }} (${{ github.run_id }})
