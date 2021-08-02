@@ -93,14 +93,13 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: actions/download-artifact@v2
-    - name: Create db files
+    - name: Upload files
       if: contains(github.ref,'refs/heads/master')
       run: |
         cd package
         ${PSPDEV}/share/pacman/bin/repo-add pspdev.db.tar.gz *.pkg.tar.gz
         cd ..
     - uses: svenstaro/upload-release-action@v2
-    - name: Upload files
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: package/*
