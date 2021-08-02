@@ -99,8 +99,8 @@ jobs:
         cd package
         ${PSPDEV}/share/pacman/bin/repo-add pspdev.db.tar.gz *.pkg.tar.gz
         cd ..
-    - name: Upload files
     - uses: svenstaro/upload-release-action@v2
+    - name: Upload files
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: package/*
