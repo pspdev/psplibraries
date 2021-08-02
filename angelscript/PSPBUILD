@@ -9,7 +9,6 @@ license=('ZLIB')
 depends=()
 makedepends=('psp-cmake')
 optdepends=()
-group=('all')
 source=("http://www.angelcode.com/angelscript/sdk/files/${pkgname}_${pkgver}.zip")
 sha256sums=('667e5238c1ec687df8e5b6888871855a50d892a548970680f6c8556f19023e0c')
 

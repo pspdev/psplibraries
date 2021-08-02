@@ -9,7 +9,6 @@ license=('BSD')
 depends=()
 makedepends=()
 optdepends=()
-group=('all')
 source=("git+https://github.com/pspdev/pspgl.git")
 sha256sums=('SKIP')
 

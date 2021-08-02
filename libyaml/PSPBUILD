@@ -9,7 +9,6 @@ license=('MIT')
 depends=()
 makedepends=()
 optdepends=()
-group=('all')
 source=(
     "http://pyyaml.org/download/libyaml/yaml-${pkgver}.tar.gz"
     "https://raw.githubusercontent.com/pspdev/psplibraries/c4746da120f66f08e07d714334fcf557e259f6cc/patches/config.sub"

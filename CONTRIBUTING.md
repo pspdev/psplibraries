@@ -9,7 +9,6 @@ For new PSPBUILDs or updates to existing ones to be mergable in this repository,
     - ``pkgdesc``
     - ``license``
   - ``arch`` should be set to ``('mips')`` for PSP libraries or to ``('any')`` for scripts.
-  - ``group`` should at least contain the ``all`` group like ``group=('all')``.
   - ``sha256sums`` should be used for integrity checks of downloaded files. Only version controlled repositories (think git, svn or mercurial) and local patches are allowed to use ``SKIP``.
   - PSPBUILDs based on versioned archive files (yourlibrary-1.2.tar.gz for instance) are preferred over those based on version controlled repositories.
   - The license of the library should be installed in ``$pkgdir/psp/share/licenses/$pkgname``.

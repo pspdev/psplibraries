@@ -9,7 +9,6 @@ license=('custom')
 depends=()
 makedepends=()
 optdepends=()
-group=('all')
 source=(
     "ftp://sourceware.org/pub/${pkgname}/${pkgname}-${pkgver}.tar.gz"
     "${pkgname}-${pkgver}-PSP.patch"

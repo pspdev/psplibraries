@@ -9,7 +9,6 @@ license=('MIT')
 depends=('sdl2' 'freetype2')
 makedepends=()
 optdepends=()
-group=('all')
 source=("https://github.com/pspdev/SDL_ttf/archive/${pkgver}-psp.tar.gz")
 sha256sums=('540b2aaea1df6204526fd6df4a9e1e524360b6d36e2bebea79a6ad7cd180a621')
 

@@ -9,7 +9,6 @@ license=('LGPL2')
 depends=('sdl')
 makedepends=()
 optdepends=()
-group=('all')
 source=(
     "git+https://github.com/fungos/smpeg-psp.git#commit=bee77b1c97b9ce437f1c4a5ba644244ab2a2c433"
     "${pkgname}-psp.patch"

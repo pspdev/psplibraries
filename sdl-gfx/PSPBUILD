@@ -9,7 +9,6 @@ license=('ZLIB')
 depends=('sdl' 'freetype2')
 makedepends=()
 optdepends=()
-group=('all')
 source=("https://github.com/pspdev/SDL_gfx/archive/${pkgver}-psp.tar.gz")
 sha256sums=('8a5116995bad20720978bc857588f58b5baf3dbe03f2b2099b339f445abae36d')
 

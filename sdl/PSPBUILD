@@ -9,7 +9,6 @@ license=('GPL2.1')
 depends=('pspirkeyb')
 makedepends=()
 optdepends=()
-group=('all')
 source=(
     "git+https://github.com/pspdev/SDL.git#commit=0df75b67465fc6a35916de80e6d9139799adee2e"
     "sdl-config-fix.patch"

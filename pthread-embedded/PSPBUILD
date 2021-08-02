@@ -9,8 +9,6 @@ license=('GPL2')
 depends=()
 makedepends=()
 optdepends=()
-provides=('pthread')
-group=('all')
 source=("git+https://github.com/take-cheeze/pthreads-emb.git#commit=18d8b19a8c6628c74a134fb16b6e433343cbf2a9")
 sha256sums=('SKIP')
 

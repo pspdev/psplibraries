@@ -9,7 +9,6 @@ license=('LGPL2.1')
 depends=()
 makedepends=()
 optdepends=()
-group=('all')
 source=("git+https://github.com/pspdev/psp-ports.git")
 sha256sums=('SKIP')
 

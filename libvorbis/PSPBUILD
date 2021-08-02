@@ -9,7 +9,6 @@ license=('BSD')
 depends=('libogg')
 makedepends=()
 optdepends=()
-group=('all')
 source=("git+https://github.com/pspdev/psp-ports.git#commit=f47bd37edf202284fc039106a5b27d9b7314bd76")
 sha256sums=('SKIP')
 

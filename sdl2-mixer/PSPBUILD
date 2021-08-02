@@ -9,7 +9,6 @@ license=('MIT')
 depends=('sdl2' 'libmikmod')
 makedepends=()
 optdepends=()
-group=('all')
 source=("https://github.com/pspdev/SDL_mixer/archive/${pkgver}-psp.tar.gz")
 sha256sums=('b55f88ff0b63744be466ca8546249070fdfdb08258a0d008f54990226f462f8b')
 

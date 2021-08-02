@@ -9,7 +9,6 @@ license=('MIT')
 depends=()
 makedepends=()
 optdepends=()
-group=('all')
 source=("git+https://github.com/albe/libpspvram.git")
 sha256sums=('SKIP')
 
