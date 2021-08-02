@@ -51,3 +51,7 @@ This will build and install the package.
 Contributions to this repository are welcome. Especially fixes and new libraries always add value. Take a look at[CONTRIBUTING.md](CONTRIBUTING.md) for information on style of PSPBUILDs.
 
 For more general information on how to write PSPBUILDs take a look at the [Arch wiki](https://wiki.archlinux.org/title/Creating_packages).
+
+## Special thanks
+
+A special thanks goes out to both the contributors of PSPDEV and the VITASDK. Most of the scripts in this repository are based on scripts written by them.
