@@ -8,11 +8,16 @@ const args = process.argv.slice(2);
 
 let isDependant = false;
 
+let getAll = false;
+
 switch (args[0]) {
     case 'dependant':
         isDependant = true;
         break;
     case 'non_dependant':
+        break;
+    case 'all':
+        getAll = true;
         break;
     default:
         return;
@@ -67,11 +72,13 @@ dependant.forEach((value, key) => {
 
 const output = {
     non_dependant: [],
-    dependant: []
+    dependant: [],
+    all: []
 };
 
 directories.forEach(library => {
     const dependencies = dependant.get(library);
+    output.all.push(library);
     if (dependencies) {
         let info = library;
         const deps = [];
@@ -88,6 +95,8 @@ directories.forEach(library => {
 
 if(isDependant)
     console.log(JSON.stringify(output.dependant))
+else if(getAll)
+    console.log(JSON.stringify(output.all))
 else
     console.log(JSON.stringify(output.non_dependant))
 
