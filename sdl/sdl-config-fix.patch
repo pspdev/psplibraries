@@ -1,0 +1,12 @@
+diff --git a/sdl-config.in b/sdl-config.in
+index e0fcc0ced..4ad29d1ba 100644
+--- a/sdl-config.in
++++ b/sdl-config.in
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ 
+-prefix=@prefix@
++prefix=${PSPDEV}/@prefix@
+ exec_prefix=@exec_prefix@
+ exec_prefix_set=no
+ libdir=@libdir@

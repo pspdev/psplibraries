@@ -11,24 +11,21 @@ makedepends=()
 optdepends=()
 group=('all')
 source=(
-    "http://www.libsdl.org/release/SDL-${pkgver}.tar.gz"
-    "SDL-${pkgver}-PSP.patch"
-    "SDL_glfuncs.h.patch"
+    "git+https://github.com/pspdev/SDL.git#commit=0df75b67465fc6a35916de80e6d9139799adee2e"
+    "sdl-config-fix.patch"
 )
 sha256sums=(
-    'd6d316a793e5e348155f0dd93b979798933fb98aa1edebcc108829d6474aad00'
     'SKIP'
     'SKIP'
 )
 
 prepare() {
-    cd "SDL-$pkgver"
-    patch -p1 < ../SDL-${pkgver}-PSP.patch
-    patch -p1 < ../SDL_glfuncs.h.patch
+    cd SDL
+    patch -p1 < ../sdl-config-fix.patch
 }
 
 build() {
-    cd "SDL-$pkgver"
+    cd "SDL"
     ./autogen.sh
     LDFLAGS="$LDFLAGS -L$(psp-config --pspsdk-path)/lib -L$(psp-config --psp-prefix)/lib -lc -lpspuser" \
     LIBS="$LIBS -lc -lpspuser" \
@@ -37,7 +34,7 @@ build() {
 }
 
 package() {
-    cd "SDL-$pkgver"
+    cd "SDL"
     make DESTDIR="$pkgdir/" install
 
     mkdir -m 755 -p "$pkgdir/psp/share/licenses/$pkgname"
