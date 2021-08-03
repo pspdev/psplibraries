@@ -48,7 +48,7 @@ This will build and install the package.
 
 ## Contributing
 
-Contributions to this repository are welcome. Especially fixes and new libraries always add value. Take a look at[CONTRIBUTING.md](CONTRIBUTING.md) for information on style of PSPBUILDs.
+Contributions to this repository are welcome. Especially fixes and new libraries always add value. Take a look at [contributor guidelines](CONTRIBUTING.md).
 
 For more general information on how to write PSPBUILDs take a look at the [Arch wiki](https://wiki.archlinux.org/title/Creating_packages).
 
