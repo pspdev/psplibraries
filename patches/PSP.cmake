@@ -42,6 +42,7 @@ set(PACK_PBP ${PSPBIN}/pack-pbp)
 set(FIXUP ${PSPBIN}/psp-fixup-imports)
 set(ENC ${PSPBIN}/PrxEncrypter)
 set(STRIP ${PSPBIN}/psp-strip)
+set(PRXGEN ${PSPBIN}/psp-prxgen)
 
 # Include directories:
 include_directories(${include_directories} ${PSPDEV}/include ${PSPSDK}/include)
