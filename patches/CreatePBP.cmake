@@ -1,20 +1,23 @@
 # File defining macro outputting PSP-specific EBOOT.PBP out of passed executable target.
+#
 # Copyright 2020 - Daniel 'dbeef' Zalega
-#
-# Args:
-# TARGET - defined by an add_executable call before calling create_pbp_file
-# TITLE - optional, string, target's name in PSP menu
-# BUILD_PRX - optional, generates and uses PRX file instead of ELF in EBOOT.PBP
-# ICON_PATH - optional, absolute path to .png file, 144x82
-# BACKGROUND_PATH - optional, absolute path to .png file, 480x272
-# PREVIEW_PATH - optional, absolute path to .png file, 480x272
-#
+# Copyright 2021 - max_ishere
+
 cmake_minimum_required(VERSION 3.10)
 
 macro(create_pbp_file)
 
-  set(options BUILD_PRX ENC_PRX)
-  set(oneValueArgs TARGET TITLE ICON_PATH BACKGROUND_PATH PREVIEW_PATH)
+  set(oneValueArgs
+    TARGET          # defined by an add_executable call before calling create_pbp_file
+    TITLE           # optional, string, target's name in PSP menu
+    ICON_PATH       # optional, absolute path to .png file, 144x82
+    BACKGROUND_PATH # optional, absolute path to .png file, 480x272
+    PREVIEW_PATH    # optional, absolute path to .png file, 480x272
+    )
+  set(options
+    BUILD_PRX # optional, generates and uses PRX file instead of ELF in EBOOT.PBP
+    ENC_PRX   # optional, replaces PRX file with encrypted version.
+    )
   cmake_parse_arguments("ARG" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
   # As pack-pbp takes undefined arguments in form of "NULL" string,
@@ -25,8 +28,9 @@ macro(create_pbp_file)
     endif()
   endforeach()
 
-  if(NOT ${ARG_BUILD_PRX})
-    set(ARG_ENC_PRX FALSE BOOL)
+  if(NOT ${ARG_BUILD_PRX} AND ${ARG_ENC_PRX})
+    message(WARNING "You are asking to encrypt PRX that is not built by this macro.\n"
+      "ENC_PRX flag for target '${ARG_TARGET}' will be ignored.")
   endif()
 
   if(${ARG_BUILD_PRX})
@@ -83,7 +87,8 @@ macro(create_pbp_file)
     add_custom_command(
       TARGET ${ARG_TARGET}
       POST_BUILD COMMAND
-      "${PRXGEN}" "$<TARGET_FILE_DIR:${ARG_TARGET}>/psp_artifact/${ARG_TARGET}.elf" "$<TARGET_FILE_DIR:${ARG_TARGET}>/psp_artifact/${ARG_TARGET}.prx"
+      "${PRXGEN}" "$<TARGET_FILE_DIR:${ARG_TARGET}>/psp_artifact/${ARG_TARGET}.elf"
+      "$<TARGET_FILE_DIR:${ARG_TARGET}>/psp_artifact/${ARG_TARGET}.prx"
       COMMENT "Calling prxgen"
       )
 
@@ -91,9 +96,16 @@ macro(create_pbp_file)
       add_custom_command(
 	TARGET ${ARG_TARGET}
 	POST_BUILD COMMAND
-	"${ENC}" "$<TARGET_FILE_DIR:${ARG_TARGET}>/psp_artifact/${ARG_TARGET}.prx" "$<TARGET_FILE_DIR:${ARG_TARGET}>/psp_artifact/${ARG_TARGET}.prx"
+	"${ENC}" "$<TARGET_FILE_DIR:${ARG_TARGET}>/psp_artifact/${ARG_TARGET}.prx"
+	"$<TARGET_FILE_DIR:${ARG_TARGET}>/psp_artifact/${ARG_TARGET}.prx"
 	COMMENT "Calling PrxEncrypter"
-	) 
+	)
+    else()
+      add_custom_command(
+	TARGET ${ARG_TARGET}
+	POST_BUILD COMMAND
+	${CMAKE_COMMAND} -E cmake_echo_color --cyan "Not encrypting PRX, use ENC_PRX flag if you need to."
+	)
     endif()
     
   else()
