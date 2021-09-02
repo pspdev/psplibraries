@@ -13,7 +13,7 @@ cmake_minimum_required(VERSION 3.10)
 
 macro(create_pbp_file)
 
-  set(options BUILD_PRX)
+  set(options BUILD_PRX ENC_PRX)
   set(oneValueArgs TARGET TITLE ICON_PATH BACKGROUND_PATH PREVIEW_PATH)
   cmake_parse_arguments("ARG" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -24,6 +24,10 @@ macro(create_pbp_file)
       set(ARG_${arg} "NULL")
     endif()
   endforeach()
+
+  if(NOT ${ARG_BUILD_PRX})
+    set(ARG_ENC_PRX FALSE BOOL)
+  endif()
 
   if(${ARG_BUILD_PRX})
     target_link_options(${ARG_TARGET}
@@ -82,6 +86,16 @@ macro(create_pbp_file)
       "${PRXGEN}" "$<TARGET_FILE_DIR:${ARG_TARGET}>/psp_artifact/${ARG_TARGET}.elf" "$<TARGET_FILE_DIR:${ARG_TARGET}>/psp_artifact/${ARG_TARGET}.prx"
       COMMENT "Calling prxgen"
       )
+
+    if(${ARG_ENC_PRX})
+      add_custom_command(
+	TARGET ${ARG_TARGET}
+	POST_BUILD COMMAND
+	"${ENC}" "$<TARGET_FILE_DIR:${ARG_TARGET}>/psp_artifact/${ARG_TARGET}.prx" "$<TARGET_FILE_DIR:${ARG_TARGET}>/psp_artifact/${ARG_TARGET}.prx"
+	COMMENT "Calling PrxEncrypter"
+	) 
+    endif()
+    
   else()
     add_custom_command(
       TARGET ${ARG_TARGET}
