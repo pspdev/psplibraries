@@ -3,6 +3,7 @@
 #
 # Copyright 2019 - Wally
 # Copyright 2020 - Daniel 'dbeef' Zalega
+# Copyright 2021 - max_ishere
 
 if (DEFINED PSPDEV)
     # Custom PSPDEV passed as cmake call argument.
@@ -42,6 +43,7 @@ set(PACK_PBP ${PSPBIN}/pack-pbp)
 set(FIXUP ${PSPBIN}/psp-fixup-imports)
 set(ENC ${PSPBIN}/PrxEncrypter)
 set(STRIP ${PSPBIN}/psp-strip)
+set(PRXGEN ${PSPBIN}/psp-prxgen)
 
 # Include directories:
 include_directories(${include_directories} ${PSPDEV}/include ${PSPSDK}/include)
