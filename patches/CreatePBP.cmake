@@ -27,9 +27,9 @@ macro(create_pbp_file)
 
   if(${ARG_BUILD_PRX})
     target_link_options(${ARG_TARGET}
-      PUBLIC -specs=/usr/local/pspdev/psp/sdk/lib/prxspecs
-      PUBLIC -Wl,-q,-T/usr/local/pspdev/psp/sdk/lib/linkfile.prx
-      PUBLIC /usr/local/pspdev/psp/sdk/lib/prxexports.o)
+      PUBLIC -specs=${PSPSDK}/lib/prxspecs
+      PUBLIC -Wl,-q,-T${PSPSDK}/lib/linkfile.prx
+      PUBLIC ${PSPSDK}/lib/prxexports.o)
   endif()
 
   if("${CMAKE_BUILD_TYPE}" STREQUAL "Release" AND NOT ${ARG_BUILD_PRX})
