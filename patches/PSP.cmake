@@ -69,4 +69,4 @@ set(PSP_LIBRARIES
 include("${PSPCMAKE}/CreatePBP.cmake")
 
 # Helper variable for multi-platform projects to identify current platform:
-set(PLATFORM_PSP TRUE BOOL)
+set(PLATFORM_PSP TRUE)
