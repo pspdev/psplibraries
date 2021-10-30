@@ -17,20 +17,20 @@
  export PKG_CONFIG_LIBDIR="$(psp-config --psp-prefix)/lib/pkgconfig"
 
  ## Enter the psplibraries directory.
- cd "`dirname $0`" || { echo "ERROR: Could not enter the psplibraries directory."; exit 1; }
+ cd "`dirname $0`" || { echo "ERROR: Could not enter the psplibraries directory."; exit $(false); }
 
  source common.sh
  basepath=$PWD
- mkdir -p build || { echo "ERROR: Could not create the build directory."; exit 1; }
+ mkdir -p build || { echo "ERROR: Could not create the build directory."; exit $(false); }
  test_deps psptoolchain libtool
 
  # If specific steps were requested, run the requested build scripts.
  if [ $1 ]; then
-     buildall=0
+     buildall=$(false)
      list="$@"
  # Else, run the all build scripts.
  else
-     buildall=1
+     buildall=$(true)
      list="$(ls -1 $basepath/scripts/*.sh | sed -e "s/.*\///" -e "s/\..*//" | sort -f)"
  fi
 
@@ -38,7 +38,7 @@
  for step in $list; do
      f=$basepath/scripts/$step.sh
      test_deps $step
-     if [ $? -ne 0 ] || [ $buildall -eq 0 ]; then
+     if [ $? -ne 0 ] || [ $buildall -eq $(false) ]; then
          if [ -x $f ]; then
              cd $basepath/build
              bash -c "source ../common.sh; \

@@ -7,6 +7,15 @@ function num_cpus
     getconf _NPROCESSORS_ONLN
 }
 
+# Trim leading zeroes of each numerical list element 
+# Usage: trlz <numbers>
+function trlz
+{
+	for number in $@; do
+		echo $(expr $number + 0)
+	done
+}
+
 # Usage: test_dep DEP
 function test_dep {
     script="$basepath/depends/check-$dep.sh"
