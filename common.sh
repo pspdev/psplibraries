@@ -24,15 +24,15 @@ function test_dep {
         return $?
     fi
     echo "Dependency script for $dep not found, assuming it's not installed."
-    return 1
+    return $(false)
 }
 
 # Usage: test_deps DEP1 DEP2 ...
 function test_deps {
     for dep in $*; do
-        test_dep $dep || return 1
+        test_dep $dep || return $(false)
     done
-    return 0
+    return $(true)
 }
 
 # Usage: test_deps_install DEP1 DEP2 ... (tests dependencies and installs them if they aren't available)
@@ -41,14 +41,14 @@ function test_deps_install {
         test_dep $dep || {
             script2="$basepath/scripts/$dep.sh"
             if [ -x $script2 ]; then
-                bash -c "source $basepath/common.sh; set -e; basepath=$basepath; source $script2" || { echo "Couldn't install dependency $dep, aborting."; return 1; }
+                bash -c "source $basepath/common.sh; set -e; basepath=$basepath; source $script2" || { echo "Couldn't install dependency $dep, aborting."; return $(falses); }
             else
                 echo "Dependency $dep required but not found. Please install it."
-                return 1
+                return $(false)
             fi
         }
     done
-    return 0
+    return $(true)
 }
 
 # Usage: extract <archive>
@@ -65,7 +65,7 @@ function auto_extract
         "gz"|"tgz") tar --no-same-owner -xzf $path ;;
         "bz2"|"tbz2") tar --no-same-owner -xjf $path ;;
         "zip") unzip $path ;;
-        *) echo "I don't know how to extract $ext archives!"; return 1 ;;
+        *) echo "I don't know how to extract $ext archives!"; return $(false) ;;
     esac
     
     return $?
@@ -94,7 +94,7 @@ function download_and_extract
     [ -f $name ] || wget --no-check-certificate $url -O $name && auto_extract $name
     
     # Switch to the newly created directory
-    cd $outdir || return 1
+    cd $outdir || return $(false)
 }
 
 # Usage: get_pspports DIR
@@ -109,16 +109,16 @@ function get_pspports {
 
         if [ ! -d ".git" ]; then
             echo "Please delete 'build/psp-ports' and try again"
-            return 1
+            return $(false)
         fi
 
         git pull
-        cd $1 || { return 1; }
+        cd $1 || { return $(false); }
     else
         # clone psp-ports
 
         git clone "https://github.com/pspdev/psp-ports.git" psp-ports
-        cd psp-ports/$1 || { return 1; } 
+        cd psp-ports/$1 || { return $(false); } 
     fi
 }
 
@@ -136,18 +136,18 @@ function get_pspport {
 
         if [ ! -d ".git" ]; then
             echo "Please delete 'build/$repository' and try again"
-            return 1
+            return $(false)
         fi
         # cleanup
         git reset --hard
         git clean -fd
         git fetch
-        git checkout $branch -- || return 1;
-        git pull || { echo "Please delete 'build/$repository' and try again"; return 1; }
+        git checkout $branch -- || return $(false);
+        git pull || { echo "Please delete 'build/$repository' and try again"; return $(false); }
     else
         # clone
         git clone "https://github.com/pspdev/$repository.git" $repository
-        cd $repository || return 1;
+        cd $repository || return $(false);
         git checkout $branch
     fi
 }
@@ -174,33 +174,33 @@ function clone_git_repo
     # or it was nuked due to being corrupted. Clone and track master, please.
     # Attempt to clone over SSH if possible, use anonymous HTTP as fallback.
     # Set SSH_ASKPASS and stdin(<) to prevent it from freezing to ask for auth.
-    [ -d $repo ] || SSH_ASKPASS=false git clone --recursive --depth 1 -b $branch git@$host:$user/$repo.git $repo < /dev/null || SSH_ASKPASS=false git clone --recursive --depth 1 -b $branch https://$host/$user/$repo.git $repo < /dev/null || return 1
+    [ -d $repo ] || SSH_ASKPASS=false git clone --recursive --depth 1 -b $branch git@$host:$user/$repo.git $repo < /dev/null || SSH_ASKPASS=false git clone --recursive --depth 1 -b $branch https://$host/$user/$repo.git $repo < /dev/null || return $(false)
 }
 
 # Usage: run_configure OPT1 OPT2 ...
 function run_configure {
     LDFLAGS="$LDFLAGS -L$(psp-config --pspsdk-path)/lib -L$(psp-config --psp-prefix)/lib -lc -lpspuser" \
     LIBS="$LIBS -lc -lpspuser" \
-    ./configure --host=psp --prefix=$(psp-config --psp-prefix) $* || { return 1; }
-    return 0
+    ./configure --host=psp --prefix=$(psp-config --psp-prefix) $* || { return $(false); }
+    return $(true)
 }
 
 function run_make {
-    test_deps make || { return 1; }
-    make $* || { return 1; }
-    make install || { return 1; }
-    return 0
+    test_deps make || { return $(false); }
+    make $* || { return $(false); }
+    make install || { return $(false); }
+    return $(true)
 }
 
 function run_autogen_build {
-    sh autogen.sh || { return 1; }
-    if [ -n "$(grep aclocal autogen.sh)" ]; then test_deps automake || { return 1; }; fi
-    if [ -n "$(grep automake autogen.sh)" ]; then test_deps automake || { return 1; }; fi
-    if [ -n "$(grep autoconf autogen.sh)" ]; then test_deps autoconf || { return 1; }; fi
-    if [ -n "$(grep libtoolize autogen.sh)" ]; then test_deps libtool || { return 1; }; fi
-    run_configure $* || { return 1; }
-    run_make -j 4 || { return 1; }
-    return 0
+    sh autogen.sh || { return $(false); }
+    if [ -n "$(grep aclocal autogen.sh)" ]; then test_deps automake || { return $(false); }; fi
+    if [ -n "$(grep automake autogen.sh)" ]; then test_deps automake || { return $(false); }; fi
+    if [ -n "$(grep autoconf autogen.sh)" ]; then test_deps autoconf || { return $(false); }; fi
+    if [ -n "$(grep libtoolize autogen.sh)" ]; then test_deps libtool || { return $(false); }; fi
+    run_configure $* || { return $(false); }
+    run_make -j 4 || { return $(false); }
+    return $(true)
 }
 
 function apply_patch {
