@@ -5,7 +5,7 @@
  cd "`dirname $0`" || { echo "ERROR: Could not enter the psplibraries directory."; exit $(false); }
 
  ## Set up the environment.
- export PSPDEV=/opt/toolchains/psp/jopadan
+ export PSPDEV=/usr/local/pspdev
  export PATH=$PATH:$PSPDEV/bin
 
  ## Run the libraries script.
